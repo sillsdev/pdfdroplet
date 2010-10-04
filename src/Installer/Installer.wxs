@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- These variables define the Windows Installer product version, product code and upgrade code. They   -->
+<!-- will be used later on in this file.                                                                 -->
+<?define Property_ProductVersion = "BUILD_SCRIPT_MUST_REPLACE_AT_RUNTIME" ?>
+<!--this is replaced at build time by the msbuild 'package' target -->
+<?define Property_ProductCode = "*" ?>
+<!-- auto-generate a new guid each time -->
+<?define Property_UpgradeCode = "{CBCDEE93-B8EF-445e-98A9-B8CAF9502F0D}" ?>
+<!--Don't even think of EVER changing this -->
+
+<!-- good intro to the component vs. file thing, and why each file here is a separate component:
+http://blogs.msdn.com/robmen/archive/2003/10/04/56479.aspx -->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <Product Id="$(var.Property_ProductCode)" Name="SayMore $(var.Property_ProductVersion)" Language="1033"
+             Version="$(var.Property_ProductVersion)" Manufacturer="SIL"
+             UpgradeCode="$(var.Property_UpgradeCode)">
+
+    <Package  Compressed="yes" InstallerVersion="200" />
+
+    <Upgrade Id ="$(var.Property_UpgradeCode)" >
+      <UpgradeVersion Minimum ="$(var.Property_ProductVersion)" OnlyDetect ="yes" Property ="NEWVERSIONDETECTED" />
+      <UpgradeVersion Minimum ="0.0.0" IncludeMinimum ="yes" Maximum ="$(var.Property_ProductVersion)" IncludeMaximum ="no" Property ="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade >
+
+    <!-- 
+    "from the list: Don't use Advertise="yes" Advertised shortcuts are designed to allow
+users to install just the shortcut for your app, then demand-install the
+rest of the app the first time the icon is run.  If this is not behavior you
+are trying to support, you're better off using non-advertised shortcuts. "-->
+
+    <PropertyRef Id="NETFRAMEWORK35" />
+    <Condition Message="Before SayMore can install, you need to install Microsoft's free .NET Framework 3.5.  A full discussion of SayMore's requirements can be found at SayMore.org/wiki/Prerequisites.">
+      Installed OR NETFRAMEWORK35
+    </Condition>
+
+    <!--because of bug, this needs to be 1 -->
+    <Property Id ="ALLUSERS">1</Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+        <Directory Id="CommonAppDataFolder">
+            <Directory Id="SayMoreCommonAppData" Name="SayMore">
+              <Directory Id="SampleDataDir" Name="Samples">
+              </Directory>
+            </Directory>
+        </Directory>
+      
+      <Directory Id='ProgramMenuFolder' Name='Programs'>
+        <Directory Id='SayMoreShortcutDir' Name='SayMore'>
+          <Component Id ='removeShortcutDir' Guid ="{88000306-EB15-4458-8264-97C1F888AD1F}">
+            <RemoveFolder Id ="shortcutDirRemover" On ="uninstall"/>
+            <RegistryKey Id="keyPathForRemoveShortcutDir" Action ="createAndRemoveOnUninstall" Root="HKCU" Key="SOFTWARE\SayMore\Components\SayMoreShortcutDir">
+              <RegistryValue Type ="string" Value =""  Action ="write" KeyPath ="yes"/>
+            </RegistryKey>
+          </Component>
+
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramFilesFolder" Name="PFiles">
+
+        <Directory Id="ProgramDir" Name="SayMore">
+
+          <Component Id="SayMore.exe" Guid="{73493982-C68A-4f01-93BC-5F92B380CF89}">
+            <Registry Root="HKCU" Key="SOFTWARE\SayMore\Components\SayMore.exe" KeyPath="yes" />
+
+            <File Id="SayMore.exe" Name="SayMore.exe"  Source="..\..\output\release\SayMore.exe" />
+            <!--- todo: icons for saymore files -->
+
+            <!--- connect file types to icons and program to launch -->
+
+            <!--- todo: 
+                      any connections between file types and saymore
+                    <RemoveRegistryKey Action ='removeOnUninstall' Root ='HKCR' Key ='.lift'/>
+                    <RemoveRegistryKey Action ='removeOnUninstall' Root ='HKCR' Key ='SayMore.LIFTFile'/>
+-->
+
+            <!-- another way:                 <Registry Id='LuaReg8' Root='HKCR' Key='VisualStudio.luaproj.8.0\Shell\Open\Command' Action='write' 
+                     Type='string' Value='"[ENVPATH_2005]" "%1"'/> -->
+
+            <Shortcut Id="startmenuShortcut"  Directory="SayMoreShortcutDir" Name="SayMore"
+                 WorkingDirectory="ProgramDir" Target="[!SayMore.exe]"  Icon ="SayMore.exe" />
+
+          </Component>
+
+          <Component Id="autofac.dll" Guid="{BB025B7C-B3CA-435e-9A4B-192373EE12DB}">
+            <File Id="autofac.dll" Name="autofac.dll" KeyPath="yes" Source="..\..\output\release\autofac.dll" />
+          </Component>
+          <Component Id="AxInterop.WMPLib.dll" Guid="{A488F3D2-BC40-40f8-8EE2-757418E458C5}">
+            <File Id="AxInterop.WMPLib.dll" Name="AxInterop.WMPLib.dll" KeyPath="yes" Source="..\..\output\release\AxInterop.WMPLib.dll" />
+          </Component>
+          <Component Id="Interop.WMPLib.dll" Guid="{A8AAC2E5-7C33-4a1c-AA2E-4091DBC0EE92}">
+            <File Id="Interop.WMPLib.dll" Name="Interop.WMPLib.dll" KeyPath="yes" Source="..\..\output\release\Interop.WMPLib.dll" />
+          </Component>
+          <Component Id="LocalizationManager.dll" Guid="{92419CBC-BA15-4dfd-B57E-399BEC7FE926}">
+            <File Id="LocalizationManager.dll" Name="LocalizationManager.dll" KeyPath="yes" Source="..\..\output\release\LocalizationManager.dll" />
+          </Component>          
+          <Component Id="SilUtils.dll" Guid="{76555EB4-5FB4-4309-8C45-71126BD9C930}">
+            <File Id="SilUtils.dll" Name="SilUtils.dll" KeyPath="yes" Source="..\..\output\release\SilUtils.dll" />
+          </Component>
+          <Component Id="Palaso.dll" Guid="{C46C492A-304B-47b8-A13A-7CE4896B5634}">
+            <File Id="Palaso.dll" Name="Palaso.dll" KeyPath="yes" Source="..\..\output\release\Palaso.dll" />
+          </Component>
+
+          <Component Id="PalasoUIWindowsForms.dll" Guid="{47046B6E-668C-4a4d-A866-719922C142B5}">
+            <File Id="PalasoUIWindowsForms.dll" Name="PalasoUIWindowsForms.dll" KeyPath="yes" Source="..\..\output\release\PalasoUIWindowsForms.dll" />
+          </Component>
+          <Component Id="Palaso.Media.dll" Guid="{742F2F76-3978-4d83-BC98-C7585B6F69D8}">
+            <File Id="Palaso.Media.dll" Name="Palaso.Media.dll" KeyPath="yes" Source="..\..\output\release\Palaso.Media.dll" />
+          </Component>
+          <Component Id="SayMore.exe.config" Guid="{ECCD0940-AC00-4f18-91DD-5223878373BB}">
+                    <File Id="SayMore.exe.config" Name="SayMore.exe.config" KeyPath="yes" Source="..\..\output\release\SayMore.exe.config" />
+          </Component>
+                  
+        </Directory>
+      </Directory>
+    </Directory>
+
+
+    <Feature Id="ProductFeature" Level="1" Title="Basic Stuff">
+      <ComponentRef Id ="removeShortcutDir"/>
+
+      <ComponentRef Id="autofac.dll"/>
+      <ComponentRef Id="LocalizationManager.dll"/>
+      <ComponentRef Id="SilUtils.dll"/>
+      <ComponentRef Id="AxInterop.WMPLib.dll"/>
+      <ComponentRef Id="Interop.WMPLib.dll"/>
+      <ComponentRef Id="Palaso.dll"/>
+      <ComponentRef Id="PalasoUIWindowsForms.dll" />
+      <ComponentRef Id="Palaso.Media.dll" />
+      <ComponentRef Id="SayMore.exe" />
+      <ComponentRef Id="SayMore.exe.config" />
+
+      <ComponentGroupRef Id ="DistFiles"/>
+      <ComponentGroupRef Id ="SampleData"/>
+
+    </Feature>
+    <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+    <Icon Id="SayMore.exe" SourceFile ="..\..\output\release\SayMore.exe" />
+    <Property Id="ARPPRODUCTICON" Value="SayMore.exe" />
+    <!-- what you see in add/remove programs control panel -->
+
+
+
+    <CustomAction Id="LaunchSayMore"
+                  FileKey="SayMore.exe"
+                  ExeCommand=""
+                  Return="asyncNoWait"/>
+    
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallInitialize" />
+
+      <!--We need the condition here so that we only launch the executable when we make an installation but not when we remove the product-->
+          <Custom Action='LaunchSayMore' After="InstallFinalize">NOT Installed</Custom>
+        </InstallExecuteSequence>
+  </Product>
+</Wix>
+
