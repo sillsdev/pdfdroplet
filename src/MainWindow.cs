@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using Palaso.IO;
@@ -18,7 +19,20 @@ namespace PdfDroplet
         public MainWindow()
         {
             InitializeComponent();
+            Font = SystemFonts.DialogFont;
+            _useAcrobatRadio.Font = new Font(SystemFonts.DialogFont.FontFamily, 10);
+            _useDropletRadio.Font = _useAcrobatRadio.Font;
+            _useAcrobatInstead.Font = _useAcrobatRadio.Font; 
+            SetWindowText();
+            webBrowser1.Navigate(FileLocator.GetFileDistributedWithApplication("about.htm"));
+        }
 
+
+
+        private void SetWindowText()
+        {
+            var ver = Assembly.GetExecutingAssembly().GetName().Version;
+            Text = string.Format("Pdf Droplet: {0}.{1}.{2}", ver.Major, ver.Minor, ver.Build);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -165,7 +179,7 @@ namespace PdfDroplet
             File.Copy(path, temp, true);
             var info = new ProcessStartInfo();
             info.WorkingDirectory = Path.GetDirectoryName(path);
-            info.FileName = FileLocator.GetFileDistributedWithApplication("DistFiles", "pdfbklt.exe");
+            info.FileName = FileLocator.GetFileDistributedWithApplication("pdfbklt.exe");
             info.Arguments = '"'+temp+'"';
             info.CreateNoWindow = true;
             var x = System.Diagnostics.Process.Start(info);
@@ -288,6 +302,14 @@ namespace PdfDroplet
         private void _resultingFileLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(_resultingPdfPath);
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using(var dlg = new AboutBox1())
+            {
+                dlg.ShowDialog();
+            }
         }
     }
 }
