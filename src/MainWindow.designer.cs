@@ -44,8 +44,8 @@ namespace PdfDroplet
             this._dragStatus = new System.Windows.Forms.Label();
             this._labelDragDirections = new System.Windows.Forms.Label();
             this._reviewPage = new System.Windows.Forms.TabPage();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this._resultingFileLink = new System.Windows.Forms.LinkLabel();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this._tabControl.SuspendLayout();
             this._convertPage.SuspendLayout();
             this._reviewPage.SuspendLayout();
@@ -61,6 +61,7 @@ namespace PdfDroplet
             this.linkLabel2.TabIndex = 0;
             this.linkLabel2.TabStop = true;
             this.linkLabel2.Text = "About PdfDroplet...";
+            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // _tabControl
             // 
@@ -213,7 +214,7 @@ namespace PdfDroplet
             this._labelDragDirections.Name = "_labelDragDirections";
             this._labelDragDirections.Size = new System.Drawing.Size(284, 17);
             this._labelDragDirections.TabIndex = 1;
-            this._labelDragDirections.Text = "or drag and drop a pdf file onto this window.";
+            this._labelDragDirections.Text = "or drop a pdf file onto this window.";
             // 
             // _reviewPage
             // 
@@ -227,17 +228,6 @@ namespace PdfDroplet
             this._reviewPage.Text = "Review";
             this._reviewPage.UseVisualStyleBackColor = true;
             // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(3, 36);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(463, 223);
-            this.webBrowser1.TabIndex = 0;
-            // 
             // _resultingFileLink
             // 
             this._resultingFileLink.AutoSize = true;
@@ -248,6 +238,17 @@ namespace PdfDroplet
             this._resultingFileLink.TabStop = true;
             this._resultingFileLink.Text = "Results:";
             this._resultingFileLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._resultingFileLink_LinkClicked);
+            // 
+            // webBrowser1
+            // 
+            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.webBrowser1.Location = new System.Drawing.Point(3, 36);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(463, 223);
+            this.webBrowser1.TabIndex = 0;
             // 
             // MainWindow
             // 
