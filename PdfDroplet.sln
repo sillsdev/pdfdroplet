@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfDroplet", "src\PdfDroplet.csproj", "{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup1", "Setup1\Setup1.vdproj", "{CB2EFE10-D6EA-41E7-ABA7-500FE37D84CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,8 @@ Global
 		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Debug|x86.Build.0 = Debug|x86
 		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Release|x86.ActiveCfg = Release|x86
 		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Release|x86.Build.0 = Release|x86
+		{CB2EFE10-D6EA-41E7-ABA7-500FE37D84CE}.Debug|x86.ActiveCfg = Debug
+		{CB2EFE10-D6EA-41E7-ABA7-500FE37D84CE}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

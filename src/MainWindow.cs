@@ -16,7 +16,7 @@ namespace PdfDroplet
         private bool _fileLoaded=false;
         private string _resultingPdfPath;
 
-        public MainWindow()
+        public MainWindow(bool showAbout)
         {
             InitializeComponent();
             Font = SystemFonts.DialogFont;
@@ -24,7 +24,8 @@ namespace PdfDroplet
             _useDropletRadio.Font = _useAcrobatRadio.Font;
             _useAcrobatInstead.Font = _useAcrobatRadio.Font; 
             SetWindowText();
-            webBrowser1.Navigate(FileLocator.GetFileDistributedWithApplication("about.htm"));
+            //webBrowser1.Navigate(FileLocator.GetFileDistributedWithApplication("about.htm"));
+            timer1.Enabled = showAbout;
         }
 
 
@@ -307,6 +308,15 @@ namespace PdfDroplet
         private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             using(var dlg = new AboutBox1())
+            {
+                dlg.ShowDialog();
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Enabled = false;
+            using (var dlg = new AboutBox1())
             {
                 dlg.ShowDialog();
             }
