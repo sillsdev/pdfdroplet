@@ -2,11 +2,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <ProductVersion>3.0</ProductVersion>
-    <ProjectGuid>{be2c52bc-6b66-4f8b-8b50-2cba58a8027d}</ProjectGuid>
+    <ProjectGuid>{be2c52bc-6b66-4f8b-8b50-2cba58a80271}</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>SayMoreInstaller</OutputName>
+    <OutputName>PdfDropletInstaller</OutputName>
     <OutputType>Package</OutputType>
-    <WixToolPath>C:\Program Files\Windows Installer XML v3\bin\</WixToolPath>
+    <WixToolPath>C:\Program Files (x86)\Windows Installer XML v3\bin\</WixToolPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>..\..\output\installer\</OutputPath>
@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="Installer.wxs" />
     <Compile Include="..\..\output\installer\GeneratedDistFiles.wxs" />
-    <Compile Include="..\..\output\installer\GeneratedSampleDataFiles.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">

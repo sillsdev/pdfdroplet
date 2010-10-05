@@ -28,6 +28,7 @@ namespace PdfDroplet
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this._tabControl = new System.Windows.Forms.TabControl();
@@ -46,6 +47,7 @@ namespace PdfDroplet
             this._reviewPage = new System.Windows.Forms.TabPage();
             this._resultingFileLink = new System.Windows.Forms.LinkLabel();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this._tabControl.SuspendLayout();
             this._convertPage.SuspendLayout();
             this._reviewPage.SuspendLayout();
@@ -212,7 +214,7 @@ namespace PdfDroplet
             this._labelDragDirections.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._labelDragDirections.Location = new System.Drawing.Point(48, 95);
             this._labelDragDirections.Name = "_labelDragDirections";
-            this._labelDragDirections.Size = new System.Drawing.Size(284, 17);
+            this._labelDragDirections.Size = new System.Drawing.Size(223, 17);
             this._labelDragDirections.TabIndex = 1;
             this._labelDragDirections.Text = "or drop a pdf file onto this window.";
             // 
@@ -249,6 +251,10 @@ namespace PdfDroplet
             this.webBrowser1.Name = "webBrowser1";
             this.webBrowser1.Size = new System.Drawing.Size(463, 223);
             this.webBrowser1.TabIndex = 0;
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // MainWindow
             // 
@@ -295,5 +301,6 @@ namespace PdfDroplet
         private System.Windows.Forms.RadioButton _useAcrobatRadio;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.LinkLabel _resultingFileLink;
+        private System.Windows.Forms.Timer timer1;
     }
 }
