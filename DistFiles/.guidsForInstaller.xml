@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--This file is generated and then updated by an MSBuild task.  It preserves the automatically-generated guids assigned files that will be installed on user machines. So it should be held in source control.-->
+<InstallerMetadata>
+  <File Id="about.htm" Guid="20bcfb74-78a2-4e7c-8a3e-8cd5c9430e35" />
+  <File Id="dropForAbout.png" Guid="ab5ed033-8853-4551-8bbd-427d3313b157" />
+  <File Id="pdfbklt.exe" Guid="258b48b7-efcc-4e61-ba19-c0b51a8cd28d" />
+  <File Id="instructions.htm" Guid="7d2138c2-2fa5-4d75-9507-9089c824a1ed" />
+</InstallerMetadata>
