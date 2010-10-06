@@ -12,20 +12,16 @@ namespace PdfDroplet
 {
     public partial class MainWindow : Form
     {
-        private const string _busyMessage = "That file appears to already be open, probably in Excel. First close it, then drag it here.";
-        private bool _fileLoaded=false;
         private string _resultingPdfPath;
 
         public MainWindow(bool showAbout)
         {
             InitializeComponent();
             Font = SystemFonts.DialogFont;
-            _useAcrobatRadio.Font = new Font(SystemFonts.DialogFont.FontFamily, 10);
-            _useDropletRadio.Font = _useAcrobatRadio.Font;
-            _useAcrobatInstead.Font = _useAcrobatRadio.Font; 
-            SetWindowText();
+             SetWindowText();
             //webBrowser1.Navigate(FileLocator.GetFileDistributedWithApplication("about.htm"));
             timer1.Enabled = showAbout;
+            _instructionsBrowser.Navigate(FileLocator.GetFileDistributedWithApplication("instructions.htm"));
         }
 
 
@@ -44,6 +40,8 @@ namespace PdfDroplet
 
         private void OnDragEnter(object sender, DragEventArgs e)
         {
+            _dragStatus.ForeColor = Color.Black;
+
             e.Effect = DragDropEffects.None;
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return;
@@ -54,15 +52,27 @@ namespace PdfDroplet
                 
             if (IsAlreadyOpenElsewhere(path))
             {
-
-                _dragStatus.Text = _busyMessage;
+                _dragStatus.ForeColor = Color.Red;
+                _dragStatus.Text = "That file appears to already be open in some other program. First close it, then drag it here.";
                 _dragStatus.Visible = true;
-                return;
+                e.Effect = DragDropEffects.None; 
             }
+            else if (Path.GetExtension(path).ToLower()==".pdf")
+            {
+                _dragStatus.Text = "Looks good, drop it.";
+                _dragStatus.Visible = true;
 
-            this.BackColor = Color.Cornsilk;
-            //this._dragStatus.BackColor = this.BackColor;
-            e.Effect = DragDropEffects.Copy;
+                this.BackColor = Color.LightBlue;
+                //this._dragStatus.BackColor = this.BackColor;
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                _dragStatus.ForeColor = Color.Red;
+                _dragStatus.Text = "That file doesn't end in '.pdf'";
+                _dragStatus.Visible = true;
+                e.Effect = DragDropEffects.None;
+            }
             
         }
 
@@ -96,7 +106,6 @@ namespace PdfDroplet
 
         private void UpdateConvertTabDisplay()
         {
-            _useAcrobatInstead.Visible = _useAcrobatRadio.Checked;
             _dragStatus.Visible = false;
            // _linkChooseFile.Enabled = false;           
             UpdateLinkForConvertingPrevious();
@@ -106,7 +115,6 @@ namespace PdfDroplet
 
         private void UpdateLinkForConvertAndSave()
         {
-            _labelDone.Visible = false;
             _linkConvertAndSave.Visible = _linkConvertPrevious.Visible 
                                           && !string.IsNullOrEmpty(Settings1.Default.PreviousSavePath)
                                           && Directory.Exists(Path.GetDirectoryName(Settings1.Default.PreviousSheetPath));
@@ -132,7 +140,6 @@ namespace PdfDroplet
                 _linkConvertPrevious.Text =
                     String.Format("Convert {0}", Path.GetFileName(Settings1.Default.PreviousSheetPath));
             }
-            _labelOrForConvert.Visible = _linkConvertPrevious.Visible;
         }
 
         private void UpdateReviewTapDisplay()
@@ -155,7 +162,7 @@ namespace PdfDroplet
             }
             try
             {
-                _fileLoaded = RunConverter(path);
+                RunConverter(path);
 
                 if (Settings1.Default.PreviousSheetPath != path)
                 {
@@ -213,7 +220,7 @@ namespace PdfDroplet
            // (ignore all files except first if number of files are dropped).
            if (Convert(path))
            {
-               _tabControl.SelectedTab = _reviewPage;
+               _tabControl.SelectedTab = _bookletPage;
            }
         }
 
@@ -239,7 +246,7 @@ namespace PdfDroplet
         {
             if (Convert(Settings1.Default.PreviousSheetPath))
             {
-                _tabControl.SelectedTab = _reviewPage;
+                _tabControl.SelectedTab = _bookletPage;
             }
         }
 
@@ -257,12 +264,7 @@ namespace PdfDroplet
 //            }
 //        }
 
-        private void MainWindow_Deactivate(object sender, EventArgs e)
-        {
-            //clear this once they switch to another app
-            _labelDone.Visible = false;
-        }
-
+ 
         private void _tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateDisplay();
@@ -291,7 +293,7 @@ namespace PdfDroplet
             }
             if(Convert(dialog.FileName))
             {
-                _tabControl.SelectedTab = _reviewPage;
+                _tabControl.SelectedTab = _bookletPage;
             }
         }
 
@@ -321,5 +323,14 @@ namespace PdfDroplet
                 dlg.ShowDialog();
             }
         }
+
+//        private void _instructionsBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+//        {
+//            if(_instructionsBrowser.Document == null)
+//            {
+//                _instructionsBrowser.Navigate(FileLocator.GetFileDistributedWithApplication("instructions.htm"));
+//            }
+//        }
+
     }
 }

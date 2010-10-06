@@ -59,8 +59,7 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
             <Registry Root="HKCU" Key="SOFTWARE\PdfDroplet\Components\PdfDroplet.exe" KeyPath="yes" />
 
             <File Id="PdfDroplet.exe" Name="PdfDroplet.exe"  Source="..\..\output\release\PdfDroplet.exe" />
-            <File Id="Palaso.dll" Name="Palaso.dll" Source="..\..\output\release\Palaso.dll" />
-            
+              
             <!--- todo: icons for PdfDroplet files -->
 
             <!--- connect file types to icons and program to launch -->
@@ -79,8 +78,10 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 
           </Component>
 
-                    
-        </Directory>
+          <Component Id="Palaso.dll" Guid="{AAC6B9F0-8291-46E3-9115-0E79A98300AA}">
+            <File Id="Palaso.dll" Name="Palaso.dll" KeyPath="yes" Source="..\..\output\release\Palaso.dll" />
+          </Component>
+          </Directory>
       </Directory>
     </Directory>
 
@@ -89,6 +90,7 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 
       <ComponentRef Id ="removeShortcutDir"/>
       <ComponentRef Id="PdfDroplet.exe"/>
+      <ComponentRef Id="Palaso.dll"/>
       <ComponentGroupRef Id ="DistFiles"/>
  
     </Feature>
