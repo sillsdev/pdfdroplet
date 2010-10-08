@@ -168,7 +168,7 @@ namespace PdfDroplet
             this._labelDragDirections.Name = "_labelDragDirections";
             this._labelDragDirections.Size = new System.Drawing.Size(253, 21);
             this._labelDragDirections.TabIndex = 1;
-            this._labelDragDirections.Text = "or drop a pdf file onto this window.";
+            this._labelDragDirections.Text = "or drop a pdf file onto this window";
             // 
             // _instructionsPage
             // 
