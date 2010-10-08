@@ -106,26 +106,11 @@ namespace PdfDroplet
 
         private void UpdateConvertTabDisplay()
         {
-            _dragStatus.Visible = false;
-           // _linkChooseFile.Enabled = false;           
+            _dragStatus.Visible = false;   
             UpdateLinkForConvertingPrevious();
-            UpdateLinkForConvertAndSave();
             _dragStatus.MaximumSize = new Size(_convertPage.Width - 70, _dragStatus.MaximumSize.Height);
         }
 
-        private void UpdateLinkForConvertAndSave()
-        {
-            _linkConvertAndSave.Visible = _linkConvertPrevious.Visible 
-                                          && !string.IsNullOrEmpty(Settings1.Default.PreviousSavePath)
-                                          && Directory.Exists(Path.GetDirectoryName(Settings1.Default.PreviousSheetPath));
-
-            if (_linkConvertAndSave.Visible)
-            {
-                _linkConvertAndSave.Text =
-                    String.Format("Convert {0} to {1} without asking any questions.", Path.GetFileName(Settings1.Default.PreviousSheetPath), Path.GetFileName(Settings1.Default.PreviousSavePath));
-            }
-            _labelOrForConvertAndSave.Visible = _linkConvertAndSave.Visible;
-        }
 
         private void UpdateLinkForConvertingPrevious()
         {
@@ -138,7 +123,7 @@ namespace PdfDroplet
             if (doShowIt)
             {
                 _linkConvertPrevious.Text =
-                    String.Format("Convert {0}", Path.GetFileName(Settings1.Default.PreviousSheetPath));
+                    String.Format("Convert {0} again.", Path.GetFileName(Settings1.Default.PreviousSheetPath));
             }
         }
 
