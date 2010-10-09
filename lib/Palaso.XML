@@ -3110,5 +3110,37 @@
             </summary>
             <param name="item"></param>
         </member>
+        <member name="M:Palaso.Reporting.Network.ProxyCredentialsRequestDialog.GetCredentials(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="doTryStoredCredentials">Call it first with this true, but if that doesn't work, call with this
+            false so that we ask the user again</param>
+            <returns></returns>
+        </member>
+        <member name="F:Palaso.Reporting.Network.ProxyCredentialsRequestDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Palaso.Reporting.Network.ProxyCredentialsRequestDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Palaso.Reporting.Network.ProxyCredentialsRequestDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:Palaso.Reporting.Network.RobustNetworkOperation.Do(System.Action{System.Net.IWebProxy})">
+            <summary>
+            Perform a web action, trying various things to use a proxy if needed, including requesting
+            (and remembering) user credentials from the user.
+            </summary>
+            <param name="action"></param>
+        </member>
     </members>
 </doc>

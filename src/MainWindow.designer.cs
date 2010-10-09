@@ -36,7 +36,7 @@ namespace PdfDroplet
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this._linkChooseFile = new System.Windows.Forms.LinkLabel();
             this._linkConvertAndSave = new System.Windows.Forms.LinkLabel();
-            this._labelOrForConvertAndSave = new System.Windows.Forms.Label();
+            this._labelConvertPrevious = new System.Windows.Forms.Label();
             this._linkConvertPrevious = new System.Windows.Forms.LinkLabel();
             this._dragStatus = new System.Windows.Forms.Label();
             this._labelDragDirections = new System.Windows.Forms.Label();
@@ -85,7 +85,7 @@ namespace PdfDroplet
             this._convertPage.Controls.Add(this.pictureBox1);
             this._convertPage.Controls.Add(this._linkChooseFile);
             this._convertPage.Controls.Add(this._linkConvertAndSave);
-            this._convertPage.Controls.Add(this._labelOrForConvertAndSave);
+            this._convertPage.Controls.Add(this._labelConvertPrevious);
             this._convertPage.Controls.Add(this._linkConvertPrevious);
             this._convertPage.Controls.Add(this._dragStatus);
             this._convertPage.Controls.Add(this._labelDragDirections);
@@ -128,15 +128,15 @@ namespace PdfDroplet
             this._linkConvertAndSave.Size = new System.Drawing.Size(100, 23);
             this._linkConvertAndSave.TabIndex = 15;
             // 
-            // _labelOrForConvertAndSave
+            // _labelConvertPrevious
             // 
-            this._labelOrForConvertAndSave.AutoSize = true;
-            this._labelOrForConvertAndSave.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labelOrForConvertAndSave.Location = new System.Drawing.Point(34, 81);
-            this._labelOrForConvertAndSave.Name = "_labelOrForConvertAndSave";
-            this._labelOrForConvertAndSave.Size = new System.Drawing.Size(25, 21);
-            this._labelOrForConvertAndSave.TabIndex = 6;
-            this._labelOrForConvertAndSave.Text = "or";
+            this._labelConvertPrevious.AutoSize = true;
+            this._labelConvertPrevious.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._labelConvertPrevious.Location = new System.Drawing.Point(34, 81);
+            this._labelConvertPrevious.Name = "_labelConvertPrevious";
+            this._labelConvertPrevious.Size = new System.Drawing.Size(25, 21);
+            this._labelConvertPrevious.TabIndex = 6;
+            this._labelConvertPrevious.Text = "or";
             // 
             // _linkConvertPrevious
             // 
@@ -166,7 +166,7 @@ namespace PdfDroplet
             this._labelDragDirections.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._labelDragDirections.Location = new System.Drawing.Point(34, 50);
             this._labelDragDirections.Name = "_labelDragDirections";
-            this._labelDragDirections.Size = new System.Drawing.Size(253, 21);
+            this._labelDragDirections.Size = new System.Drawing.Size(250, 21);
             this._labelDragDirections.TabIndex = 1;
             this._labelDragDirections.Text = "or drop a pdf file onto this window";
             // 
@@ -268,7 +268,7 @@ namespace PdfDroplet
         private System.Windows.Forms.TabPage _bookletPage;
         private System.Windows.Forms.Label _dragStatus;
         private System.Windows.Forms.LinkLabel _linkConvertAndSave;
-        private System.Windows.Forms.Label _labelOrForConvertAndSave;
+        private System.Windows.Forms.Label _labelConvertPrevious;
         private System.Windows.Forms.WebBrowser webBrowser1;
         private System.Windows.Forms.LinkLabel _resultingFileLink;
         private System.Windows.Forms.Timer timer1;
