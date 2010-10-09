@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using Palaso.IO;
+using Palaso.Reporting;
+using PdfDroplet.Properties;
 
 namespace PdfDroplet
 {
@@ -34,7 +36,7 @@ namespace PdfDroplet
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            Settings1.Default.Save();
+            Settings.Default.Save();
             base.OnClosing(e);
         }
 
@@ -114,16 +116,17 @@ namespace PdfDroplet
 
         private void UpdateLinkForConvertingPrevious()
         {
-            bool doShowIt = !string.IsNullOrEmpty(Settings1.Default.PreviousSheetPath)
-                            && File.Exists(Settings1.Default.PreviousSheetPath);
+            bool doShowIt = !string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath)
+                            && File.Exists(Settings.Default.PreviousIncomingPath);
             
             //nb: this doesn't work if the tab that holds this link isn't the selected one
             //when this code runs
+            _labelConvertPrevious.Visible = doShowIt;
             _linkConvertPrevious.Visible = doShowIt;
             if (doShowIt)
             {
                 _linkConvertPrevious.Text =
-                    String.Format("Convert {0} again.", Path.GetFileName(Settings1.Default.PreviousSheetPath));
+                    String.Format("Convert {0} again.", Path.GetFileName(Settings.Default.PreviousIncomingPath));
             }
         }
 
@@ -142,24 +145,21 @@ namespace PdfDroplet
         {
             if (IsAlreadyOpenElsewhere(path))
             {
-                MessageBox.Show("That file appears to be open. First close it, then try again.","Whoops", MessageBoxButtons.OK);
+                ErrorReport.NotifyUserOfProblem("That file appears to be open. First close it, then try again.");
                 return false;
             }
             try
             {
                 RunConverter(path);
 
-                if (Settings1.Default.PreviousSheetPath != path)
+                if (Settings.Default.PreviousIncomingPath != path)
                 {
-                    Settings1.Default.PreviousSheetPath = path;
-                    //the source has changed, so don't assume we want to go to the same target
-                    Settings1.Default.PreviousSavePath  = null;
-
+                    Settings.Default.PreviousIncomingPath = path;
                 }
             }
             catch (Exception error)
             {
-                MessageBox.Show("PdfBooket was unable to convert that file.\r\n"+error.Message, "Whoops", MessageBoxButtons.OK);
+                ErrorReport.NotifyUserOfProblem(error,"PdfBooket was unable to convert that file.");
                 return false;
             }
             UpdateDisplay();
@@ -175,6 +175,7 @@ namespace PdfDroplet
             info.FileName = FileLocator.GetFileDistributedWithApplication("pdfbklt.exe");
             info.Arguments = '"'+temp+'"';
             info.CreateNoWindow = true;
+            info.WindowStyle = ProcessWindowStyle.Hidden;
             var x = System.Diagnostics.Process.Start(info);
             x.WaitForExit(20*1000);
             if(x.ExitCode > 0)
@@ -229,7 +230,7 @@ namespace PdfDroplet
 
         private void _linkConvertPrevious_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Convert(Settings1.Default.PreviousSheetPath))
+            if (Convert(Settings.Default.PreviousIncomingPath))
             {
                 _tabControl.SelectedTab = _bookletPage;
             }
@@ -242,9 +243,9 @@ namespace PdfDroplet
 
 //        private void _linkConvertAndSave_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 //        {
-//            if (Convert(Settings1.Default.PreviousSheetPath))
+//            if (Convert(Settings.Default.PreviousIncomingPath))
 //            {
-//                Save(Settings1.Default.PreviousSavePath);
+//                Save(Settings.Default.PreviousSavePath);
 //                _labelDone.Visible = true;
 //            }
 //        }
@@ -263,10 +264,10 @@ namespace PdfDroplet
             dialog.AddExtension = true;
             dialog.Filter = "PDF|*.pdf";
 
-            if (!string.IsNullOrEmpty(Settings1.Default.PreviousSheetPath)
-                && Directory.Exists(Path.GetDirectoryName(Settings1.Default.PreviousSheetPath)))
+            if (!string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath)
+                && Directory.Exists(Path.GetDirectoryName(Settings.Default.PreviousIncomingPath)))
             {
-                dialog.InitialDirectory = Path.GetDirectoryName(Settings1.Default.PreviousSheetPath);              
+                dialog.InitialDirectory = Path.GetDirectoryName(Settings.Default.PreviousIncomingPath);              
             }
             else
             {
