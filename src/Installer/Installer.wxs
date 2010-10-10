@@ -31,8 +31,9 @@ http://blogs.msdn.com/robmen/archive/2003/10/04/56479.aspx -->
 
     <WixVariable Id='WixUIBannerBmp' Value='..\..\artwork\installerBanner.bmp' />
 
-    <WixVariable Id='WixUIDialogBmp' Value='..\..\artwork\installerBanner.bmp' />
--->
+    
+--><WixVariable Id='WixUIBannerBmp' Value='..\..\artwork\topOfInstaller.jpg' />
+    <WixVariable Id='WixUIDialogBmp' Value='..\..\artwork\installerBackground.jpg' />
     <WixVariable Id="WixUILicenseRtf" Value="..\..\distfiles\License.rtf" />
 
 
