@@ -31,7 +31,7 @@ namespace PdfDroplet
 
         private static void SetupErrorHandling()
         {
-            ErrorReport.EmailAddress = "issues@wesay.org";
+            ErrorReport.EmailAddress = "hide@gmail.org".Replace("hide","hattonjohn");
             ErrorReport.AddStandardProperties();
             ExceptionHandler.Init();
 
