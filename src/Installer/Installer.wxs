@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- These variables define the Windows Installer product version, product code and upgrade code. They   -->
 <!-- will be used later on in this file.  this value should be B U I  LD_SCRIPT_MUST_REPLACE_AT_RUNTIME (in quotes) -->
-<?define Property_ProductVersion = "BUILD_SCRIPT_MUST_REPLACE_AT_RUNTIME" ?>
+<?define Property_ProductVersion = "0.2.9" ?>
 
 <!-- * means auto-generate a new guid each time. This is "a unique identifier for the particular product release" -->
 <?define Property_ProductCode = "*" ?>
@@ -70,19 +70,6 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 
             <File Id="PdfDroplet.exe" Name="PdfDroplet.exe"  Source="..\..\output\release\PdfDroplet.exe" />
               
-            <!--- todo: icons for PdfDroplet files -->
-
-            <!--- connect file types to icons and program to launch -->
-
-            <!--- todo: 
-                      any connections between file types and PdfDroplet
-                    <RemoveRegistryKey Action ='removeOnUninstall' Root ='HKCR' Key ='.lift'/>
-                    <RemoveRegistryKey Action ='removeOnUninstall' Root ='HKCR' Key ='PdfDroplet.LIFTFile'/>
--->
-
-            <!-- another way:                 <Registry Id='LuaReg8' Root='HKCR' Key='VisualStudio.luaproj.8.0\Shell\Open\Command' Action='write' 
-                     Type='string' Value='"[ENVPATH_2005]" "%1"'/> -->
-
             <Shortcut Id="startmenuShortcut"  Directory="PdfDropletShortcutDir" Name="PdfDroplet"
                  WorkingDirectory="ProgramDir" Target="[!PdfDroplet.exe]"  Icon ="PdfDroplet.exe" />
 
@@ -90,6 +77,13 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 
           <Component Id="Palaso.dll" Guid="{AAC6B9F0-8291-46E3-9115-0E79A98300AA}">
             <File Id="Palaso.dll" Name="Palaso.dll" KeyPath="yes" Source="..\..\output\release\Palaso.dll" />
+          </Component>
+          <Component Id="itextsharp.dll" Guid="{04293B11-3F49-48D7-8B75-E115347172B2}">
+            <File Id="itextsharp.dll" Name="itextsharp.dll" KeyPath="yes" Source="..\..\output\release\itextsharp.dll" />
+          </Component>
+          
+          <Component Id="PdfSharp.dll" Guid="{538668B9-E2D0-4D78-BD63-ACC7FBB1EAFC}">
+            <File Id="PdfSharp.dll" Name="PdfSharp.dll" KeyPath="yes" Source="..\..\output\release\PdfSharp.dll" />
           </Component>
           </Directory>
       </Directory>
@@ -101,6 +95,8 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
       <ComponentRef Id ="removeShortcutDir"/>
       <ComponentRef Id="PdfDroplet.exe"/>
       <ComponentRef Id="Palaso.dll"/>
+      <ComponentRef Id="itextsharp.dll"/>
+      <ComponentRef Id="PdfSharp.dll"/>
       <ComponentGroupRef Id ="DistFiles"/>
  
     </Feature>

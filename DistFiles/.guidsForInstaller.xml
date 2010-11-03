@@ -13,4 +13,5 @@
   <File Id="license..rtf" Guid="c9da053d-ccbb-4c1a-81f2-928845ca1b62" />
   <File Id="license.rtf" Guid="4f7601a4-3a4a-4296-a940-0666d0246355" />
   <File Id="LogoForAbout.png" Guid="9a1f6cee-4f4b-46fc-b18d-1acadf339089" />
+  <File Id="AGPL_License.txt" Guid="5c0cbf57-660f-464e-b654-eafcfb6f3935" />
 </InstallerMetadata>
