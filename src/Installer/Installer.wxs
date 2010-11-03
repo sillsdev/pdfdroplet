@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- These variables define the Windows Installer product version, product code and upgrade code. They   -->
+<!-- will be used later on in this file.  this value should be B U I  LD_SCRIPT_MUST_REPLACE_AT_RUNTIME (in quotes) -->
+<?define Property_ProductVersion = "0.2.9" ?>
+
+<!-- * means auto-generate a new guid each time. This is "a unique identifier for the particular product release" -->
+<?define Property_ProductCode = "*" ?>
+
+<!--Don't even think of EVER changing this, despite the counter-intuitive name. What it is: "a shared identifier that represents multiple versions of an application" -->
+<?define Property_UpgradeCode = "{B5A0BE25-532D-4CF9-9BB6-B0D513B1186A}" ?>
+
+<!-- good intro to the component vs. file thing, and why each file here is a separate component:
+http://blogs.msdn.com/robmen/archive/2003/10/04/56479.aspx -->
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <Product Id="$(var.Property_ProductCode)" Name="PdfDroplet $(var.Property_ProductVersion)" Language="1033"
+             Version="$(var.Property_ProductVersion)" Manufacturer="SIL"
+             UpgradeCode="$(var.Property_UpgradeCode)">
+
+    <Package  Compressed="yes" InstallerVersion="200" />
+
+    <Upgrade Id ="$(var.Property_UpgradeCode)" >
+      <UpgradeVersion Minimum ="$(var.Property_ProductVersion)" OnlyDetect ="yes" Property ="NEWVERSIONDETECTED" />
+      <UpgradeVersion Minimum ="0.0.0" IncludeMinimum ="yes" Maximum ="$(var.Property_ProductVersion)" IncludeMaximum ="no" Property ="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade >
+
+    <!-- show the license page -->
+    <UIRef Id="WixUI_Minimal"/>
+    <!-- Top banner / 493 × 58 -->
+    <WixVariable Id='WixUIBannerBmp' Value='installerBanner.jpg' />
+    <!-- Background bitmap used on the welcome and completion dialogs / 493 × 312 -->
+    <WixVariable Id='WixUIDialogBmp' Value='installerBackground.jpg' />
+    <WixVariable Id="WixUILicenseRtf" Value="..\..\distfiles\License.rtf" />
+
+
+    <!-- 
+    "from the list: Don't use Advertise="yes" Advertised shortcuts are designed to allow
+users to install just the shortcut for your app, then demand-install the
+rest of the app the first time the icon is run.  If this is not behavior you
+are trying to support, you're better off using non-advertised shortcuts. "-->
+
+    <PropertyRef Id="NETFRAMEWORK35" />
+    <Condition Message="Before PdfDroplet can install, you need to install Microsoft's free .NET Framework 3.5.  A full discussion of PdfDroplets's requirements can be found at PdfDroplet.palaso.org.">
+      Installed OR NETFRAMEWORK35
+    </Condition>
+
+    <!--because of bug, this needs to be 1 -->
+    <Property Id ="ALLUSERS">1</Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      
+      <Directory Id='ProgramMenuFolder' Name='Programs'>
+        <Directory Id='PdfDropletShortcutDir' Name='PdfDroplet'>
+          <Component Id ='removeShortcutDir' Guid ="{7AD45DB8-D6FB-406C-8B71-6E24B240112A}">
+            <RemoveFolder Id ="shortcutDirRemover" On ="uninstall"/>
+            <RegistryKey Id="keyPathForRemoveShortcutDir" Action ="createAndRemoveOnUninstall" Root="HKCU" Key="SOFTWARE\PdfDroplet\Components\PdfDropletShortcutDir">
+              <RegistryValue Type ="string" Value =""  Action ="write" KeyPath ="yes"/>
+            </RegistryKey>
+          </Component>
+
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramFilesFolder" Name="PFiles">
+
+        <Directory Id="ProgramDir" Name="PdfDroplet">
+
+          <Component Id="PdfDroplet.exe" Guid="{B8C6B9F0-8291-46E3-9115-0E79A9830027}">
+            <Registry Root="HKCU" Key="SOFTWARE\PdfDroplet\Components\PdfDroplet.exe" KeyPath="yes" />
+
+            <File Id="PdfDroplet.exe" Name="PdfDroplet.exe"  Source="..\..\output\release\PdfDroplet.exe" />
+              
+            <Shortcut Id="startmenuShortcut"  Directory="PdfDropletShortcutDir" Name="PdfDroplet"
+                 WorkingDirectory="ProgramDir" Target="[!PdfDroplet.exe]"  Icon ="PdfDroplet.exe" />
+
+          </Component>
+
+          <Component Id="Palaso.dll" Guid="{AAC6B9F0-8291-46E3-9115-0E79A98300AA}">
+            <File Id="Palaso.dll" Name="Palaso.dll" KeyPath="yes" Source="..\..\output\release\Palaso.dll" />
+          </Component>
+          <Component Id="itextsharp.dll" Guid="{04293B11-3F49-48D7-8B75-E115347172B2}">
+            <File Id="itextsharp.dll" Name="itextsharp.dll" KeyPath="yes" Source="..\..\output\release\itextsharp.dll" />
+          </Component>
+          
+          <Component Id="PdfSharp.dll" Guid="{538668B9-E2D0-4D78-BD63-ACC7FBB1EAFC}">
+            <File Id="PdfSharp.dll" Name="PdfSharp.dll" KeyPath="yes" Source="..\..\output\release\PdfSharp.dll" />
+          </Component>
+          </Directory>
+      </Directory>
+    </Directory>
+
+
+    <Feature Id="ProductFeature" Level="1" Title="Basic Stuff">
+
+      <ComponentRef Id ="removeShortcutDir"/>
+      <ComponentRef Id="PdfDroplet.exe"/>
+      <ComponentRef Id="Palaso.dll"/>
+      <ComponentRef Id="itextsharp.dll"/>
+      <ComponentRef Id="PdfSharp.dll"/>
+      <ComponentGroupRef Id ="DistFiles"/>
+ 
+    </Feature>
+    <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
+    <Icon Id="PdfDroplet.exe" SourceFile ="..\..\output\release\PdfDroplet.exe" />
+    <Property Id="ARPPRODUCTICON" Value="PdfDroplet.exe" />
+    <!-- what you see in add/remove programs control panel -->
+
+
+
+    <CustomAction Id="LaunchPdfDroplet"
+                  FileKey="PdfDroplet.exe"
+                  ExeCommand=" -about"
+                  Return="asyncNoWait"/>
+    
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallInitialize" />
+
+      <!--We need the condition here so that we only launch the executable when we make an installation but not when we remove the product-->
+          <Custom Action='LaunchPdfDroplet' After="InstallFinalize">NOT Installed</Custom>
+        </InstallExecuteSequence>
+  </Product>
+</Wix>
+
