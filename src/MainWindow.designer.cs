@@ -44,7 +44,7 @@ namespace PdfDroplet
             this._instructionsBrowser = new System.Windows.Forms.WebBrowser();
             this._bookletPage = new System.Windows.Forms.TabPage();
             this._resultingFileLink = new System.Windows.Forms.LinkLabel();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this._browserForPdf = new System.Windows.Forms.WebBrowser();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this._tabControl.SuspendLayout();
             this._convertPage.SuspendLayout();
@@ -79,6 +79,9 @@ namespace PdfDroplet
             this._tabControl.Size = new System.Drawing.Size(694, 520);
             this._tabControl.TabIndex = 7;
             this._tabControl.SelectedIndexChanged += new System.EventHandler(this._tabControl_SelectedIndexChanged);
+            this._tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
+            this._tabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnDragEnter);
+            this._tabControl.DragLeave += new System.EventHandler(this.OnDragLeave);
             // 
             // _convertPage
             // 
@@ -195,7 +198,7 @@ namespace PdfDroplet
             // _bookletPage
             // 
             this._bookletPage.Controls.Add(this._resultingFileLink);
-            this._bookletPage.Controls.Add(this.webBrowser1);
+            this._bookletPage.Controls.Add(this._browserForPdf);
             this._bookletPage.Location = new System.Drawing.Point(4, 22);
             this._bookletPage.Name = "_bookletPage";
             this._bookletPage.Padding = new System.Windows.Forms.Padding(3);
@@ -215,16 +218,16 @@ namespace PdfDroplet
             this._resultingFileLink.Text = "Results:";
             this._resultingFileLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._resultingFileLink_LinkClicked);
             // 
-            // webBrowser1
+            // _browserForPdf
             // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this._browserForPdf.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(3, 36);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(683, 458);
-            this.webBrowser1.TabIndex = 0;
+            this._browserForPdf.Location = new System.Drawing.Point(3, 36);
+            this._browserForPdf.MinimumSize = new System.Drawing.Size(20, 20);
+            this._browserForPdf.Name = "_browserForPdf";
+            this._browserForPdf.Size = new System.Drawing.Size(683, 458);
+            this._browserForPdf.TabIndex = 0;
             // 
             // timer1
             // 
@@ -269,7 +272,7 @@ namespace PdfDroplet
         private System.Windows.Forms.Label _dragStatus;
         private System.Windows.Forms.LinkLabel _linkConvertAndSave;
         private System.Windows.Forms.Label _labelConvertPrevious;
-        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser _browserForPdf;
         private System.Windows.Forms.LinkLabel _resultingFileLink;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.TabPage _instructionsPage;

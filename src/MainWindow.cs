@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using Palaso.IO;
 using Palaso.Reporting;
@@ -28,6 +29,7 @@ namespace PdfDroplet
             //webBrowser1.Navigate(FileLocator.GetFileDistributedWithApplication("about.htm"));
             timer1.Enabled = showAbout;
             _instructionsBrowser.Navigate(FileLocator.GetFileDistributedWithApplication("instructions.htm"));
+            _browserForPdf.Navigated +=new WebBrowserNavigatedEventHandler((x,y)=>_stillNavigating = false);
         }
 
 
@@ -145,8 +147,22 @@ namespace PdfDroplet
             }
         }
 
+        private bool _stillNavigating;
+
         private bool Convert(string path)
         {
+            //avoid the situation where we try to over-write but can't
+            if (_browserForPdf.Url !=null  && _browserForPdf.Url.AbsolutePath.Contains("pdf"))
+            {
+                _stillNavigating = true;
+                _browserForPdf.Navigate("about:blank"); //stop holding on to the previous output
+                while(_stillNavigating)
+                {
+                    Application.DoEvents();//let the navigation happen
+                }
+                Thread.Sleep(1000);//the waiting for navigate doesn't seem to be enough
+            }
+
             if (IsAlreadyOpenElsewhere(path))
             {
                 ErrorReport.NotifyUserOfProblem("That file appears to be open. First close it, then try again.");
@@ -175,7 +191,7 @@ namespace PdfDroplet
             _resultingPdfPath =  Path.Combine(Path.GetDirectoryName(path),Path.GetFileNameWithoutExtension(path) + "-booklet.pdf");
             ConvertUsingPdfSharp(path, _resultingPdfPath);
             
-            webBrowser1.Navigate(_resultingPdfPath);
+            _browserForPdf.Navigate(_resultingPdfPath);
     
             return true;
         }
@@ -246,11 +262,14 @@ namespace PdfDroplet
 
                 gfx = XGraphics.FromPdfPage(page);
 
-                // Set page number (which is one-based) for left side
-                form.PageNumber = 2*idx;
-                box = new XRect(0, 0, width/2, height);
-                // Draw the page identified by the page number like an image
-                gfx.DrawImage(form, box);
+                if(2*idx <= form.PageCount) //prevent asking for page 2 with a single page document (JH Oct 2010)
+                {
+                    // Set page number (which is one-based) for left side
+                    form.PageNumber = 2*idx;
+                    box = new XRect(0, 0, width/2, height);
+                    // Draw the page identified by the page number like an image
+                    gfx.DrawImage(form, box);
+                }
 
                 // Skip if right side has to remain blank
                 if (vacats > 0)
