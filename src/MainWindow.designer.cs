@@ -33,9 +33,10 @@ namespace PdfDroplet
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this._tabControl = new System.Windows.Forms.TabControl();
             this._convertPage = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this._targetPaperCombo = new System.Windows.Forms.ComboBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this._linkChooseFile = new System.Windows.Forms.LinkLabel();
-            this._linkConvertAndSave = new System.Windows.Forms.LinkLabel();
             this._labelConvertPrevious = new System.Windows.Forms.Label();
             this._linkConvertPrevious = new System.Windows.Forms.LinkLabel();
             this._dragStatus = new System.Windows.Forms.Label();
@@ -85,9 +86,10 @@ namespace PdfDroplet
             // 
             // _convertPage
             // 
+            this._convertPage.Controls.Add(this.label1);
+            this._convertPage.Controls.Add(this._targetPaperCombo);
             this._convertPage.Controls.Add(this.pictureBox1);
             this._convertPage.Controls.Add(this._linkChooseFile);
-            this._convertPage.Controls.Add(this._linkConvertAndSave);
             this._convertPage.Controls.Add(this._labelConvertPrevious);
             this._convertPage.Controls.Add(this._linkConvertPrevious);
             this._convertPage.Controls.Add(this._dragStatus);
@@ -102,11 +104,33 @@ namespace PdfDroplet
             this._convertPage.UseVisualStyleBackColor = true;
             this._convertPage.Resize += new System.EventHandler(this.tabPage1_Resize);
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(34, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(130, 21);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "Target Paper Size";
+            // 
+            // _targetPaperCombo
+            // 
+            this._targetPaperCombo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._targetPaperCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._targetPaperCombo.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._targetPaperCombo.FormattingEnabled = true;
+            this._targetPaperCombo.Location = new System.Drawing.Point(170, 23);
+            this._targetPaperCombo.Name = "_targetPaperCombo";
+            this._targetPaperCombo.Size = new System.Drawing.Size(237, 25);
+            this._targetPaperCombo.TabIndex = 17;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(491, 350);
+            this.pictureBox1.Location = new System.Drawing.Point(468, 338);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(189, 138);
             this.pictureBox1.TabIndex = 16;
@@ -116,7 +140,7 @@ namespace PdfDroplet
             // 
             this._linkChooseFile.AutoSize = true;
             this._linkChooseFile.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._linkChooseFile.Location = new System.Drawing.Point(34, 25);
+            this._linkChooseFile.Location = new System.Drawing.Point(34, 83);
             this._linkChooseFile.Name = "_linkChooseFile";
             this._linkChooseFile.Size = new System.Drawing.Size(205, 21);
             this._linkChooseFile.TabIndex = 0;
@@ -124,18 +148,11 @@ namespace PdfDroplet
             this._linkChooseFile.Text = "Choose a PDF file to convert";
             this._linkChooseFile.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkChooseFile_LinkClicked);
             // 
-            // _linkConvertAndSave
-            // 
-            this._linkConvertAndSave.Location = new System.Drawing.Point(0, 0);
-            this._linkConvertAndSave.Name = "_linkConvertAndSave";
-            this._linkConvertAndSave.Size = new System.Drawing.Size(100, 23);
-            this._linkConvertAndSave.TabIndex = 15;
-            // 
             // _labelConvertPrevious
             // 
             this._labelConvertPrevious.AutoSize = true;
             this._labelConvertPrevious.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labelConvertPrevious.Location = new System.Drawing.Point(34, 81);
+            this._labelConvertPrevious.Location = new System.Drawing.Point(34, 139);
             this._labelConvertPrevious.Name = "_labelConvertPrevious";
             this._labelConvertPrevious.Size = new System.Drawing.Size(25, 21);
             this._labelConvertPrevious.TabIndex = 6;
@@ -145,7 +162,7 @@ namespace PdfDroplet
             // 
             this._linkConvertPrevious.AutoSize = true;
             this._linkConvertPrevious.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._linkConvertPrevious.Location = new System.Drawing.Point(56, 81);
+            this._linkConvertPrevious.Location = new System.Drawing.Point(56, 139);
             this._linkConvertPrevious.Name = "_linkConvertPrevious";
             this._linkConvertPrevious.Size = new System.Drawing.Size(133, 21);
             this._linkConvertPrevious.TabIndex = 2;
@@ -157,7 +174,7 @@ namespace PdfDroplet
             // 
             this._dragStatus.AutoSize = true;
             this._dragStatus.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._dragStatus.Location = new System.Drawing.Point(33, 118);
+            this._dragStatus.Location = new System.Drawing.Point(33, 176);
             this._dragStatus.Name = "_dragStatus";
             this._dragStatus.Size = new System.Drawing.Size(117, 21);
             this._dragStatus.TabIndex = 7;
@@ -167,7 +184,7 @@ namespace PdfDroplet
             // 
             this._labelDragDirections.AutoSize = true;
             this._labelDragDirections.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._labelDragDirections.Location = new System.Drawing.Point(34, 50);
+            this._labelDragDirections.Location = new System.Drawing.Point(34, 110);
             this._labelDragDirections.Name = "_labelDragDirections";
             this._labelDragDirections.Size = new System.Drawing.Size(250, 21);
             this._labelDragDirections.TabIndex = 1;
@@ -270,7 +287,6 @@ namespace PdfDroplet
         private System.Windows.Forms.Label _labelDragDirections;
         private System.Windows.Forms.TabPage _bookletPage;
         private System.Windows.Forms.Label _dragStatus;
-        private System.Windows.Forms.LinkLabel _linkConvertAndSave;
         private System.Windows.Forms.Label _labelConvertPrevious;
         private System.Windows.Forms.WebBrowser _browserForPdf;
         private System.Windows.Forms.LinkLabel _resultingFileLink;
@@ -278,5 +294,7 @@ namespace PdfDroplet
         private System.Windows.Forms.TabPage _instructionsPage;
         private System.Windows.Forms.WebBrowser _instructionsBrowser;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox _targetPaperCombo;
     }
 }
