@@ -23,8 +23,8 @@ namespace PdfDroplet
             // Open the external document as XPdfForm object
             XPdfForm inputPdf = OpenDocumentForPdfSharp(inputPath);
             // Determine width and height
-            double outputWidth = 2* inputPdf.PixelWidth;
-            double outputHeight = inputPdf.PixelHeight;
+            double outputWidth = paperTarget.GetOutputDimensions(inputPdf.PixelWidth,inputPdf.PixelHeight).X;
+            double outputHeight = paperTarget.GetOutputDimensions(inputPdf.PixelWidth, inputPdf.PixelHeight).Y;
 
             int inputPages = inputPdf.PageCount;
             int sheets = inputPages / 4;

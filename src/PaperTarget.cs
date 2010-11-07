@@ -31,16 +31,29 @@ namespace PdfDroplet
         }
     }
 
-    class AutoPaperTarget : PaperTarget
+    class DoublePaperTarget : PaperTarget
     {
-        public AutoPaperTarget()
-            : base("Auto (Twice the size of the input)", 0,0)
+        public DoublePaperTarget()
+            : base("Twice the size of the original", 0,0)
         {
             
         }
         public override Point GetOutputDimensions(int inputWidth, int inputHeight)
         {
-            return new Point(inputHeight*2, inputWidth *2);
+            return new Point(inputWidth * 2, inputHeight);
+        }
+    }
+
+    class SameSizePaperTarget : PaperTarget
+    {
+        public SameSizePaperTarget()
+            : base("Same size as the original", 0, 0)
+        {
+
+        }
+        public override Point GetOutputDimensions(int inputWidth, int inputHeight)
+        {
+            return new Point(inputHeight, inputWidth);
         }
     }
 }
