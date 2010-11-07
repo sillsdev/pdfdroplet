@@ -35,9 +35,9 @@ namespace PdfDroplet
         private void LoadTargetCombo()
         {
             _targetPaperCombo.Items.Clear();
-            _targetPaperCombo.Items.Add(new AutoPaperTarget());
-            _targetPaperCombo.Items.Add(new PaperTarget("A4", 1, 2));
-            _targetPaperCombo.Items.Add(new PaperTarget("Letter", 1, 2));
+            _targetPaperCombo.Items.Add(new DoublePaperTarget());
+            _targetPaperCombo.Items.Add(new SameSizePaperTarget());
+            _targetPaperCombo.SelectedIndex = 0;
         }
 
 
