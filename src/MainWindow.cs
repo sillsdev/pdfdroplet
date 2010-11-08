@@ -23,23 +23,26 @@ namespace PdfDroplet
             InitializeComponent();
             Font = SystemFonts.DialogFont;
 
-            LoadTargetCombo();
              SetWindowText();
-            //webBrowser1.Navigate(FileLocator.GetFileDistributedWithApplication("about.htm"));
             timer1.Enabled = showAbout;
             _instructionsBrowser.Navigate(FileLocator.GetFileDistributedWithApplication("instructions.htm"));
             _browserForPdf.Navigated +=new WebBrowserNavigatedEventHandler((x,y)=>_stillNavigating = false);
+
+            _preservePageSizeButton.Checked = true; //default if no user settings
+            _shrinkPageButton.Checked = false;
+
+            switch (Settings.Default.PaperTargetChoice)
+            {
+                case DoublePaperTarget.StaticName:
+                    _preservePageSizeButton.Checked = true;
+                    break;
+                case SameSizePaperTarget.StaticName:
+                    _shrinkPageButton.Checked = true;
+                    break;
+            }
         }
 
       
-        private void LoadTargetCombo()
-        {
-            _targetPaperCombo.Items.Clear();
-            _targetPaperCombo.Items.Add(new DoublePaperTarget());
-            _targetPaperCombo.Items.Add(new SameSizePaperTarget());
-            _targetPaperCombo.SelectedIndex = 0;
-        }
-
 
         private void SetWindowText()
         {
@@ -156,8 +159,24 @@ namespace PdfDroplet
 
         private bool _stillNavigating;
 
+        private PaperTarget ChosenPaperChoice
+        {
+            get
+            {
+                if (_shrinkPageButton.Checked)
+                    return new SameSizePaperTarget();
+                else
+                {
+                    return new DoublePaperTarget();
+                }
+            }
+        }
+
         private bool Convert(string path)
         {
+            Settings.Default.PaperTargetChoice = ChosenPaperChoice.Name;
+            Settings.Default.Save();
+
             //avoid the situation where we try to over-write but can't
             if (_browserForPdf.Url !=null  && _browserForPdf.Url.AbsolutePath.Contains("pdf"))
             {
@@ -196,7 +215,7 @@ namespace PdfDroplet
         private bool RunConverter(string path)
         {
             _resultingPdfPath =  Path.Combine(Path.GetDirectoryName(path),Path.GetFileNameWithoutExtension(path) + "-booklet.pdf");
-            Converter.Convert(path, _resultingPdfPath, (PaperTarget)_targetPaperCombo.SelectedItem);
+            Converter.Convert(path, _resultingPdfPath, ChosenPaperChoice);
             
             _browserForPdf.Navigate(_resultingPdfPath);
     

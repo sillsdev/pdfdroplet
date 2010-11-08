@@ -34,5 +34,17 @@ namespace PdfDroplet.Properties {
                 this["PreviousIncomingPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PaperTargetChoice {
+            get {
+                return ((string)(this["PaperTargetChoice"]));
+            }
+            set {
+                this["PaperTargetChoice"] = value;
+            }
+        }
     }
 }
