@@ -34,7 +34,7 @@ namespace PdfDroplet
     class DoublePaperTarget : PaperTarget
     {
         public DoublePaperTarget()
-            : base("Twice the size of the original", 0,0)
+            : base(StaticName, 0,0)
         {
             
         }
@@ -42,15 +42,19 @@ namespace PdfDroplet
         {
             return new Point(inputWidth * 2, inputHeight);
         }
+        public const string StaticName = @"PerservePage";//this is tied to use settings, so don't change it.
     }
 
     class SameSizePaperTarget : PaperTarget
     {
         public SameSizePaperTarget()
-            : base("Same size as the original", 0, 0)
+            : base(StaticName, 0, 0)
         {
 
         }
+
+        public const string StaticName = @"ShrinkPage";//this is tied to use settings, so don't change it.
+
         public override Point GetOutputDimensions(int inputWidth, int inputHeight)
         {
             return new Point(inputHeight, inputWidth);
