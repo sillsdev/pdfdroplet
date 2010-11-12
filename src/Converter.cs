@@ -7,8 +7,15 @@ namespace PdfDroplet
 {
     public class Converter
     {
-         public static void Convert(string inputPath, string outputPath, PaperTarget paperTarget) 
+        private double _outputWidth;
+        private double _outputHeight;
+        private XPdfForm _inputPdf;
+        private bool _rightToLeft;
+
+        public void Convert(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft) 
         {
+            _rightToLeft = rightToLeft;
+
             PdfDocument outputDocument = new PdfDocument();
 
             // Show single pages
@@ -21,80 +28,93 @@ namespace PdfDroplet
             XGraphics gfx;
 
             // Open the external document as XPdfForm object
-            XPdfForm inputPdf = OpenDocumentForPdfSharp(inputPath);
+            _inputPdf = OpenDocumentForPdfSharp(inputPath);
             // Determine width and height
-            double outputWidth = paperTarget.GetOutputDimensions(inputPdf.PixelWidth,inputPdf.PixelHeight).X;
-            double outputHeight = paperTarget.GetOutputDimensions(inputPdf.PixelWidth, inputPdf.PixelHeight).Y;
+            _outputWidth = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth,_inputPdf.PixelHeight).X;
+            _outputHeight = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
 
-            int inputPages = inputPdf.PageCount;
+            int inputPages = _inputPdf.PageCount;
             int sheets = inputPages / 4;
             if (sheets * 4 < inputPages)
                 sheets += 1;
             int allpages = 4 * sheets;
             int vacats = allpages - inputPages;
 
-            for (int idx = 1; idx <= sheets; idx += 1)
+            for (int idx = 1; idx <= sheets; idx++)
             {
                 // Front page of a sheet:
-                PdfPage page = outputDocument.AddPage();
-                page.Orientation = PageOrientation.Landscape;
-                page.Width =  outputWidth;
-                page.Height = outputHeight;
-
-                gfx = XGraphics.FromPdfPage(page);
-
-                XRect box;
-
-                //Left side of front
-                if (vacats > 0)  // Skip if left side has to remain blank
-                    vacats -= 1;
-                else
+                using (gfx = GetGraphicsForNewPage(outputDocument))
                 {
-                    inputPdf.PageNumber = allpages + 2 * (1 - idx); // NB: page numberis one-based
-                    box = new XRect(0, 0, outputWidth / 2, outputHeight);
-                    gfx.DrawImage(inputPdf, box);
-                }
+                    //Left side of front
+                    if (vacats > 0) // Skip if left side has to remain blank
+                        vacats -= 1;
+                    else
+                    {
+                        DrawSuperiorSide( gfx,  allpages + 2*(1 - idx));
+                    }
 
-                //Right side of the front
-                inputPdf.PageNumber = 2 * idx - 1;
-                box = new XRect(outputWidth / 2, 0, outputWidth / 2, outputHeight);
-                gfx.DrawImage(inputPdf, box);
+                    //Right side of the front
+                    DrawInferiorSide(gfx, 2 * idx - 1);
+                }
 
                 // Back page of a sheet
-                page = outputDocument.AddPage();
-                page.Orientation = PageOrientation.Landscape;
-                page.Width =  outputWidth;
-                page.Height = outputHeight;
-
-                gfx = XGraphics.FromPdfPage(page);
-
-                if (2 * idx <= inputPdf.PageCount) //prevent asking for page 2 with a single page document (JH Oct 2010)
+                using (gfx = GetGraphicsForNewPage(outputDocument))
                 {
-                    //Left side of back
-                    inputPdf.PageNumber = 2 * idx;
-                    box = new XRect(0, 0, outputWidth / 2, outputHeight);
-                    gfx.DrawImage(inputPdf, box);
-                }
+                    if (2*idx <= _inputPdf.PageCount) //prevent asking for page 2 with a single page document (JH Oct 2010)
+                    {
+                        //Left side of back
+                        DrawSuperiorSide( gfx, 2*idx);
+                    }
 
-                //Right side of the Back
-                if (vacats > 0) // Skip if right side has to remain blank
-                    vacats -= 1;
-                else
-                {
-                    inputPdf.PageNumber = allpages + 1 - 2 * idx;
-                    box = new XRect(outputWidth / 2, 0, outputWidth / 2, outputHeight);
-                    gfx.DrawImage(inputPdf, box);
+                    //Right side of the Back
+                    if (vacats > 0) // Skip if right side has to remain blank
+                        vacats -= 1;
+                    else
+                    {
+                        DrawInferiorSide(gfx, allpages + 1 - 2 * idx);
+                    }
                 }
             }
 
             outputDocument.Save(outputPath);
         }
 
+        private void DrawInferiorSide(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
+        {
+            _inputPdf.PageNumber = pageNumber;
+            var leftEdge = _rightToLeft? 0 : _outputWidth / 2;
+            var box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+            gfx.DrawImage(_inputPdf, box);
+        }
+
+        /// <summary>
+        /// With the normal, left-to-right-language mode, this is the Left side.
+        /// </summary>
+        private  void DrawSuperiorSide( XGraphics gfx, int pageNumber)
+        {
+            _inputPdf.PageNumber = pageNumber;
+            var leftEdge = _rightToLeft ? _outputWidth / 2 : 0;
+            var box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+            gfx.DrawImage(_inputPdf, box);
+        }
+
+        private  XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)
+        {
+            XGraphics gfx;
+            PdfPage page = outputDocument.AddPage();
+            page.Orientation = PageOrientation.Landscape;
+            page.Width =  _outputWidth;
+            page.Height = _outputHeight;
+
+            gfx = XGraphics.FromPdfPage(page);
+            return gfx;
+        }
+
         /// <summary>
         /// from http://forum.pdfsharp.net/viewtopic.php?p=2069
         /// Get a version of the document which pdfsharp can open, downgrading if necessary
         /// </summary>
-        static public XPdfForm OpenDocumentForPdfSharp(string path)
+        static private XPdfForm OpenDocumentForPdfSharp(string path)
         {
             try
             {
@@ -135,7 +155,7 @@ namespace PdfDroplet
             document.Open();
             iTextSharp.text.pdf.PdfContentByte cb = writer.DirectContent;
             iTextSharp.text.pdf.PdfImportedPage page;
-
+           
             int rotation;
 
             int i = 0;
@@ -144,7 +164,7 @@ namespace PdfDroplet
                 i++;
                 document.SetPageSize(reader.GetPageSizeWithRotation(i));
                 document.NewPage();
-                page = writer.GetImportedPage(reader, i);
+                page = writer.GetImportedPage(reader, i); 
                 rotation = reader.GetPageRotation(i);
                 if (rotation == 90 || rotation == 270)
                 {

@@ -30,6 +30,7 @@ namespace PdfDroplet
 
             _preservePageSizeButton.Checked = true; //default if no user settings
             _shrinkPageButton.Checked = false;
+            _rightToLeft.Checked = Settings.Default.RightToLeft;
 
             switch (Settings.Default.PaperTargetChoice)
             {
@@ -174,6 +175,7 @@ namespace PdfDroplet
 
         private bool Convert(string path)
         {
+            Settings.Default.RightToLeft = _rightToLeft.Checked;
             Settings.Default.PaperTargetChoice = ChosenPaperChoice.Name;
             Settings.Default.Save();
 
@@ -215,7 +217,8 @@ namespace PdfDroplet
         private bool RunConverter(string path)
         {
             _resultingPdfPath =  Path.Combine(Path.GetDirectoryName(path),Path.GetFileNameWithoutExtension(path) + "-booklet.pdf");
-            Converter.Convert(path, _resultingPdfPath, ChosenPaperChoice);
+            var converter = new Converter();
+            converter.Convert(path, _resultingPdfPath, ChosenPaperChoice, _rightToLeft.Checked);
             
             _browserForPdf.Navigate(_resultingPdfPath);
     

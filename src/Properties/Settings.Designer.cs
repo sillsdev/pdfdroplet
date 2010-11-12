@@ -46,5 +46,17 @@ namespace PdfDroplet.Properties {
                 this["PaperTargetChoice"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RightToLeft {
+            get {
+                return ((bool)(this["RightToLeft"]));
+            }
+            set {
+                this["RightToLeft"] = value;
+            }
+        }
     }
 }
