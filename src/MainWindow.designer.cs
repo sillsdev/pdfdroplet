@@ -59,7 +59,7 @@ namespace PdfDroplet
             // 
             this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(21, 528);
+            this.linkLabel2.Location = new System.Drawing.Point(46, 528);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(97, 13);
             this.linkLabel2.TabIndex = 0;
@@ -87,6 +87,7 @@ namespace PdfDroplet
             // 
             // _convertPage
             // 
+            this._convertPage.Controls.Add(this._rightToLeft);
             this._convertPage.Controls.Add(this._shrinkPageButton);
             this._convertPage.Controls.Add(this._preservePageSizeButton);
             this._convertPage.Controls.Add(this.pictureBox1);
@@ -255,10 +256,10 @@ namespace PdfDroplet
             // 
             this._rightToLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this._rightToLeft.AutoSize = true;
-            this._rightToLeft.Location = new System.Drawing.Point(448, 524);
+            this._rightToLeft.Location = new System.Drawing.Point(37, 439);
             this._rightToLeft.Name = "_rightToLeft";
-            this._rightToLeft.Size = new System.Drawing.Size(228, 17);
-            this._rightToLeft.TabIndex = 8;
+            this._rightToLeft.Size = new System.Drawing.Size(328, 25);
+            this._rightToLeft.TabIndex = 21;
             this._rightToLeft.Text = "Layout booklet for Right-to-Left Languages";
             this._rightToLeft.UseVisualStyleBackColor = true;
             // 
@@ -268,7 +269,6 @@ namespace PdfDroplet
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(721, 550);
-            this.Controls.Add(this._rightToLeft);
             this.Controls.Add(this._tabControl);
             this.Controls.Add(this.linkLabel2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
