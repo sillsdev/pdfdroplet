@@ -33,6 +33,8 @@ namespace PdfDroplet
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this._tabControl = new System.Windows.Forms.TabControl();
             this._convertPage = new System.Windows.Forms.TabPage();
+            this._shrinkPageButton = new System.Windows.Forms.RadioButton();
+            this._preservePageSizeButton = new System.Windows.Forms.RadioButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this._linkChooseFile = new System.Windows.Forms.LinkLabel();
             this._labelConvertPrevious = new System.Windows.Forms.Label();
@@ -45,8 +47,7 @@ namespace PdfDroplet
             this._resultingFileLink = new System.Windows.Forms.LinkLabel();
             this._browserForPdf = new System.Windows.Forms.WebBrowser();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this._preservePageSizeButton = new System.Windows.Forms.RadioButton();
-            this._shrinkPageButton = new System.Windows.Forms.RadioButton();
+            this._rightToLeft = new System.Windows.Forms.CheckBox();
             this._tabControl.SuspendLayout();
             this._convertPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -58,7 +59,7 @@ namespace PdfDroplet
             // 
             this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(21, 540);
+            this.linkLabel2.Location = new System.Drawing.Point(21, 528);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(97, 13);
             this.linkLabel2.TabIndex = 0;
@@ -77,7 +78,7 @@ namespace PdfDroplet
             this._tabControl.Location = new System.Drawing.Point(8, 9);
             this._tabControl.Name = "_tabControl";
             this._tabControl.SelectedIndex = 0;
-            this._tabControl.Size = new System.Drawing.Size(694, 520);
+            this._tabControl.Size = new System.Drawing.Size(701, 508);
             this._tabControl.TabIndex = 7;
             this._tabControl.SelectedIndexChanged += new System.EventHandler(this._tabControl_SelectedIndexChanged);
             this._tabControl.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
@@ -98,17 +99,39 @@ namespace PdfDroplet
             this._convertPage.Location = new System.Drawing.Point(4, 22);
             this._convertPage.Name = "_convertPage";
             this._convertPage.Padding = new System.Windows.Forms.Padding(3);
-            this._convertPage.Size = new System.Drawing.Size(686, 494);
+            this._convertPage.Size = new System.Drawing.Size(693, 482);
             this._convertPage.TabIndex = 0;
             this._convertPage.Text = "Convert";
             this._convertPage.UseVisualStyleBackColor = true;
             this._convertPage.Resize += new System.EventHandler(this.tabPage1_Resize);
             // 
+            // _shrinkPageButton
+            // 
+            this._shrinkPageButton.AutoSize = true;
+            this._shrinkPageButton.Location = new System.Drawing.Point(39, 53);
+            this._shrinkPageButton.Name = "_shrinkPageButton";
+            this._shrinkPageButton.Size = new System.Drawing.Size(504, 25);
+            this._shrinkPageButton.TabIndex = 20;
+            this._shrinkPageButton.TabStop = true;
+            this._shrinkPageButton.Text = "Shrink pages by 50% (to print on paper the same size as the original)";
+            this._shrinkPageButton.UseVisualStyleBackColor = true;
+            // 
+            // _preservePageSizeButton
+            // 
+            this._preservePageSizeButton.AutoSize = true;
+            this._preservePageSizeButton.Location = new System.Drawing.Point(39, 28);
+            this._preservePageSizeButton.Name = "_preservePageSizeButton";
+            this._preservePageSizeButton.Size = new System.Drawing.Size(523, 25);
+            this._preservePageSizeButton.TabIndex = 19;
+            this._preservePageSizeButton.TabStop = true;
+            this._preservePageSizeButton.Text = "Keep original size (to print on paper that is twice the size of the original)";
+            this._preservePageSizeButton.UseVisualStyleBackColor = true;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(468, 338);
+            this.pictureBox1.Location = new System.Drawing.Point(475, 326);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(189, 138);
             this.pictureBox1.TabIndex = 16;
@@ -228,34 +251,24 @@ namespace PdfDroplet
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // _preservePageSizeButton
+            // _rightToLeft
             // 
-            this._preservePageSizeButton.AutoSize = true;
-            this._preservePageSizeButton.Location = new System.Drawing.Point(39, 28);
-            this._preservePageSizeButton.Name = "_preservePageSizeButton";
-            this._preservePageSizeButton.Size = new System.Drawing.Size(523, 25);
-            this._preservePageSizeButton.TabIndex = 19;
-            this._preservePageSizeButton.TabStop = true;
-            this._preservePageSizeButton.Text = "Keep original size (to print on paper that is twice the size of the original)";
-            this._preservePageSizeButton.UseVisualStyleBackColor = true;
-            // 
-            // _shrinkPageButton
-            // 
-            this._shrinkPageButton.AutoSize = true;
-            this._shrinkPageButton.Location = new System.Drawing.Point(39, 53);
-            this._shrinkPageButton.Name = "_shrinkPageButton";
-            this._shrinkPageButton.Size = new System.Drawing.Size(504, 25);
-            this._shrinkPageButton.TabIndex = 20;
-            this._shrinkPageButton.TabStop = true;
-            this._shrinkPageButton.Text = "Shrink pages by 50% (to print on paper the same size as the original)";
-            this._shrinkPageButton.UseVisualStyleBackColor = true;
+            this._rightToLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._rightToLeft.AutoSize = true;
+            this._rightToLeft.Location = new System.Drawing.Point(448, 524);
+            this._rightToLeft.Name = "_rightToLeft";
+            this._rightToLeft.Size = new System.Drawing.Size(228, 17);
+            this._rightToLeft.TabIndex = 8;
+            this._rightToLeft.Text = "Layout booklet for Right-to-Left Languages";
+            this._rightToLeft.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(714, 562);
+            this.ClientSize = new System.Drawing.Size(721, 550);
+            this.Controls.Add(this._rightToLeft);
             this.Controls.Add(this._tabControl);
             this.Controls.Add(this.linkLabel2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -296,5 +309,6 @@ namespace PdfDroplet
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.RadioButton _shrinkPageButton;
         private System.Windows.Forms.RadioButton _preservePageSizeButton;
+        private System.Windows.Forms.CheckBox _rightToLeft;
     }
 }
