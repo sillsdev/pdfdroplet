@@ -11,6 +11,7 @@ namespace PdfDroplet
         private double _outputHeight;
         private XPdfForm _inputPdf;
         private bool _rightToLeft;
+        private bool _landscapeMode=false;
 
         public void Convert(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft) 
         {
@@ -32,6 +33,7 @@ namespace PdfDroplet
             // Determine width and height
             _outputWidth = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth,_inputPdf.PixelHeight).X;
             _outputHeight = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
+            _landscapeMode = _inputPdf.PixelWidth > _inputPdf.PixelHeight;
 
             int inputPages = _inputPdf.PageCount;
             int sheets = inputPages / 4;
@@ -79,22 +81,41 @@ namespace PdfDroplet
             outputDocument.Save(outputPath);
         }
 
+        /// With the portrait, left-to-right-language mode, this is the Right side.
+        /// With the landscape, this is the bottom half.
         private void DrawInferiorSide(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
         {
             _inputPdf.PageNumber = pageNumber;
-            var leftEdge = _rightToLeft? 0 : _outputWidth / 2;
-            var box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+            XRect box;
+            if (_landscapeMode)
+            {
+                box = new XRect(0, _outputHeight/2, _outputWidth, _outputHeight/2);
+            }
+            else
+            {
+                var leftEdge = _rightToLeft ? 0 : _outputWidth / 2;
+                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+            }
             gfx.DrawImage(_inputPdf, box);
         }
 
         /// <summary>
-        /// With the normal, left-to-right-language mode, this is the Left side.
+        /// With the portrait, left-to-right-language mode, this is the Left side.
+        /// With the landscape, this is the top half.
         /// </summary>
         private  void DrawSuperiorSide( XGraphics gfx, int pageNumber)
         {
             _inputPdf.PageNumber = pageNumber;
-            var leftEdge = _rightToLeft ? _outputWidth / 2 : 0;
-            var box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+            XRect box;
+            if (_landscapeMode)
+            {
+                box = new XRect(0, 0, _outputWidth, _outputHeight/2);
+            }
+            else
+            {
+                var leftEdge = _rightToLeft ? _outputWidth/2 : 0;
+                box = new XRect(leftEdge, 0, _outputWidth/2, _outputHeight);
+            }
             gfx.DrawImage(_inputPdf, box);
         }
 

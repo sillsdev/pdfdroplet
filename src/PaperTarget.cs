@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PdfDroplet
 {
-    public class PaperTarget
+    public abstract class PaperTarget
     {
         public readonly int Width;
         public readonly int Height;
@@ -40,7 +40,14 @@ namespace PdfDroplet
         }
         public override Point GetOutputDimensions(int inputWidth, int inputHeight)
         {
-            return new Point(inputWidth * 2, inputHeight);
+            if (inputHeight > inputWidth)
+            {
+                return new Point(inputWidth*2, inputHeight);//portrait
+            }
+            else
+            {
+                return new Point(inputWidth, inputHeight*2); //landscape
+            }
         }
         public const string StaticName = @"PerservePage";//this is tied to use settings, so don't change it.
     }
