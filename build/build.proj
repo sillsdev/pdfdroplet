@@ -23,26 +23,20 @@
    
     <Message Text="Version: $(Version)" Importance="high"/>
   </Target>
-  
-  
-  
-  <Target Name="Build">
-    <CallTarget Targets="Compile"/>
-    <Message Text="Build Complete"/>
-  </Target>
-
-  
-  <Target Name="SetAssemblyVersion">
+   
+  <Target Name="SetAssemblyVersion" DependsOnTargets ="VersionNumbers">
       <ItemGroup>
         <AssemblyInfoFiles Include="$(teamcity_build_checkoutDir)/src/**/assemblyinfo.cs"/>
       </ItemGroup>
       <StampAssemblies Version="$(Version)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
     </Target>
 
-  <Target Name="Compile" DependsOnTargets="SetAssemblyVersion">
+
+  <Target Name="Build" DependsOnTargets="SetAssemblyVersion">
     <MSBuild Projects="$(teamcity_build_checkoutDir)/PdfDroplet.sln"
              Targets="Rebuild"
              Properties="Configuration=Release" />
+    <Message Text="Build Complete"/>
   </Target>
 
 
