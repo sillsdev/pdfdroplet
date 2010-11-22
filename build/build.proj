@@ -36,7 +36,7 @@
       <ItemGroup>
         <AssemblyInfoFiles Include="$(teamcity_build_checkoutDir)/src/**/assemblyinfo.cs"/>
       </ItemGroup>
-      <StampAssemblies Version="$(BUILD_NUMBER)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
+      <StampAssemblies Version="$(Version)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
     </Target>
 
   <Target Name="Compile" DependsOnTargets="SetAssemblyVersion">
