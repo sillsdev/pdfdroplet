@@ -25,6 +25,7 @@ namespace PdfDroplet
             Application.SetCompatibleTextRenderingDefault(false);
 
             SetupErrorHandling(); 
+            SetupUsageTracking();
             Application.Run(new MainWindow(args.Contains<string>("-about")));
             Settings.Default.Save();
         }
@@ -34,9 +35,15 @@ namespace PdfDroplet
             ErrorReport.EmailAddress = "hide@gmail.org".Replace("hide","hattonjohn");
             ErrorReport.AddStandardProperties();
             ExceptionHandler.Init();
-
-            UsageReporter.ReportLaunchesAsync();
         }
+
+        private static void SetupUsageTracking()
+        {
+            Usage = new Palaso.Reporting.UsageReporter(Settings.Default.Reporting);
+            Usage.BeginGoogleAnalytics("pdfdroplet.palaso.org", "UA-22170471-5");
+        }
+
+        public static UsageReporter Usage { get; set; }
     }
 
   
