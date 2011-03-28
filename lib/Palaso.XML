@@ -1012,11 +1012,6 @@
             <param name="ex"></param>
             <returns></returns>
         </member>
-        <member name="M:Palaso.Reporting.UsageReporter.RecordLaunch">
-            <summary>
-            call this each time the application is launched
-            </summary>
-        </member>
         <member name="M:Palaso.Reporting.UsageReporter.MakeLaunchDateSafe">
             <summary>
             cover an apparent bug in the generated code when you do a get but the datetime is null
@@ -1025,12 +1020,6 @@
         <member name="M:Palaso.Reporting.UsageReporter.ResetSettingsForTests">
             <summary>
             used for testing purposes
-            </summary>
-        </member>
-        <member name="M:Palaso.Reporting.UsageReporter.DoTrivialUsageReport(System.String,System.String,System.Int32[])">
-            <summary>
-            if you call this every time the application starts, it will send reports on those intervals
-            (e.g. {1, 10}) that are listed in the intervals parameter.  It will get version number and name out of the application.
             </summary>
         </member>
         <member name="M:Palaso.Reporting.UsageReporter.GetAllApplicationValuesForThisUser">
@@ -1073,7 +1062,7 @@
             A unique guid for this machine, which is the same for all palaso apps (because we store it in special palaso text file in appdata)
             </summary>
         </member>
-        <member name="P:Palaso.Reporting.UsageReporter.AppReportingSettings">
+        <member name="P:Palaso.Reporting.UsageReporter.AppNameToUseInDialogs">
             <summary>
             The deal here is, Cambell changed this so that it is the responsibility of
             the client to set this, and then save the settings.

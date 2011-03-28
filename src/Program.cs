@@ -39,8 +39,7 @@ namespace PdfDroplet
 
         private static void SetupUsageTracking()
         {
-            Usage = new Palaso.Reporting.UsageReporter(Settings.Default.Reporting);
-            Usage.BeginGoogleAnalytics("pdfdroplet.palaso.org", "UA-22170471-5");
+            UsageReporter.Init(Settings.Default.Reporting,"pdfdroplet.palaso.org", "UA-22170471-5");
         }
 
         public static UsageReporter Usage { get; set; }
