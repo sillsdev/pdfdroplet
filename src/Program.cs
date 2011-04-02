@@ -25,8 +25,7 @@ namespace PdfDroplet
             Application.SetCompatibleTextRenderingDefault(false);
 
 
-            if(Settings.Default.Reporting == null)
-                Settings.Default.Reporting = new ReportingSettings();
+
             //bring in settings from any previous version
             if (Settings.Default.NeedUpgrade)
             {
@@ -35,7 +34,8 @@ namespace PdfDroplet
                 Settings.Default.NeedUpgrade = false;
                 Settings.Default.Save();
             }
-
+            if(Settings.Default.Reporting == null)
+                Settings.Default.Reporting = new ReportingSettings();
             SetupErrorHandling(); 
             SetupUsageTracking();
             Application.Run(new MainWindow(args.Contains<string>("-about")));
