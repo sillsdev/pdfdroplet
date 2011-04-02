@@ -24,9 +24,10 @@ namespace PdfDroplet
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //bring in settings from any previous version
+
             if(Settings.Default.Reporting == null)
                 Settings.Default.Reporting = new ReportingSettings();
+            //bring in settings from any previous version
             if (Settings.Default.NeedUpgrade)
             {
                 //see http://stackoverflow.com/questions/3498561/net-applicationsettingsbase-should-i-call-upgrade-every-time-i-load
