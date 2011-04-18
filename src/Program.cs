@@ -51,7 +51,13 @@ namespace PdfDroplet
 
         private static void SetupUsageTracking()
         {
-            UsageReporter.Init(Settings.Default.Reporting,"pdfdroplet.palaso.org", "UA-22170471-5");
+            UsageReporter.Init(Settings.Default.Reporting,"pdfdroplet.palaso.org", "UA-22170471-5",
+#if DEBUG
+ true
+#else
+                false
+#endif
+);
         }
 
         public static UsageReporter Usage { get; set; }
