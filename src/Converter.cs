@@ -86,22 +86,17 @@ namespace PdfDroplet
         /// With the portrait, left-to-right-language mode, this is the Right side.
         /// With the landscape, this is the bottom half.
         private void DrawInferiorSide(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
-        {
+          {
             _inputPdf.PageNumber = pageNumber;
             XRect box;
             if (_landscapeOriginal)
             {
                 box = new XRect(0, _outputHeight/2, _outputWidth, _outputHeight/2);
             }
+            else
             {
                 var leftEdge = _rightToLeft ? 0 : _outputWidth / 2;
                 box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
-            }
-            if (_landscapeOriginal &&  (_calendarMode==false))
-            {
-                gfx.DrawRectangle(XPens.AliceBlue,box);
-                //flip
-                gfx.RotateAtTransform(30, new XPoint(_outputWidth / 2, (_outputHeight / 2) + (_outputHeight / 4)));
             }
             gfx.DrawImage(_inputPdf, box);
         }
@@ -112,22 +107,31 @@ namespace PdfDroplet
         /// </summary>
         private  void DrawSuperiorSide( XGraphics gfx, int pageNumber)
         {
+            var state = gfx.Save();
+
             _inputPdf.PageNumber = pageNumber;
             XRect box;
-            if (_landscapeOriginal && _calendarMode)
+            if (_landscapeOriginal)
             {
                 box = new XRect(0, 0, _outputWidth, _outputHeight/2);
+                if (!_calendarMode)
+                {
+                    gfx.RotateAtTransform(180, new XPoint(_outputWidth/2, (_outputHeight/4)));
+                }
             }
-            else if (_landscapeOriginal && (_calendarMode==false))
-            {
-                box = new XRect(0, 0, _outputWidth, _outputHeight / 2);
-            }
+
             else
             {
-                var leftEdge = _rightToLeft ? _outputWidth/2 : 0;
-                box = new XRect(leftEdge, 0, _outputWidth/2, _outputHeight);
+                var leftEdge = _rightToLeft ? _outputWidth / 2 : 0;
+                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
             }
             gfx.DrawImage(_inputPdf, box);
+            if(_landscapeOriginal && !_calendarMode)
+            {
+                //put it back now, so the next part isn't messed up
+                //gfx.RotateAtTransform(180, new XPoint(_outputWidth / 2, (_outputHeight / 4)));
+            gfx.Restore(state);    
+            }
         }
 
         private  XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)
