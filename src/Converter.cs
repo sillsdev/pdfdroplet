@@ -1,150 +1,34 @@
 ﻿using System.IO;
-using PdfSharp;
 using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 
 namespace PdfDroplet
 {
     public class Converter
     {
-        private double _outputWidth;
-        private double _outputHeight;
-        private XPdfForm _inputPdf;
-        private bool _rightToLeft;
-        private bool _landscapeOriginal=false;
-        private bool _calendarMode;
 
-        public void Convert(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool landscapeAsCalendar) 
+        public void Convert(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool landscapeAsCalendar)
         {
-            _rightToLeft = rightToLeft;
-            _calendarMode = landscapeAsCalendar;
+            var inputPdf = OpenDocumentForPdfSharp(inputPath);
 
-            PdfDocument outputDocument = new PdfDocument();
-
-            // Show single pages
-            // (Note: one page contains two pages from the source document.
-            //  If the number of pages of the source document can not be
-            //  divided by 4, the first pages of the output document will
-            //  each contain only one page from the source document.)
-            outputDocument.PageLayout = PdfPageLayout.SinglePage;
-
-            XGraphics gfx;
-
-            // Open the external document as XPdfForm object
-            _inputPdf = OpenDocumentForPdfSharp(inputPath);
-            // Determine width and height
-            _outputWidth = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth,_inputPdf.PixelHeight).X;
-            _outputHeight = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
-            _landscapeOriginal =  _inputPdf.PixelWidth > _inputPdf.PixelHeight;
-
-            int inputPages = _inputPdf.PageCount;
-            int sheets = inputPages / 4;
-            if (sheets * 4 < inputPages)
-                sheets += 1;
-            int allpages = 4 * sheets;
-            int vacats = allpages - inputPages;
-
-            for (int idx = 1; idx <= sheets; idx++)
+            Layouter layouter;
+            if(inputPdf.PixelWidth > inputPdf.PixelHeight)
             {
-                // Front page of a sheet:
-                using (gfx = GetGraphicsForNewPage(outputDocument))
+                if(landscapeAsCalendar)
                 {
-                    //Left side of front
-                    if (vacats > 0) // Skip if left side has to remain blank
-                        vacats -= 1;
-                    else
-                    {
-                        DrawSuperiorSide( gfx,  allpages + 2*(1 - idx));
-                    }
-
-                    //Right side of the front
-                    DrawInferiorSide(gfx, 2 * idx - 1);
+                    layouter = new PortraitLayouter(); // not a typo... yet.
                 }
-
-                // Back page of a sheet
-                using (gfx = GetGraphicsForNewPage(outputDocument))
+                else
                 {
-                    if (2*idx <= _inputPdf.PageCount) //prevent asking for page 2 with a single page document (JH Oct 2010)
-                    {
-                        //Left side of back
-                        DrawSuperiorSide( gfx, 2*idx);
-                    }
-
-                    //Right side of the Back
-                    if (vacats > 0) // Skip if right side has to remain blank
-                        vacats -= 1;
-                    else
-                    {
-                        DrawInferiorSide(gfx, allpages + 1 - 2 * idx);
-                    }
+                    layouter = new CutLandscapeLayouter(); 
                 }
-            }
-
-            outputDocument.Save(outputPath);
-        }
-
-        /// With the portrait, left-to-right-language mode, this is the Right side.
-        /// With the landscape, this is the bottom half.
-        private void DrawInferiorSide(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
-          {
-            _inputPdf.PageNumber = pageNumber;
-            XRect box;
-            if (_landscapeOriginal)
-            {
-                box = new XRect(0, _outputHeight/2, _outputWidth, _outputHeight/2);
             }
             else
             {
-                var leftEdge = _rightToLeft ? 0 : _outputWidth / 2;
-                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+                layouter = new PortraitLayouter();     
             }
-            gfx.DrawImage(_inputPdf, box);
+            layouter.Layout(inputPath, outputPath, paperTarget, rightToLeft, landscapeAsCalendar, inputPdf);
         }
 
-        /// <summary>
-        /// With the portrait, left-to-right-language mode, this is the Left side.
-        /// With the landscape, this is the top half.
-        /// </summary>
-        private  void DrawSuperiorSide( XGraphics gfx, int pageNumber)
-        {
-            var state = gfx.Save();
-
-            _inputPdf.PageNumber = pageNumber;
-            XRect box;
-            if (_landscapeOriginal)
-            {
-                box = new XRect(0, 0, _outputWidth, _outputHeight/2);
-                if (!_calendarMode)
-                {
-                    gfx.RotateAtTransform(180, new XPoint(_outputWidth/2, (_outputHeight/4)));
-                }
-            }
-
-            else
-            {
-                var leftEdge = _rightToLeft ? _outputWidth / 2 : 0;
-                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
-            }
-            gfx.DrawImage(_inputPdf, box);
-            if(_landscapeOriginal && !_calendarMode)
-            {
-                //put it back now, so the next part isn't messed up
-                //gfx.RotateAtTransform(180, new XPoint(_outputWidth / 2, (_outputHeight / 4)));
-            gfx.Restore(state);    
-            }
-        }
-
-        private  XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)
-        {
-            XGraphics gfx;
-            PdfPage page = outputDocument.AddPage();
-            page.Orientation = PageOrientation.Landscape;
-            page.Width =  _outputWidth;
-            page.Height = _outputHeight;
-
-            gfx = XGraphics.FromPdfPage(page);
-            return gfx;
-        }
 
         /// <summary>
         /// from http://forum.pdfsharp.net/viewtopic.php?p=2069
@@ -191,7 +75,7 @@ namespace PdfDroplet
             document.Open();
             iTextSharp.text.pdf.PdfContentByte cb = writer.DirectContent;
             iTextSharp.text.pdf.PdfImportedPage page;
-           
+
             int rotation;
 
             int i = 0;
@@ -200,7 +84,7 @@ namespace PdfDroplet
                 i++;
                 document.SetPageSize(reader.GetPageSizeWithRotation(i));
                 document.NewPage();
-                page = writer.GetImportedPage(reader, i); 
+                page = writer.GetImportedPage(reader, i);
                 rotation = reader.GetPageRotation(i);
                 if (rotation == 90 || rotation == 270)
                 {
