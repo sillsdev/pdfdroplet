@@ -11,11 +11,13 @@ namespace PdfDroplet
         private double _outputHeight;
         private XPdfForm _inputPdf;
         private bool _rightToLeft;
-        private bool _landscapeMode=false;
+        private bool _landscapeOriginal=false;
+        private bool _calendarMode;
 
-        public void Convert(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft) 
+        public void Convert(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool landscapeAsCalendar) 
         {
             _rightToLeft = rightToLeft;
+            _calendarMode = landscapeAsCalendar;
 
             PdfDocument outputDocument = new PdfDocument();
 
@@ -33,7 +35,7 @@ namespace PdfDroplet
             // Determine width and height
             _outputWidth = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth,_inputPdf.PixelHeight).X;
             _outputHeight = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
-            _landscapeMode = _inputPdf.PixelWidth > _inputPdf.PixelHeight;
+            _landscapeOriginal =  _inputPdf.PixelWidth > _inputPdf.PixelHeight;
 
             int inputPages = _inputPdf.PageCount;
             int sheets = inputPages / 4;
@@ -87,14 +89,19 @@ namespace PdfDroplet
         {
             _inputPdf.PageNumber = pageNumber;
             XRect box;
-            if (_landscapeMode)
+            if (_landscapeOriginal)
             {
                 box = new XRect(0, _outputHeight/2, _outputWidth, _outputHeight/2);
             }
-            else
             {
                 var leftEdge = _rightToLeft ? 0 : _outputWidth / 2;
                 box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+            }
+            if (_landscapeOriginal &&  (_calendarMode==false))
+            {
+                gfx.DrawRectangle(XPens.AliceBlue,box);
+                //flip
+                gfx.RotateAtTransform(30, new XPoint(_outputWidth / 2, (_outputHeight / 2) + (_outputHeight / 4)));
             }
             gfx.DrawImage(_inputPdf, box);
         }
@@ -107,9 +114,13 @@ namespace PdfDroplet
         {
             _inputPdf.PageNumber = pageNumber;
             XRect box;
-            if (_landscapeMode)
+            if (_landscapeOriginal && _calendarMode)
             {
                 box = new XRect(0, 0, _outputWidth, _outputHeight/2);
+            }
+            else if (_landscapeOriginal && (_calendarMode==false))
+            {
+                box = new XRect(0, 0, _outputWidth, _outputHeight / 2);
             }
             else
             {

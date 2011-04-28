@@ -31,6 +31,7 @@ namespace PdfDroplet
             _preservePageSizeButton.Checked = true; //default if no user settings
             _shrinkPageButton.Checked = false;
             _rightToLeft.Checked = Settings.Default.RightToLeft;
+            _landscapeAsCalendar.Checked = Settings.Default.LandscapeAsCalendar;
 
             switch (Settings.Default.PaperTargetChoice)
             {
@@ -218,7 +219,7 @@ namespace PdfDroplet
         {
             _resultingPdfPath =  Path.Combine(Path.GetDirectoryName(path),Path.GetFileNameWithoutExtension(path) + "-booklet.pdf");
             var converter = new Converter();
-            converter.Convert(path, _resultingPdfPath, ChosenPaperChoice, _rightToLeft.Checked);
+            converter.Convert(path, _resultingPdfPath, ChosenPaperChoice, _rightToLeft.Checked, _landscapeAsCalendar.Checked);
             
             _browserForPdf.Navigate(_resultingPdfPath);
     
@@ -344,6 +345,12 @@ namespace PdfDroplet
             {
                 dlg.ShowDialog();
             }
+        }
+
+        private void _landscapeAsCalendar_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Default.LandscapeAsCalendar = _landscapeAsCalendar.Checked;
+            Settings.Default.Save();
         }
     }
 }

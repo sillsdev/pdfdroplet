@@ -33,6 +33,7 @@ namespace PdfDroplet
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this._tabControl = new System.Windows.Forms.TabControl();
             this._convertPage = new System.Windows.Forms.TabPage();
+            this._rightToLeft = new System.Windows.Forms.CheckBox();
             this._shrinkPageButton = new System.Windows.Forms.RadioButton();
             this._preservePageSizeButton = new System.Windows.Forms.RadioButton();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -47,7 +48,7 @@ namespace PdfDroplet
             this._resultingFileLink = new System.Windows.Forms.LinkLabel();
             this._browserForPdf = new System.Windows.Forms.WebBrowser();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this._rightToLeft = new System.Windows.Forms.CheckBox();
+            this._landscapeAsCalendar = new System.Windows.Forms.CheckBox();
             this._tabControl.SuspendLayout();
             this._convertPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -87,6 +88,7 @@ namespace PdfDroplet
             // 
             // _convertPage
             // 
+            this._convertPage.Controls.Add(this._landscapeAsCalendar);
             this._convertPage.Controls.Add(this._rightToLeft);
             this._convertPage.Controls.Add(this._shrinkPageButton);
             this._convertPage.Controls.Add(this._preservePageSizeButton);
@@ -105,6 +107,17 @@ namespace PdfDroplet
             this._convertPage.Text = "Convert";
             this._convertPage.UseVisualStyleBackColor = true;
             this._convertPage.Resize += new System.EventHandler(this.tabPage1_Resize);
+            // 
+            // _rightToLeft
+            // 
+            this._rightToLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._rightToLeft.AutoSize = true;
+            this._rightToLeft.Location = new System.Drawing.Point(37, 408);
+            this._rightToLeft.Name = "_rightToLeft";
+            this._rightToLeft.Size = new System.Drawing.Size(328, 25);
+            this._rightToLeft.TabIndex = 21;
+            this._rightToLeft.Text = "Layout booklet for Right-to-Left Languages";
+            this._rightToLeft.UseVisualStyleBackColor = true;
             // 
             // _shrinkPageButton
             // 
@@ -197,7 +210,7 @@ namespace PdfDroplet
             this._instructionsPage.Controls.Add(this._instructionsBrowser);
             this._instructionsPage.Location = new System.Drawing.Point(4, 22);
             this._instructionsPage.Name = "_instructionsPage";
-            this._instructionsPage.Size = new System.Drawing.Size(686, 494);
+            this._instructionsPage.Size = new System.Drawing.Size(693, 482);
             this._instructionsPage.TabIndex = 2;
             this._instructionsPage.Text = "Instructions";
             this._instructionsPage.UseVisualStyleBackColor = true;
@@ -221,7 +234,7 @@ namespace PdfDroplet
             this._bookletPage.Location = new System.Drawing.Point(4, 22);
             this._bookletPage.Name = "_bookletPage";
             this._bookletPage.Padding = new System.Windows.Forms.Padding(3);
-            this._bookletPage.Size = new System.Drawing.Size(686, 494);
+            this._bookletPage.Size = new System.Drawing.Size(693, 482);
             this._bookletPage.TabIndex = 1;
             this._bookletPage.Text = "Booklet";
             this._bookletPage.UseVisualStyleBackColor = true;
@@ -252,16 +265,17 @@ namespace PdfDroplet
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // _rightToLeft
+            // _landscapeAsCalendar
             // 
-            this._rightToLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this._rightToLeft.AutoSize = true;
-            this._rightToLeft.Location = new System.Drawing.Point(37, 439);
-            this._rightToLeft.Name = "_rightToLeft";
-            this._rightToLeft.Size = new System.Drawing.Size(328, 25);
-            this._rightToLeft.TabIndex = 21;
-            this._rightToLeft.Text = "Layout booklet for Right-to-Left Languages";
-            this._rightToLeft.UseVisualStyleBackColor = true;
+            this._landscapeAsCalendar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._landscapeAsCalendar.AutoSize = true;
+            this._landscapeAsCalendar.Location = new System.Drawing.Point(37, 439);
+            this._landscapeAsCalendar.Name = "_landscapeAsCalendar";
+            this._landscapeAsCalendar.Size = new System.Drawing.Size(368, 25);
+            this._landscapeAsCalendar.TabIndex = 22;
+            this._landscapeAsCalendar.Text = "Landscape documents should be \"calendar-style\"";
+            this._landscapeAsCalendar.UseVisualStyleBackColor = true;
+            this._landscapeAsCalendar.CheckedChanged += new System.EventHandler(this._landscapeAsCalendar_CheckedChanged);
             // 
             // MainWindow
             // 
@@ -310,5 +324,6 @@ namespace PdfDroplet
         private System.Windows.Forms.RadioButton _shrinkPageButton;
         private System.Windows.Forms.RadioButton _preservePageSizeButton;
         private System.Windows.Forms.CheckBox _rightToLeft;
+        private System.Windows.Forms.CheckBox _landscapeAsCalendar;
     }
 }
