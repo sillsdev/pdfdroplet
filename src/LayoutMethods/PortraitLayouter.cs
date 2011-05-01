@@ -11,8 +11,18 @@ namespace PdfDroplet
     /// TODO: separate out the calendar case from this (which is triggered when input width>height)
     /// and when that is done, we should also flip the pages (currently you have to flip the physical paper to make it work)
     /// </summary>
-    class PortraitLayouter : Layouter
+    class SideFoldBooklet : LayoutMethod
     {
+        public SideFoldBooklet():base("sideFoldBooklet.png")
+        {
+            
+        }
+
+        public override string ToString()
+        {
+            return "Fold Booklet";
+        }
+
         protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
         {
             XGraphics gfx;
@@ -51,6 +61,11 @@ namespace PdfDroplet
                     }
                 }
             }
+        }
+
+        public override bool GetIsEnabled(bool isLandscape)
+        {
+            return !isLandscape;
         }
 
 

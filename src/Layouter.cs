@@ -1,11 +1,15 @@
-﻿using PdfSharp;
+﻿using System;
+using System.Drawing;
+using Palaso.IO;
+using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
 namespace PdfDroplet
 {
-    public abstract class Layouter
+    public abstract class LayoutMethod
     {
+        private readonly string _imageName;
         protected double _outputWidth;
         protected double _outputHeight;
         protected XPdfForm _inputPdf;
@@ -13,10 +17,20 @@ namespace PdfDroplet
         //protected bool _landscapeOriginal=false;
         protected bool _calendarMode;
 
-        public void Layout(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool landscapeAsCalendar, XPdfForm inputPdf)
-        {       
+        protected LayoutMethod(string imageName)
+        {
+            _imageName = imageName;
+        }
+
+        public Image Image
+        {
+            get { return Image.FromFile(FileLocator.GetFileDistributedWithApplication("images", _imageName)); }
+
+        }
+
+        public virtual void Layout(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, XPdfForm inputPdf)
+        {
             _rightToLeft = rightToLeft;
-            _calendarMode = landscapeAsCalendar;
             _inputPdf = inputPdf;
 
             PdfDocument outputDocument = new PdfDocument();
@@ -29,7 +43,7 @@ namespace PdfDroplet
             outputDocument.PageLayout = PdfPageLayout.SinglePage;
 
             // Determine width and height
-            _outputWidth = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth,_inputPdf.PixelHeight).X;
+            _outputWidth = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
             _outputHeight = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
 
 
@@ -61,6 +75,6 @@ namespace PdfDroplet
         }
 
 
-
+        public abstract bool GetIsEnabled(bool isLandscape);
     }
 }

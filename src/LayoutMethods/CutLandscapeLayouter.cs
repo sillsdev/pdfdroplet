@@ -1,4 +1,6 @@
-﻿using PdfSharp.Drawing;
+﻿using System;
+using System.Drawing;
+using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
 namespace PdfDroplet
@@ -7,8 +9,22 @@ namespace PdfDroplet
     /// this is for when the input document is landscape, and we want a printout that can be cut down the middle (e.g. making a4 paper into a5 slices)
     /// This means that along the top, we have the first half of the book, and along the bottom, the second half.
     /// </summary>
-    public class CutLandscapeLayouter : Layouter
+    public class CutLandscapeLayout : LayoutMethod
     {
+        public CutLandscapeLayout():base("cutBooklet.png")
+        {
+            
+        }
+        public override string ToString()
+        {
+            return "Cut && Stack";
+        }
+
+        public override bool GetIsEnabled(bool isLandscape)
+        {
+            return isLandscape;
+        }
+
         protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
         {
             XGraphics gfx;

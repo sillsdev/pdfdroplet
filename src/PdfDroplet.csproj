@@ -67,7 +67,8 @@
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
     <Compile Include="Converter.cs" />
-    <Compile Include="CutLandscapeLayouter.cs" />
+    <Compile Include="LayoutMethods\CalendarLayouter.cs" />
+    <Compile Include="LayoutMethods\CutLandscapeLayouter.cs" />
     <Compile Include="Layouter.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -75,10 +76,18 @@
     <Compile Include="MainWindow.designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="LayoutMethods\NullLayoutMethod.cs" />
     <Compile Include="PaperTarget.cs" />
-    <Compile Include="PortraitLayouter.cs" />
+    <Compile Include="LayoutMethods\PortraitLayouter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorkspaceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WorkspaceControl.Designer.cs">
+      <DependentUpon>WorkspaceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WorkSpaceViewModel.cs" />
     <EmbeddedResource Include="AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </EmbeddedResource>
@@ -95,6 +104,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="WorkspaceControl.resx">
+      <DependentUpon>WorkspaceControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -109,6 +121,7 @@
   <ItemGroup>
     <None Include="Resources\AppIcon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
