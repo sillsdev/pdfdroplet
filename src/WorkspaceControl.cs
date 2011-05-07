@@ -18,7 +18,8 @@ namespace PdfDroplet
         {
             InitializeComponent();
             _model = new WorkSpaceViewModel(this);
-            _dragStatus.Text = "Drag a PDF document here";
+            OnDragLeave(null, null);
+            _overBrowserPanel.Bounds = _browser.Bounds;
         }
 
         private void OnRightToLeft_CheckedChanged(object sender, EventArgs e)
@@ -32,43 +33,46 @@ namespace PdfDroplet
             if (_alreadyLoaded)
                 return;
             _alreadyLoaded = true;
+            PopulateLayoutList();
             UpdateDisplay();
             _model.Load();
         }
 
         public void UpdateDisplay()
         {
-            _browser.Visible = _model.ShowBrowser;
-            _dragStatus.Visible = !_browser.Visible;
-
+            //_browser.Visible = _model.ShowBrowser;
+            _overBrowserPanel.Visible = !_model.ShowBrowser;
+            foreach (Button button in _layoutChoices.Controls)
+            {
+                var method = ((LayoutMethod)button.Tag);
+                button.Enabled = method.GetIsEnabled(_model.IsLandscape);
+                button.FlatAppearance.BorderSize = method == _model.SelectedMethod ? 2 : 0;
+            }
+        }
+        private void PopulateLayoutList()
+        {
             this.BackColor = SystemColors.Control;
-            //UpdateConvertTabDisplay();
-            //UpdateReviewTapDisplay();
-            //foreach (var control in _layoutChoices.Controls)
-
             _layoutChoices.Controls.Clear();
-            _layoutChoices.RowCount=0;
+            _layoutChoices.RowCount = 0;
             _layoutChoices.RowStyles.Clear();
-
-            //_layoutChoices.RowCount = 2;
             foreach (LayoutMethod choice in _model.GetLayoutChoices())
             {
-                var item = new Button();
-                item.Tag = choice;
-                item.Text = choice.ToString();
-                item.Image = choice.Image;
-                item.FlatStyle = FlatStyle.Flat;
-                item.FlatAppearance.BorderSize = 0;
-                item.Enabled = choice.GetIsEnabled(_model.IsLandscape);
-                item.Click +=new EventHandler((object sender, EventArgs e)=>OnLayoutButtonClick((LayoutMethod)((Button)sender).Tag));
-                item.Height = 100;
-                item.Width = 80;// _layoutChoices.GetColumnWidths()[0] - 20;
-                item.TextImageRelation = TextImageRelation.ImageAboveText;
-                item.TabIndex = _layoutChoices.RowCount;
-                _layoutChoices.Controls.Add(item); 
+                var button = new Button();
+                button.Tag = choice;
+                button.Text = choice.ToString();
+                button.Image = choice.Image;
+                button.FlatStyle = FlatStyle.Flat;
+                button.FlatAppearance.BorderSize = 0;
+               // item.Enabled = choice.GetIsEnabled(_model.IsLandscape);
+                button.Click += new EventHandler((object sender, EventArgs e) => OnLayoutButtonClick((LayoutMethod)((Button)sender).Tag));
+                button.Height = 100;
+                button.Width = 80;// _layoutChoices.GetColumnWidths()[0] - 20;
+                button.TextImageRelation = TextImageRelation.ImageAboveText;
+                button.TabIndex = _layoutChoices.RowCount;
+                _layoutChoices.Controls.Add(button);
                 _layoutChoices.RowCount++;
-                _layoutChoices.RowStyles.Add(new RowStyle(SizeType.Absolute,  item.Height));
-                
+                _layoutChoices.RowStyles.Add(new RowStyle(SizeType.Absolute, button.Height));
+
             }
         }
 
@@ -81,6 +85,8 @@ namespace PdfDroplet
 
         private void OnDragDrop(object sender, DragEventArgs e)
         {
+            OnDragLeave(null,null);
+            _overBrowserPanel.Visible = false;
             _model.SetPath(GetPathFromDropEvent(e));
         }
 
@@ -99,7 +105,7 @@ namespace PdfDroplet
         private void OnDragEnter(object sender, DragEventArgs e)
         {
             _dragStatus.ForeColor = Color.Black;
-
+            
             e.Effect = DragDropEffects.None;
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return;
@@ -112,14 +118,14 @@ namespace PdfDroplet
             {
                 _dragStatus.ForeColor = Color.Red;
                 _dragStatus.Text = "That file appears to already be open in some other program. First close it, then drag it here.";
-                _dragStatus.Visible = true;
+                _overBrowserPanel.Visible = true;
                 e.Effect = DragDropEffects.None;
             }
             else if (Path.GetExtension(path).ToLower() == ".pdf")
             {
                 _dragStatus.Text = "Looks good, drop it.";
-                _dragStatus.Visible = true;
-
+                _overBrowserPanel.Visible = true;
+                
                 this.BackColor = Color.LightBlue;
                 //this._dragStatus.BackColor = this.BackColor;
                 e.Effect = DragDropEffects.Copy;
@@ -128,7 +134,7 @@ namespace PdfDroplet
             {
                 _dragStatus.ForeColor = Color.Red;
                 _dragStatus.Text = "That file doesn't end in '.pdf'";
-                _dragStatus.Visible = true;
+                _overBrowserPanel.Visible = true;
                 e.Effect = DragDropEffects.None;
             }
 
@@ -137,7 +143,10 @@ namespace PdfDroplet
 
         private void OnDragLeave(object sender, EventArgs e)
         {
-            UpdateDisplay();
+            _dragStatus.ForeColor = Color.Black;
+            this.BackColor = SystemColors.Control;
+            _dragStatus.Text = "Drag a PDF document here";
+            _overBrowserPanel.Visible = !_model.ShowBrowser;
         }
 
 

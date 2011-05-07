@@ -32,19 +32,23 @@
             this.label1 = new System.Windows.Forms.Label();
             this._paperSizeCombo = new System.Windows.Forms.ComboBox();
             this._rightToLeft = new System.Windows.Forms.CheckBox();
-            this._dragStatus = new System.Windows.Forms.Label();
             this._layoutChoices = new System.Windows.Forms.TableLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this._reloadPrevious = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this._overBrowserPanel = new System.Windows.Forms.Panel();
+            this._dragStatus = new System.Windows.Forms.Label();
             this._layoutChoices.SuspendLayout();
+            this._overBrowserPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // _browser
             // 
+            this._browser.AllowWebBrowserDrop = false;
             this._browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this._browser.IsWebBrowserContextMenuEnabled = false;
             this._browser.Location = new System.Drawing.Point(148, 0);
             this._browser.MinimumSize = new System.Drawing.Size(20, 20);
             this._browser.Name = "_browser";
@@ -80,16 +84,6 @@
             this._rightToLeft.Text = "Right-to-Left Language";
             this._rightToLeft.UseVisualStyleBackColor = true;
             this._rightToLeft.CheckedChanged += new System.EventHandler(this.OnRightToLeft_CheckedChanged);
-            // 
-            // _dragStatus
-            // 
-            this._dragStatus.AutoSize = true;
-            this._dragStatus.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._dragStatus.Location = new System.Drawing.Point(223, 107);
-            this._dragStatus.Name = "_dragStatus";
-            this._dragStatus.Size = new System.Drawing.Size(117, 21);
-            this._dragStatus.TabIndex = 23;
-            this._dragStatus.Text = "Drag Message";
             // 
             // _layoutChoices
             // 
@@ -142,15 +136,36 @@
             this.linkLabel1.Text = "About PdfDroplet...";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnAboutLinkClicked);
             // 
+            // _overBrowserPanel
+            // 
+            this._overBrowserPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this._overBrowserPanel.Controls.Add(this._dragStatus);
+            this._overBrowserPanel.Location = new System.Drawing.Point(148, 2);
+            this._overBrowserPanel.Name = "_overBrowserPanel";
+            this._overBrowserPanel.Size = new System.Drawing.Size(403, 331);
+            this._overBrowserPanel.TabIndex = 29;
+            // 
+            // _dragStatus
+            // 
+            this._dragStatus.AutoSize = true;
+            this._dragStatus.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._dragStatus.Location = new System.Drawing.Point(42, 40);
+            this._dragStatus.Name = "_dragStatus";
+            this._dragStatus.Size = new System.Drawing.Size(117, 21);
+            this._dragStatus.TabIndex = 24;
+            this._dragStatus.Text = "Drag Message";
+            // 
             // WorkspaceControl
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this._overBrowserPanel);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this._reloadPrevious);
             this.Controls.Add(this._layoutChoices);
-            this.Controls.Add(this._dragStatus);
             this.Controls.Add(this._rightToLeft);
             this.Controls.Add(this._paperSizeCombo);
             this.Controls.Add(this.label1);
@@ -162,6 +177,8 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnDragEnter);
             this.DragLeave += new System.EventHandler(this.OnDragLeave);
             this._layoutChoices.ResumeLayout(false);
+            this._overBrowserPanel.ResumeLayout(false);
+            this._overBrowserPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -173,10 +190,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox _paperSizeCombo;
         private System.Windows.Forms.CheckBox _rightToLeft;
-        private System.Windows.Forms.Label _dragStatus;
         private System.Windows.Forms.TableLayoutPanel _layoutChoices;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.LinkLabel _reloadPrevious;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Panel _overBrowserPanel;
+        private System.Windows.Forms.Label _dragStatus;
     }
 }
