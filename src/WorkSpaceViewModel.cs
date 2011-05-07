@@ -15,7 +15,6 @@ namespace PdfDroplet
     {
         private WorkspaceControl _view;
         private string _incomingPath;
-        private LayoutMethod _layoutMethod;
         private XPdfForm _inputPdf;
 
         public WorkSpaceViewModel(WorkspaceControl workspaceControl)
@@ -44,6 +43,7 @@ namespace PdfDroplet
         {
             Settings.Default.RightToLeft = rightToLeft;
             Settings.Default.Save();   
+            SetLayoutMethod(SelectedMethod);
         }
 
         public IEnumerable<LayoutMethod> GetLayoutChoices()
@@ -75,7 +75,7 @@ namespace PdfDroplet
 
         public void SetLayoutMethod(LayoutMethod method)
         {
-            _layoutMethod = method;
+            SelectedMethod = method;
             if (HaveIncomingPdf)
             {
                 if (method is NullLayoutMethod)
@@ -98,6 +98,11 @@ namespace PdfDroplet
         public string PathToDisplayInBrowser {get; private set;}
         protected PaperTarget PaperTarget { get; set; }
 
+        public LayoutMethod SelectedMethod
+        {
+            get; private set;
+        }
+
         private void Convert()
         {
             //avoid the situation where we try to over-write but can't
@@ -113,7 +118,7 @@ namespace PdfDroplet
             {
                 var outPath = Path.Combine(Path.GetDirectoryName(_incomingPath), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
 
-                _layoutMethod.Layout(_incomingPath, outPath, PaperTarget, Settings.Default.RightToLeft, _inputPdf);
+                SelectedMethod.Layout(_incomingPath, outPath, PaperTarget, Settings.Default.RightToLeft, _inputPdf);
                  _view.Navigate(outPath);      
 
                 if (Settings.Default.PreviousIncomingPath != _incomingPath)
@@ -204,7 +209,7 @@ namespace PdfDroplet
 
         public void Load()
         {
-           ReloadPrevious();
+         //  ReloadPrevious();
         }
 
         public void ReloadPrevious()

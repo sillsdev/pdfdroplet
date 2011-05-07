@@ -557,16 +557,6 @@
          style="stop-color:#c7cff6;stop-opacity:1;" />
     </linearGradient>
     <radialGradient
-       r="279.80099"
-       fy="224.78999"
-       fx="166.60899"
-       cy="224.78999"
-       cx="166.60899"
-       gradientUnits="userSpaceOnUse"
-       id="radialGradient9579-1"
-       xlink:href="#1-8"
-       inkscape:collect="always" />
-    <radialGradient
        gradientUnits="userSpaceOnUse"
        fy="224.78999"
        fx="166.60899"
@@ -587,6 +577,37 @@
          style="stop-color:#0500c6"
          offset="1" />
     </radialGradient>
+    <radialGradient
+       r="279.80099"
+       fy="224.78999"
+       fx="166.60899"
+       cy="224.78999"
+       cx="166.60899"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient9579-17"
+       xlink:href="#1-81"
+       inkscape:collect="always" />
+    <radialGradient
+       gradientUnits="userSpaceOnUse"
+       fy="224.78999"
+       fx="166.60899"
+       r="279.80099"
+       cy="224.78999"
+       cx="166.60899"
+       id="1-81">
+      <stop
+         id="stop5311-4"
+         style="stop-color:#58b8ff"
+         offset="0" />
+      <stop
+         id="stop5313-1"
+         style="stop-color:#0500c6"
+         offset="0.41" />
+      <stop
+         id="stop5315-0"
+         style="stop-color:#0500c6"
+         offset="1" />
+    </radialGradient>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -595,16 +616,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.6530865"
-     inkscape:cx="322.54472"
-     inkscape:cy="479.93103"
+     inkscape:zoom="0.82654323"
+     inkscape:cx="269.50375"
+     inkscape:cy="395.47212"
      inkscape:document-units="px"
      inkscape:current-layer="g3279"
      showgrid="false"
      inkscape:window-width="1478"
      inkscape:window-height="876"
-     inkscape:window-x="36"
-     inkscape:window-y="28"
+     inkscape:window-x="-32000"
+     inkscape:window-y="-32000"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -614,7 +635,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -630,9 +651,9 @@
          id="g4352"
          style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
          transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,1095.6843,1089.5826)"
-         inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
-         inkscape:export-xdpi="84"
-         inkscape:export-ydpi="84">
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
         <path
            sodipodi:nodetypes="ccccccc"
            id="path4354"
@@ -647,9 +668,9 @@
            inkscape:connector-curvature="0" />
       </g>
       <g
-         inkscape:export-ydpi="84"
-         inkscape:export-xdpi="84"
-         inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
+         inkscape:export-ydpi="44.144756"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
          transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,1091.6843,1093.5826)"
          style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
          id="g4346"
@@ -671,7 +692,10 @@
          style="fill:#c8beb7;fill-rule:evenodd;stroke:#000000;stroke-width:0.25831971px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 1079.2883,1196.6076 c 0,0 24.89,-43.7394 39.8565,-47.7157 14.9665,-3.9763 -39.8565,47.7157 -39.8565,47.7157 z"
          id="path4960"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
       <g
          transform="translate(135.7645,67.789474)"
          id="g4232" />
@@ -1532,9 +1556,9 @@
          id="g9428"
          style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.70167732;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
          transform="matrix(0.56539128,-0.03242686,0.00589701,0.61045817,714.03376,1227.2362)"
-         inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
-         inkscape:export-xdpi="84"
-         inkscape:export-ydpi="84">
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+         inkscape:export-xdpi="45.705074"
+         inkscape:export-ydpi="45.705074">
         <path
            sodipodi:nodetypes="ccccccc"
            id="path9430"
@@ -1553,9 +1577,9 @@
          id="g9422"
          style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.75735855;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
          transform="matrix(0.53013049,-0.00279607,0.00552924,0.61076722,715.57954,1224.3103)"
-         inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
-         inkscape:export-xdpi="84"
-         inkscape:export-ydpi="84">
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+         inkscape:export-xdpi="45.705074"
+         inkscape:export-ydpi="45.705074">
         <path
            sodipodi:nodetypes="ccccccc"
            id="path9424"
@@ -1574,9 +1598,9 @@
          style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
          id="g9416"
          inkscape:label="Cover"
-         inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
-         inkscape:export-xdpi="84"
-         inkscape:export-ydpi="84">
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+         inkscape:export-xdpi="45.705074"
+         inkscape:export-ydpi="45.705074">
         <path
            inkscape:connector-curvature="0"
            style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -1595,9 +1619,9 @@
          id="g5205"
          style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
          transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,717.16293,1221.8697)"
-         inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
-         inkscape:export-xdpi="84"
-         inkscape:export-ydpi="84">
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+         inkscape:export-xdpi="45.705074"
+         inkscape:export-ydpi="45.705074">
         <path
            sodipodi:nodetypes="ccccccc"
            id="path5207"
@@ -2145,9 +2169,9 @@
          id="g5205-7"
          style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
          transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,1087.6843,1097.5826)"
-         inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
-         inkscape:export-xdpi="84"
-         inkscape:export-ydpi="84">
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
         <path
            sodipodi:nodetypes="ccccccc"
            id="path5207-8"
@@ -2165,7 +2189,10 @@
          style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:6, 3;stroke-dashoffset:0"
          d="m 1105.7179,1178.4166 c 82.1279,8.555 82.1279,10.266 82.1279,10.266"
          id="path3538"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
       <path
          sodipodi:type="arc"
          style="fill:#c8beb7;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -2175,10 +2202,16 @@
          sodipodi:rx="32.857143"
          sodipodi:ry="32.857143"
          d="m 86.428574,175.71428 a 32.857143,32.857143 0 1 1 -65.714287,0 32.857143,32.857143 0 1 1 65.714287,0 z"
-         transform="matrix(0,0.22878649,-0.22878649,0,1120.5296,1182.4084)" />
+         transform="matrix(0,0.22878649,-0.22878649,0,1120.5296,1182.4084)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
       <g
          id="g4340"
-         transform="matrix(0.88387387,-0.46772533,0.46772533,0.88387387,-416.77016,656.55756)">
+         transform="matrix(0.88387387,-0.46772533,0.46772533,0.88387387,-416.77016,656.55756)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
         <path
            transform="matrix(0,0.22878649,-0.22878649,0,1120.2027,1144.005)"
            d="m 86.428574,175.71428 c 0,18.1465 -14.710645,32.85714 -32.857144,32.85714 -18.146499,0 -32.857143,-14.71064 -32.857143,-32.85714 0,-18.1465 14.710644,-32.85714 32.857143,-32.85714 18.146499,0 32.857144,14.71064 32.857144,32.85714 z"
@@ -2217,7 +2250,10 @@
          sodipodi:rx="28.571428"
          sodipodi:ry="28.571428"
          d="m 195,311.42856 a 28.571428,28.571428 0 1 1 -57.14285,0 28.571428,28.571428 0 1 1 57.14285,0 z"
-         transform="matrix(0,0.20590784,-0.20876767,0,1145.3447,1160.3959)" />
+         transform="matrix(0,0.20590784,-0.20876767,0,1145.3447,1160.3959)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
       <path
          sodipodi:type="arc"
          style="fill:#504416;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
@@ -2227,7 +2263,235 @@
          sodipodi:rx="5.2008233"
          sodipodi:ry="3.2142856"
          d="m 129.68735,145.35715 a 5.2008233,3.2142856 0 1 1 -10.40165,0 5.2008233,3.2142856 0 1 1 10.40165,0 z"
-         transform="matrix(0,0.22878649,-0.35589011,0,1144.3583,1152.142)" />
+         transform="matrix(0,0.22878649,-0.35589011,0,1144.3583,1152.142)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <g
+         id="g4430"
+         transform="matrix(0.12454091,-1,-1,0,1994.5179,2142.622)">
+        <g
+           inkscape:export-ydpi="44.144756"
+           inkscape:export-xdpi="44.144756"
+           inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\originalPortrait.png"
+           transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,1134.1915,865.16026)"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="g4352-8"
+           inkscape:label="Cover">
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             id="path4354-5"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc"
+             id="path4356-4"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <g
+           inkscape:label="Cover"
+           id="g4346-3"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,1130.1915,869.16031)"
+           inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\originalPortrait.png"
+           inkscape:export-xdpi="44.144756"
+           inkscape:export-ydpi="44.144756">
+          <path
+             sodipodi:nodetypes="ccccccc"
+             id="path4348-3"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             id="path4350-6"
+             sodipodi:nodetypes="ccccccc"
+             inkscape:connector-curvature="0" />
+        </g>
+        <g
+           inkscape:export-ydpi="44.144756"
+           inkscape:export-xdpi="44.144756"
+           inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\originalPortrait.png"
+           transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,1126.1915,873.16031)"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="g5205-7-7"
+           inkscape:label="Cover">
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             id="path5207-8-6"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc"
+             id="path5209-3-2"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+      </g>
+      <g
+         id="g4483"
+         transform="matrix(0,1,-1,0,1932.0277,-420.80896)">
+        <g
+           inkscape:export-ydpi="84"
+           inkscape:export-xdpi="84"
+           inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
+           transform="matrix(0.56539128,-0.03242686,0.00589701,0.61045817,1107.097,681.91712)"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.70167732;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="g9428-1-2"
+           inkscape:label="Cover">
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.70167732;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             id="path9430-4-4"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc"
+             id="path9432-3-7"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.70167732;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <g
+           inkscape:export-ydpi="84"
+           inkscape:export-xdpi="84"
+           inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
+           transform="matrix(0.53013049,-0.00279607,0.00552924,0.61076722,1108.6428,678.99122)"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.75735855;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="g9422-9-0"
+           inkscape:label="Cover">
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.75735855;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             id="path9424-8-2"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc"
+             id="path9426-8-4"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.75735855;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <g
+           inkscape:export-ydpi="84"
+           inkscape:export-xdpi="84"
+           inkscape:export-filename="C:\Users\cowardd\Downloads\PDF Droplet\instruction_step4.png"
+           inkscape:label="Cover"
+           id="g9416-0-9"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           transform="matrix(0.50330546,0.02357492,0.00524946,0.61104227,1110.8266,677.87922)">
+          <path
+             sodipodi:nodetypes="ccccccc"
+             id="path9418-8-8"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             id="path9420-7-3"
+             sodipodi:nodetypes="ccccccc"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
+      <g
+         id="g4683"
+         transform="matrix(0,1,-1,0,1709.4138,-176.41762)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\calendar.png"
+         inkscape:export-xdpi="45.919998"
+         inkscape:export-ydpi="45.919998">
+        <g
+           inkscape:export-ydpi="45.705074"
+           inkscape:export-xdpi="45.705074"
+           inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+           transform="matrix(0.56539128,-0.03242686,0.00589701,0.61045817,873.59439,689.21583)"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.70167732;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="g9428-0"
+           inkscape:label="Cover">
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.70167732;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             id="path9430-8"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc"
+             id="path9432-7"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.70167732;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <g
+           inkscape:export-ydpi="45.705074"
+           inkscape:export-xdpi="45.705074"
+           inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+           transform="matrix(0.53013049,-0.00279607,0.00552924,0.61076722,875.14017,686.28993)"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.75735855;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="g9422-91"
+           inkscape:label="Cover">
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.75735855;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             id="path9424-0"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc"
+             id="path9426-6"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.75735855;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <g
+           inkscape:export-ydpi="45.705074"
+           inkscape:export-xdpi="45.705074"
+           inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+           inkscape:label="Cover"
+           id="g9416-5"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           transform="matrix(0.50330546,0.02357492,0.00524946,0.61104227,877.32395,685.17793)">
+          <path
+             sodipodi:nodetypes="ccccccc"
+             id="path9418-1"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             inkscape:connector-curvature="0" />
+          <path
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.80358219;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             id="path9420-1"
+             sodipodi:nodetypes="ccccccc"
+             inkscape:connector-curvature="0" />
+        </g>
+        <g
+           inkscape:export-ydpi="45.705074"
+           inkscape:export-xdpi="45.705074"
+           inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\booklet.png"
+           transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,876.72356,683.84933)"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+           id="g5205-8"
+           inkscape:label="Cover">
+          <path
+             inkscape:connector-curvature="0"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+             id="path5207-5"
+             sodipodi:nodetypes="ccccccc" />
+          <path
+             inkscape:connector-curvature="0"
+             sodipodi:nodetypes="ccccccc"
+             id="path5209-5"
+             d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+             style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+      </g>
     </g>
   </g>
 </svg>
