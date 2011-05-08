@@ -10,8 +10,8 @@ namespace PdfDroplet
     public abstract class LayoutMethod
     {
         private readonly string _imageName;
-        protected double _outputWidth;
-        protected double _outputHeight;
+        protected XUnit _outputWidth;
+        protected XUnit _outputHeight;
         protected XPdfForm _inputPdf;
         protected bool _rightToLeft;
         //protected bool _landscapeOriginal=false;
@@ -43,8 +43,8 @@ namespace PdfDroplet
             outputDocument.PageLayout = PdfPageLayout.SinglePage;
 
             // Determine width and height
-            _outputWidth = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
-            _outputHeight = paperTarget.GetOutputDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
+            _outputWidth = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
+            _outputHeight = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
 
 
             int inputPages = _inputPdf.PageCount;
@@ -64,9 +64,10 @@ namespace PdfDroplet
 
         protected XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)
         {
+
             XGraphics gfx;
             PdfPage page = outputDocument.AddPage();
-            page.Orientation = PageOrientation.Landscape;
+            //page.Orientation = PageOrientation.Landscape;//review: why does this say it's always landscape (and why does that work?) Or maybe it has no effect?
             page.Width = _outputWidth;
             page.Height = _outputHeight;
 

@@ -68,7 +68,7 @@
     </Compile>
     <Compile Include="LayoutMethods\CalendarLayouter.cs" />
     <Compile Include="LayoutMethods\CutLandscapeLayouter.cs" />
-    <Compile Include="Layouter.cs" />
+    <Compile Include="LayoutMethods\Layouter.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,7 +76,7 @@
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="LayoutMethods\NullLayoutMethod.cs" />
-    <Compile Include="PaperTarget.cs" />
+    <Compile Include="LayoutMethods\PaperTarget.cs" />
     <Compile Include="LayoutMethods\PortraitLayouter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -20,7 +20,7 @@ namespace PdfDroplet
         public WorkSpaceViewModel(WorkspaceControl workspaceControl)
         {
             _view = workspaceControl;
-            PaperTarget = new DoublePaperTarget();
+            PaperTarget = new A4PaperTarget();
         }
 
         public bool IsAlreadyOpenElsewhere(string path)
@@ -87,6 +87,11 @@ namespace PdfDroplet
                     Convert();
                 }
             }
+            if (Settings.Default.PreviousIncomingPath != _incomingPath)
+            {
+                Settings.Default.PreviousIncomingPath = _incomingPath;
+                Settings.Default.Save();
+            }
             _view.UpdateDisplay();
         }
 
@@ -96,11 +101,26 @@ namespace PdfDroplet
         }
 
         public string PathToDisplayInBrowser {get; private set;}
-        protected PaperTarget PaperTarget { get; set; }
+        public PaperTarget PaperTarget { get; private set; }
+        public void SetPaperTarget(PaperTarget target)
+        {
+            PaperTarget = target;
+            SetLayoutMethod(SelectedMethod);
+        }
 
         public LayoutMethod SelectedMethod
         {
             get; private set;
+        }
+
+        public IEnumerable<PaperTarget> PaperChoices    
+        {
+            get
+            {
+                yield return new A4PaperTarget();
+//                yield return new SameSizePaperTarget();
+//                yield return new DoublePaperTarget();
+            }
         }
 
         private void Convert()
@@ -121,10 +141,6 @@ namespace PdfDroplet
                 SelectedMethod.Layout(_incomingPath, outPath, PaperTarget, Settings.Default.RightToLeft, _inputPdf);
                  _view.Navigate(outPath);      
 
-                if (Settings.Default.PreviousIncomingPath != _incomingPath)
-                {
-                    Settings.Default.PreviousIncomingPath = _incomingPath;
-                }
             }
             catch (Exception error)
             {
@@ -209,6 +225,7 @@ namespace PdfDroplet
 
         public void Load()
         {
+            PaperTarget = PaperChoices.First();
          //  ReloadPrevious();
         }
 
