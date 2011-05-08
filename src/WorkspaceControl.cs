@@ -36,6 +36,16 @@ namespace PdfDroplet
             PopulateLayoutList();
             UpdateDisplay();
             _model.Load();
+
+            _paperSizeCombo.Items.Clear();
+            foreach (PaperTarget paperChoice in _model.PaperChoices)
+            {
+                _paperSizeCombo.Items.Add(paperChoice);
+                if(_model.PaperTarget.GetType() == paperChoice.GetType())
+                {
+                    _paperSizeCombo.SelectedItem = paperChoice;
+                }
+            }
         }
 
         public void UpdateDisplay()
@@ -48,7 +58,19 @@ namespace PdfDroplet
                 button.Enabled = method.GetIsEnabled(_model.IsLandscape);
                 button.FlatAppearance.BorderSize = method == _model.SelectedMethod ? 2 : 0;
             }
+            SetupPreviousLink();
         }
+
+        private void SetupPreviousLink()
+        {
+            _reloadPrevious.Visible = false;
+            if (!string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath) && File.Exists(Settings.Default.PreviousIncomingPath))
+            {
+                _reloadPrevious.Text = "Reopen " + Path.GetFileName(Settings.Default.PreviousIncomingPath);
+                _reloadPrevious.Visible = true;
+            }
+        }
+
         private void PopulateLayoutList()
         {
             this.BackColor = SystemColors.Control;
@@ -301,6 +323,12 @@ namespace PdfDroplet
             {
                 return false;
             }
+        }
+
+        private void _paperSizeCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(_paperSizeCombo.SelectedItem!=null)
+                _model.SetPaperTarget(_paperSizeCombo.SelectedItem as PaperTarget);
         }
     }
 }

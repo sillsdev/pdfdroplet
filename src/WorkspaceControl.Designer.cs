@@ -49,10 +49,10 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this._browser.IsWebBrowserContextMenuEnabled = false;
-            this._browser.Location = new System.Drawing.Point(148, 0);
+            this._browser.Location = new System.Drawing.Point(126, 0);
             this._browser.MinimumSize = new System.Drawing.Size(20, 20);
             this._browser.Name = "_browser";
-            this._browser.Size = new System.Drawing.Size(513, 595);
+            this._browser.Size = new System.Drawing.Size(535, 595);
             this._browser.TabIndex = 0;
             this._browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this._browser_DocumentCompleted);
             // 
@@ -67,11 +67,14 @@
             // 
             // _paperSizeCombo
             // 
+            this._paperSizeCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this._paperSizeCombo.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this._paperSizeCombo.FormattingEnabled = true;
             this._paperSizeCombo.Location = new System.Drawing.Point(10, 26);
             this._paperSizeCombo.Name = "_paperSizeCombo";
-            this._paperSizeCombo.Size = new System.Drawing.Size(121, 21);
+            this._paperSizeCombo.Size = new System.Drawing.Size(110, 21);
             this._paperSizeCombo.TabIndex = 3;
+            this._paperSizeCombo.SelectedIndexChanged += new System.EventHandler(this._paperSizeCombo_SelectedIndexChanged);
             // 
             // _rightToLeft
             // 
@@ -116,19 +119,19 @@
             // 
             this._reloadPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._reloadPrevious.AutoSize = true;
-            this._reloadPrevious.Location = new System.Drawing.Point(148, 605);
+            this._reloadPrevious.Location = new System.Drawing.Point(148, 603);
             this._reloadPrevious.Name = "_reloadPrevious";
-            this._reloadPrevious.Size = new System.Drawing.Size(47, 13);
+            this._reloadPrevious.Size = new System.Drawing.Size(77, 13);
             this._reloadPrevious.TabIndex = 27;
             this._reloadPrevious.TabStop = true;
-            this._reloadPrevious.Text = "previous";
+            this._reloadPrevious.Text = "Open Previous";
             this._reloadPrevious.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._reloadPrevious_LinkClicked_1);
             // 
             // linkLabel1
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(567, 602);
+            this.linkLabel1.Location = new System.Drawing.Point(559, 602);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(97, 13);
             this.linkLabel1.TabIndex = 28;
