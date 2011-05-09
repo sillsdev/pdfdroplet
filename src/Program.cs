@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using Palaso.CommandLineProcessing;
 using Palaso.Reporting;
 using PdfDroplet.Properties;
@@ -38,6 +39,14 @@ namespace PdfDroplet
                 Settings.Default.Reporting = new ReportingSettings();
             SetupErrorHandling(); 
             SetupUsageTracking();
+
+            if (Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Adobe\Acrobat Reader") == null)
+            {
+                MessageBox.Show(
+                    "PdfDroplet requires that your computer be set up to show PDFs in Internet Explorer.  If you have problems, make sure Adobe Reader is installed; re-install it if necessary.");
+            }
+        
+
             Application.Run(new MainWindow(args.Contains<string>("-about")));
             Settings.Default.Save();
         }

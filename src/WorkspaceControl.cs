@@ -41,7 +41,7 @@ namespace PdfDroplet
             foreach (PaperTarget paperChoice in _model.PaperChoices)
             {
                 _paperSizeCombo.Items.Add(paperChoice);
-                if(_model.PaperTarget.GetType() == paperChoice.GetType())
+                if(_model.PaperTarget.Name == paperChoice.Name)
                 {
                     _paperSizeCombo.SelectedItem = paperChoice;
                 }
@@ -50,13 +50,19 @@ namespace PdfDroplet
 
         public void UpdateDisplay()
         {
-            //_browser.Visible = _model.ShowBrowser;
+            _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
+                                      _model.SelectedMethod.GetType() != typeof(NullLayoutMethod);
+
             _overBrowserPanel.Visible = !_model.ShowBrowser;
             foreach (Button button in _layoutChoices.Controls)
             {
                 var method = ((LayoutMethod)button.Tag);
-                button.Enabled = method.GetIsEnabled(_model.IsLandscape);
-                button.FlatAppearance.BorderSize = method == _model.SelectedMethod ? 2 : 0;
+                if(method.ImageIsSensitiveToOrientation)
+                {
+                    button.Image = method.GetImage(_model.IsLandscape);
+                }
+                button.Enabled = _model.HaveIncomingPdf && method.GetIsEnabled(_model.IsLandscape);
+                button.FlatAppearance.BorderSize = _model.SelectedMethod!=null && method.GetType() == _model.SelectedMethod.GetType() ? 2 : 0;
             }
             SetupPreviousLink();
         }
@@ -82,7 +88,7 @@ namespace PdfDroplet
                 var button = new Button();
                 button.Tag = choice;
                 button.Text = choice.ToString();
-                button.Image = choice.Image;
+                button.Image = choice.GetImage(_model.IsLandscape);
                 button.FlatStyle = FlatStyle.Flat;
                 button.FlatAppearance.BorderSize = 0;
                // item.Enabled = choice.GetIsEnabled(_model.IsLandscape);
@@ -162,7 +168,6 @@ namespace PdfDroplet
 
         }
 
-
         private void OnDragLeave(object sender, EventArgs e)
         {
             _dragStatus.ForeColor = Color.Black;
@@ -171,47 +176,6 @@ namespace PdfDroplet
             _overBrowserPanel.Visible = !_model.ShowBrowser;
         }
 
-
-
-        private void UpdateConvertTabDisplay()
-        {
-//            _dragStatus.Visible = false;
-//            UpdateLinkForConvertingPrevious();
-//            _dragStatus.MaximumSize = new Size(_convertPage.Width - 70, _dragStatus.MaximumSize.Height);
-        }
-
-
-        private void UpdateLinkForConvertingPrevious()
-        {
-//            bool doShowIt = !string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath)
-//                            && File.Exists(Settings.Default.PreviousIncomingPath);
-//
-            //nb: this doesn't work if the tab that holds this link isn't the selected one
-            //when this code runs
-//            _labelConvertPrevious.Visible = doShowIt;
-//            _linkConvertPrevious.Visible = doShowIt;
-//            if (doShowIt)
-//            {
-//                _linkConvertPrevious.Text =
-//                    String.Format("Convert {0} again.", Path.GetFileName(Settings.Default.PreviousIncomingPath));
-//            }
-        }
-
-
-        //        private void _linkConvertAndSave_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        //        {
-        //            if (Convert(Settings.Default.PreviousIncomingPath))
-        //            {
-        //                Save(Settings.Default.PreviousSavePath);
-        //                _labelDone.Visible = true;
-        //            }
-        //        }
-
-
-//        private void _tabControl_SelectedIndexChanged(object sender, EventArgs e)
-//        {
-//            UpdateDisplay();
-//        }
 
         private void _linkChooseFile_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -240,7 +204,14 @@ namespace PdfDroplet
 
         private void OnAboutLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            using (var dlg = new AboutBox1())
+            using (var dlg = new AboutBox())
+            {
+                dlg.ShowDialog();
+            }
+        }
+        private void OnInstructionsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using (var dlg = new InstructionsDialogBox())
             {
                 dlg.ShowDialog();
             }
@@ -262,7 +233,7 @@ namespace PdfDroplet
 //            }
 //        }
 
-        public void ClearBrowser(Action callWhenDone)
+        public void ClearThenContinue(Action callWhenDone)
         {
             _callWhenNavigated = callWhenDone;
             if (_browser.Url != null && _browser.Url.AbsolutePath.Contains("pdf"))
@@ -288,6 +259,8 @@ namespace PdfDroplet
 
         public void Navigate(string path)
         {
+            //http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
+            path += "#view=Fit&navpanes=0&pagemode=thumbs&toolbar=1";
             _browser.Navigate(path);
         }
 
@@ -330,5 +303,12 @@ namespace PdfDroplet
             if(_paperSizeCombo.SelectedItem!=null)
                 _model.SetPaperTarget(_paperSizeCombo.SelectedItem as PaperTarget);
         }
+
+        private void _printLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+           // _model.Print();
+        }
+
+
     }
 }

@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
+using Palaso.IO;
 using PdfSharp.Pdf;
 
 namespace PdfDroplet
 {
     class NullLayoutMethod :LayoutMethod
     {
-        public NullLayoutMethod() : base("originalPortrait.png")
+        public NullLayoutMethod() : base("")
         {
         }
 
@@ -27,5 +29,16 @@ namespace PdfDroplet
         {
             return "Original";
         }
+
+        public override Image GetImage(bool isLandscape)
+        {
+            return Image.FromFile(FileLocator.GetFileDistributedWithApplication("images", isLandscape ? "originalLandscape.png" : "originalPortrait.png"));
+        }
+
+        public override bool ImageIsSensitiveToOrientation
+        {
+            get { return true; }
+        }
+
     }
 }

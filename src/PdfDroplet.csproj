@@ -60,11 +60,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox1.cs">
+    <Compile Include="AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutBox1.Designer.cs">
-      <DependentUpon>AboutBox1.cs</DependentUpon>
+    <Compile Include="AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InstructionsDialogBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstructionsDialogBox.Designer.cs">
+      <DependentUpon>InstructionsDialogBox.cs</DependentUpon>
     </Compile>
     <Compile Include="LayoutMethods\CalendarLayouter.cs" />
     <Compile Include="LayoutMethods\CutLandscapeLayouter.cs" />
@@ -87,8 +93,11 @@
       <DependentUpon>WorkspaceControl.cs</DependentUpon>
     </Compile>
     <Compile Include="WorkSpaceViewModel.cs" />
-    <EmbeddedResource Include="AboutBox1.resx">
-      <DependentUpon>AboutBox1.cs</DependentUpon>
+    <EmbeddedResource Include="AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstructionsDialogBox.resx">
+      <DependentUpon>InstructionsDialogBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
