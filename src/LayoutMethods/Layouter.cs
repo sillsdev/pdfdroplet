@@ -22,11 +22,11 @@ namespace PdfDroplet
             _imageName = imageName;
         }
 
-        public Image Image
+        public virtual bool ImageIsSensitiveToOrientation
         {
-            get { return Image.FromFile(FileLocator.GetFileDistributedWithApplication("images", _imageName)); }
-
+            get { return false; }
         }
+
 
         public virtual void Layout(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, XPdfForm inputPdf)
         {
@@ -77,5 +77,10 @@ namespace PdfDroplet
 
 
         public abstract bool GetIsEnabled(bool isLandscape);
+
+        public virtual Image GetImage(bool isLandscape)
+        {
+            return Image.FromFile(FileLocator.GetFileDistributedWithApplication("images", _imageName));
+        }
     }
 }

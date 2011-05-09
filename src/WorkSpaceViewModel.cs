@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,9 @@ using System.Threading;
 using System.Windows.Forms;
 using Palaso.Reporting;
 using PdfDroplet.Properties;
+using PdfSharp;
 using PdfSharp.Drawing;
+using PdfSharp.Pdf.Printing;
 
 namespace PdfDroplet
 {
@@ -16,11 +19,14 @@ namespace PdfDroplet
         private WorkspaceControl _view;
         private string _incomingPath;
         private XPdfForm _inputPdf;
+        private string _pathToCurrentlyDisplayedPdf;
 
         public WorkSpaceViewModel(WorkspaceControl workspaceControl)
         {
             _view = workspaceControl;
-            PaperTarget = new A4PaperTarget();
+            //default to whatever the printer's default is
+            PrinterSettings printer = new System.Drawing.Printing.PrinterSettings();
+            PaperTarget = new PaperTarget(printer.DefaultPageSettings.PaperSize.PaperName, printer.DefaultPageSettings.PaperSize);
         }
 
         public bool IsAlreadyOpenElsewhere(string path)
@@ -61,10 +67,6 @@ namespace PdfDroplet
             get { return !string.IsNullOrEmpty(_incomingPath) && File.Exists(_incomingPath); }
         }
 
-        public void LoadPrevious()
-        {
-            SetPath(Settings.Default.PreviousIncomingPath);
-        }
 
         public void SetPath(string path)
         {
@@ -72,6 +74,21 @@ namespace PdfDroplet
             _inputPdf = OpenDocumentForPdfSharp(_incomingPath);
             SetLayoutMethod(new NullLayoutMethod());
         }
+      
+//        public void Print()
+//        {
+//            try
+//            {
+//                PdfSharp.Pdf.PdfDocument x;
+//                PdfFilePrinter y = new PdfFilePrinter(_pathToCurrentlyDisplayedPdf);
+//                PdfFilePrinter.AdobeReaderPath = 
+//                y.Print();
+//            }
+//            catch(Exception e)
+//            {
+//                ErrorReport.NotifyUserOfProblem(e, "Could not print");
+//            }
+//        }
 
         public void SetLayoutMethod(LayoutMethod method)
         {
@@ -80,14 +97,15 @@ namespace PdfDroplet
             {
                 if (method is NullLayoutMethod)
                 {
-                    _view.Navigate(_incomingPath);
+                    _pathToCurrentlyDisplayedPdf = _incomingPath;
+                    _view.ClearThenContinue(()=>_view.Navigate(_incomingPath)); 
                 }
                 else
                 {
-                    Convert();
+                    _view.ClearThenContinue(ContinueConversionAndNavigation);
                 }
             }
-            if (Settings.Default.PreviousIncomingPath != _incomingPath)
+            if (!string.IsNullOrEmpty(_incomingPath) && Settings.Default.PreviousIncomingPath != _incomingPath)
             {
                 Settings.Default.PreviousIncomingPath = _incomingPath;
                 Settings.Default.Save();
@@ -95,7 +113,7 @@ namespace PdfDroplet
             _view.UpdateDisplay();
         }
 
-        protected bool HaveIncomingPdf  
+        public bool HaveIncomingPdf  
         {
             get { return !string.IsNullOrEmpty(_incomingPath) && File.Exists(_incomingPath); }
         }
@@ -104,8 +122,11 @@ namespace PdfDroplet
         public PaperTarget PaperTarget { get; private set; }
         public void SetPaperTarget(PaperTarget target)
         {
-            PaperTarget = target;
-            SetLayoutMethod(SelectedMethod);
+            if (PaperTarget.Name != target.Name)
+            {
+                PaperTarget = target;
+                SetLayoutMethod(SelectedMethod);
+            }
         }
 
         public LayoutMethod SelectedMethod
@@ -117,18 +138,23 @@ namespace PdfDroplet
         {
             get
             {
-                yield return new A4PaperTarget();
+                yield return new PaperTarget("A4", PageSize.A4);
+                yield return  new PaperTarget("A3", PageSize.A3);
+                yield return  new PaperTarget("Letter", PageSize.Letter);
+                yield return  new PaperTarget("Legal", PageSize.Legal);
+                yield return  new PaperTarget("Foolscap", PageSize.Foolscap);
 //                yield return new SameSizePaperTarget();
 //                yield return new DoublePaperTarget();
             }
         }
 
-        private void Convert()
-        {
-            //avoid the situation where we try to over-write but can't
-            _view.ClearBrowser(Convert2);
-        }
-        private void Convert2()
+
+
+        /// <summary>
+        /// called after we've safely navigated the browser to about:blank
+        /// to avoid the situation where we try to over-write but can't
+        /// </summary>
+        private void ContinueConversionAndNavigation()
         {
             if (IsAlreadyOpenElsewhere(_incomingPath))
             {
@@ -136,10 +162,15 @@ namespace PdfDroplet
             }
             try
             {
-                var outPath = Path.Combine(Path.GetDirectoryName(_incomingPath), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
+                var t = Path.GetTempFileName();
+                File.Delete(t);
+                _pathToCurrentlyDisplayedPdf = t + ".pdf";
+                
+                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
+//                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetDirectoryName(_incomingPath), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
 
-                SelectedMethod.Layout(_incomingPath, outPath, PaperTarget, Settings.Default.RightToLeft, _inputPdf);
-                 _view.Navigate(outPath);      
+                SelectedMethod.Layout(_incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft, _inputPdf);
+                 _view.Navigate(_pathToCurrentlyDisplayedPdf);      
 
             }
             catch (Exception error)
@@ -225,7 +256,7 @@ namespace PdfDroplet
 
         public void Load()
         {
-            PaperTarget = PaperChoices.First();
+           // PaperTarget = PaperChoices.First();
          //  ReloadPrevious();
         }
 

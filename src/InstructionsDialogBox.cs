@@ -10,23 +10,16 @@ using Palaso.IO;
 
 namespace PdfDroplet
 {
-    partial class AboutBox1 : Form
+    partial class InstructionsDialogBox : Form
     {
-        public AboutBox1()
+        public InstructionsDialogBox()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyTitle);
-
-            SetWindowText();
-            
-            webBrowser1.Navigate(FileLocator.GetFileDistributedWithApplication("about.htm"));
+        
+            _browser.Navigate(FileLocator.GetFileDistributedWithApplication("instructions.htm"));
         }
 
-        private void SetWindowText()
-        {
-            var ver = Assembly.GetExecutingAssembly().GetName().Version;
-            Text = string.Format("Pdf Droplet: {0}.{1}.{2}", ver.Major, ver.Minor, ver.Build);
-        }
+
 
         #region Assembly Attribute Accessors
 
@@ -113,17 +106,20 @@ namespace PdfDroplet
             Close();
         }
 
-        private void webBrowser1_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        /// <summary>
+        /// forward any link-clicks to their main browser, not this window
+        /// </summary>
+        private void OnNavigating(object sender, WebBrowserNavigatingEventArgs e)
         {
             e.Cancel = true;
             Process.Start(e.Url.AbsoluteUri);
         }
 
-        private void webBrowser1_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        private void OnNavigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             //after this first one, no more navigating. From now on, use a webbrowser to follow links
-            this.webBrowser1.Navigated -= new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.webBrowser1_Navigated);
-            this.webBrowser1.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.webBrowser1_Navigating);
+            this._browser.Navigated -= new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.OnNavigated);
+            this._browser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.OnNavigating);
         }
     }
 }

@@ -35,9 +35,11 @@
             this._layoutChoices = new System.Windows.Forms.TableLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this._reloadPrevious = new System.Windows.Forms.LinkLabel();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this._aboutLink = new System.Windows.Forms.LinkLabel();
             this._overBrowserPanel = new System.Windows.Forms.Panel();
             this._dragStatus = new System.Windows.Forms.Label();
+            this._browseForPdf = new System.Windows.Forms.LinkLabel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this._layoutChoices.SuspendLayout();
             this._overBrowserPanel.SuspendLayout();
             this.SuspendLayout();
@@ -80,9 +82,10 @@
             // 
             this._rightToLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._rightToLeft.AutoSize = true;
+            this._rightToLeft.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this._rightToLeft.Location = new System.Drawing.Point(7, 601);
             this._rightToLeft.Name = "_rightToLeft";
-            this._rightToLeft.Size = new System.Drawing.Size(135, 17);
+            this._rightToLeft.Size = new System.Drawing.Size(146, 17);
             this._rightToLeft.TabIndex = 22;
             this._rightToLeft.Text = "Right-to-Left Language";
             this._rightToLeft.UseVisualStyleBackColor = true;
@@ -119,25 +122,27 @@
             // 
             this._reloadPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._reloadPrevious.AutoSize = true;
-            this._reloadPrevious.Location = new System.Drawing.Point(148, 603);
+            this._reloadPrevious.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._reloadPrevious.Location = new System.Drawing.Point(165, 603);
             this._reloadPrevious.Name = "_reloadPrevious";
-            this._reloadPrevious.Size = new System.Drawing.Size(77, 13);
+            this._reloadPrevious.Size = new System.Drawing.Size(82, 13);
             this._reloadPrevious.TabIndex = 27;
             this._reloadPrevious.TabStop = true;
             this._reloadPrevious.Text = "Open Previous";
             this._reloadPrevious.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._reloadPrevious_LinkClicked_1);
             // 
-            // linkLabel1
+            // _aboutLink
             // 
-            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(559, 602);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(97, 13);
-            this.linkLabel1.TabIndex = 28;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "About PdfDroplet...";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnAboutLinkClicked);
+            this._aboutLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this._aboutLink.AutoSize = true;
+            this._aboutLink.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._aboutLink.Location = new System.Drawing.Point(559, 602);
+            this._aboutLink.Name = "_aboutLink";
+            this._aboutLink.Size = new System.Drawing.Size(107, 13);
+            this._aboutLink.TabIndex = 28;
+            this._aboutLink.TabStop = true;
+            this._aboutLink.Text = "About PdfDroplet...";
+            this._aboutLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnAboutLinkClicked);
             // 
             // _overBrowserPanel
             // 
@@ -145,6 +150,7 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this._overBrowserPanel.Controls.Add(this._dragStatus);
+            this._overBrowserPanel.Controls.Add(this._browseForPdf);
             this._overBrowserPanel.Location = new System.Drawing.Point(148, 2);
             this._overBrowserPanel.Name = "_overBrowserPanel";
             this._overBrowserPanel.Size = new System.Drawing.Size(403, 331);
@@ -160,13 +166,40 @@
             this._dragStatus.TabIndex = 24;
             this._dragStatus.Text = "Drag Message";
             // 
+            // _browseForPdf
+            // 
+            this._browseForPdf.AutoSize = true;
+            this._browseForPdf.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._browseForPdf.Location = new System.Drawing.Point(43, 88);
+            this._browseForPdf.Name = "_browseForPdf";
+            this._browseForPdf.Size = new System.Drawing.Size(172, 21);
+            this._browseForPdf.TabIndex = 27;
+            this._browseForPdf.TabStop = true;
+            this._browseForPdf.Text = "Choose a PDF to open...";
+            this._browseForPdf.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkChooseFile_LinkClicked);
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkLabel1.Location = new System.Drawing.Point(407, 603);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(131, 13);
+            this.linkLabel1.TabIndex = 27;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Choose a PDF to open...";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkChooseFile_LinkClicked);
+            // 
             // WorkspaceControl
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
             this.Controls.Add(this._overBrowserPanel);
             this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this._aboutLink);
             this.Controls.Add(this._reloadPrevious);
             this.Controls.Add(this._layoutChoices);
             this.Controls.Add(this._rightToLeft);
@@ -196,8 +229,10 @@
         private System.Windows.Forms.TableLayoutPanel _layoutChoices;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.LinkLabel _reloadPrevious;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel _aboutLink;
         private System.Windows.Forms.Panel _overBrowserPanel;
         private System.Windows.Forms.Label _dragStatus;
+        private System.Windows.Forms.LinkLabel _browseForPdf;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

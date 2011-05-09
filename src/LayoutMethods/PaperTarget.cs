@@ -1,35 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing;
+using System.Drawing.Printing;
 using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
 namespace PdfDroplet
 {
-    public abstract class PaperTarget
+    public class PaperTarget
     {
-        public readonly int Width;
-        public readonly int Height;
         public string Name;
+        private XUnit _width;
+        private XUnit _height;
 
-        public PaperTarget(string name, int width, int height)
+        public PaperTarget(string name, PdfSharp.PageSize pageSize)
         {
             Name = name;
-            Width = width;
-            Height = height;
+            PdfPage p = new PdfPage();
+            p.Size = pageSize;
+            _width = p.Width;
+            _height = p.Height;
         }
-
-        public virtual Point GetPaperDimensions(int inputWidth, int intputHeight)
+        public PaperTarget(string name, System.Drawing.Printing.PaperSize pageSize)
         {
-            return new Point(Width, Height);
+            Name = name;
+            _width = XUnit.FromInch(((double)pageSize.Width) / 100d);
+            _height = XUnit.FromInch(((double)pageSize.Height) / 100d);
         }
 
+        public Point GetPaperDimensions(int inputWidth, int inputHeight)
+        {
+            if (inputHeight > inputWidth)
+            {
+                return new Point((int)_height, (int)_width);//portrait
+            }
+            else
+            {
+                return new Point((int)_width, (int)_height); //landscape
+            }
+        }
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
-    class A4PaperTarget : PaperTarget
+/*    class A4PaperTarget : PaperTarget
     {
         public A4PaperTarget()
             : base(StaticName, 0, 0)
@@ -60,7 +75,7 @@ namespace PdfDroplet
         public const string StaticName = @"A4";//this is tied to use settings, so don't change it.
     }
 
-    /*class DoublePaperTarget : PaperTarget
+    class DoublePaperTarget : PaperTarget
     {
         public DoublePaperTarget()
             : base(StaticName, 0,0)
