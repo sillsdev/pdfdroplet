@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Palaso.IO;
 using Palaso.Reporting;
 using PdfDroplet.Properties;
 using PdfSharp;
@@ -160,23 +161,25 @@ namespace PdfDroplet
             {
                 ErrorReport.NotifyUserOfProblem("That file appears to be open. First close it, then try again.");
             }
-            try
-            {
-                var t = Path.GetTempFileName();
-                File.Delete(t);
-                _pathToCurrentlyDisplayedPdf = t + ".pdf";
-                
-                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
-//                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetDirectoryName(_incomingPath), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
 
+                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetTempPath(),
+                                                            Path.GetFileNameWithoutExtension(_incomingPath) +
+                                                            "-booklet.pdf");
+                //                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetDirectoryName(_incomingPath), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
+            
+            if(!DeleteFileThatMayBeInUse(_pathToCurrentlyDisplayedPdf))
+                ErrorReport.NotifyUserOfProblem("For some reason that file is stuck... please try that again.");
+            
+
+            try
+            {  
                 SelectedMethod.Layout(_incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft, _inputPdf);
-                 _view.Navigate(_pathToCurrentlyDisplayedPdf);      
+                     _view.Navigate(_pathToCurrentlyDisplayedPdf);      
 
             }
             catch (Exception error)
             {
                 ErrorReport.NotifyUserOfProblem(error, "PdfBooket was unable to convert that file.");
-
             }
             _view.UpdateDisplay();
          
@@ -263,6 +266,30 @@ namespace PdfDroplet
         public void ReloadPrevious()
         {
             SetPath(Settings.Default.PreviousIncomingPath);
+        }
+
+        public static bool DeleteFileThatMayBeInUse(string path)
+        {
+            if (File.Exists(path))
+            {
+                try
+                {
+                    File.Delete(path);
+                }
+                catch (Exception e)
+                {
+                    try
+                    {
+                        Thread.Sleep(1000);
+                        File.Delete(path);
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }
