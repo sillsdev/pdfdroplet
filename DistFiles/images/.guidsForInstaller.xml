@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--This file is generated and then updated by an MSBuild task.  It preserves the automatically-generated guids assigned files that will be installed on user machines. So it should be held in source control.-->
+<InstallerMetadata>
+  <File Id="calendar.png" Guid="ddd16e78-bc34-4282-b274-0852828a4ea5" />
+  <File Id="cutBooklet.png" Guid="b4f8c957-c4bd-475c-8ca6-82ff60eeac66" />
+  <File Id="OLDsideFoldBooklet.png" Guid="909a2eb7-6a1e-42b2-8774-126228f337b8" />
+  <File Id="originalLandscape.png" Guid="1957d220-b394-4ed1-bfe4-e5d7501e6555" />
+  <File Id="originalPortrait.png" Guid="ee62903c-7dbe-4ae8-8586-24e30aec2827" />
+  <File Id="sideFoldBooklet.png" Guid="29ca1bef-2abb-4d7a-b3d8-cb96e6278daf" />
+</InstallerMetadata>
