@@ -71,9 +71,9 @@
 
 
   <Target Name="Upload" DependsOnTargets="VersionNumbers; Installer" >
-    <Message Text="Attempting rsync of PdfDropletInstaller.$(Version).msi" Importance="high"/>
+    <Message Text="Attempting rsync of PdfDropletInstaller-$(Version).msi" Importance="high"/>
 
-    <Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/PdfDropletInstaller.$(Version).msi" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/PdfDropletInstaller.$(Version).msi' /> 
+    <Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/PdfDropletInstaller-$(Version).msi" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/PdfDropletInstaller-$(Version).msi' /> 
 
     <CallTarget Targets ='MakeDownloadPointers'/>
   </Target>
@@ -94,10 +94,10 @@
 
     
     <!-- remove an existing one with the same name, if necessary -->
-    <Delete Files="$(teamcity_build_checkoutDir)\output\installer\PdfDropletInstaller.$(Version).msi" TreatErrorsAsWarnings="false" />
+    <Delete Files="$(teamcity_build_checkoutDir)\output\installer\PdfDropletInstaller-$(Version).msi" TreatErrorsAsWarnings="false" />
 
     <Copy SourceFiles="$(teamcity_build_checkoutDir)\output\installer\PdfDropletInstaller.msi"
-          DestinationFiles="$(teamcity_build_checkoutDir)\output\installer\PdfDropletInstaller.$(Version).msi"
+          DestinationFiles="$(teamcity_build_checkoutDir)\output\installer\PdfDropletInstaller-$(Version).msi"
           />
 
     <!-- remove the installer which has no version number (wouldn't need this if the copy above was a move, instead) -->

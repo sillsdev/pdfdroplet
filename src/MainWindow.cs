@@ -27,7 +27,7 @@ namespace PdfDroplet
         private void SetWindowText()
         {
             var ver = Assembly.GetExecutingAssembly().GetName().Version;
-            Text = string.Format("Pdf Droplet: {0}.{1}.{2} BETA", ver.Major, ver.Minor, ver.Build);
+            Text = string.Format("Pdf Droplet: {0}.{1}.{2}", ver.Major, ver.Minor, ver.Build);
         }
 
         protected override void OnClosing(CancelEventArgs e)

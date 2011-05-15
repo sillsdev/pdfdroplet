@@ -53,7 +53,7 @@ namespace PdfDroplet
 
         private static void SetupErrorHandling()
         {
-            ErrorReport.EmailAddress = "hide@gmail.org".Replace("hide","hattonjohn");
+            ErrorReport.EmailAddress = "hide@gmail.com".Replace("hide","hattonjohn");
             ErrorReport.AddStandardProperties();
             ExceptionHandler.Init();
         }
