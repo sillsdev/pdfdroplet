@@ -73,6 +73,7 @@
       <DependentUpon>InstructionsDialogBox.cs</DependentUpon>
     </Compile>
     <Compile Include="LayoutMethods\CalendarLayouter.cs" />
+    <Compile Include="LayoutMethods\FourUpStapleLayouter.cs" />
     <Compile Include="LayoutMethods\CutLandscapeLayouter.cs" />
     <Compile Include="LayoutMethods\Layouter.cs" />
     <Compile Include="MainWindow.cs">

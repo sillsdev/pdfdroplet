@@ -23,5 +23,5 @@ using System.Runtime.InteropServices;
 [assembly: Guid("6279fa5d-bd4e-4e41-8150-680c9b4e7fc3")]
 
 //these are set dynamically by the build process; the numbers here are ignored.
-[assembly: AssemblyVersion("1.1.1.1")]
-[assembly: AssemblyFileVersion("1.1.1.1")]
+[assembly: AssemblyVersion("2.0.6.1")]
+[assembly: AssemblyFileVersion("2.0.6.1")]
