@@ -16,10 +16,15 @@ namespace PdfDroplet
         protected bool _rightToLeft;
         //protected bool _landscapeOriginal=false;
         protected bool _calendarMode;
+        
+        
+        protected int PagesPerTwoSidedSheet {get;set;}
 
         protected LayoutMethod(string imageName)
         {
+            PagesPerTwoSidedSheet = 4;
             _imageName = imageName;
+            DoRotate = true;
         }
 
         public virtual bool ImageIsSensitiveToOrientation
@@ -43,15 +48,15 @@ namespace PdfDroplet
             outputDocument.PageLayout = PdfPageLayout.SinglePage;
 
             // Determine width and height
-            _outputWidth = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
-            _outputHeight = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
+            _outputWidth = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight, DoRotate).X;
+            _outputHeight = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight, DoRotate).Y;
 
 
             int inputPages = _inputPdf.PageCount;
-            int numberOfSheetsOfPaper = inputPages / 4;
-            if (numberOfSheetsOfPaper * 4 < inputPages)
+            int numberOfSheetsOfPaper = inputPages / PagesPerTwoSidedSheet;
+            if (numberOfSheetsOfPaper * PagesPerTwoSidedSheet < inputPages)
                 numberOfSheetsOfPaper += 1;
-            int numberOfPageSlotsAvailable = 4 * numberOfSheetsOfPaper;
+            int numberOfPageSlotsAvailable = PagesPerTwoSidedSheet * numberOfSheetsOfPaper;
             int vacats = numberOfPageSlotsAvailable - inputPages;
 
             LayoutInner(outputDocument, numberOfSheetsOfPaper, numberOfPageSlotsAvailable, vacats);
@@ -59,7 +64,11 @@ namespace PdfDroplet
             outputDocument.Save(outputPath);
         }
 
+        protected bool DoRotate{ get; set;}
+
+
         protected abstract void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats);
+
 
 
         protected XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)

@@ -27,15 +27,21 @@ namespace PdfDroplet
             _height = XUnit.FromInch(((double)pageSize.Height) / 100d);
         }
 
-        public Point GetPaperDimensions(int inputWidth, int inputHeight)
+        public Point GetPaperDimensions(int inputWidth, int inputHeight, bool doRotate)
         {
-            if (inputHeight > inputWidth)
+            if (inputHeight > inputWidth)//portrait input
             {
-                return new Point((int)_height, (int)_width);//portrait
+                if(doRotate)
+                    return new Point((int)_height, (int)_width);//landscape
+                else
+                    return new Point((int)_width, (int)_height);//leave portrait
             }
-            else
+            else //landscape input
             {
-                return new Point((int)_width, (int)_height); //landscape
+                  if(doRotate)
+                      return new Point((int)_width, (int)_height); //output portrait
+                  else
+                        return new Point((int)_height, (int)_width);//leave output landscape
             }
         }
         public override string ToString()

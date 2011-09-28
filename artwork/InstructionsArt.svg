@@ -617,15 +617,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.82654323"
-     inkscape:cx="269.50375"
-     inkscape:cy="395.47212"
+     inkscape:cx="-10.382807"
+     inkscape:cy="276.98209"
      inkscape:document-units="px"
      inkscape:current-layer="g3279"
      showgrid="false"
-     inkscape:window-width="1478"
-     inkscape:window-height="876"
-     inkscape:window-x="-32000"
-     inkscape:window-y="-32000"
+     inkscape:window-width="2616"
+     inkscape:window-height="998"
+     inkscape:window-x="-1116"
+     inkscape:window-y="144"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -646,6 +646,14 @@
     <g
        id="g3279"
        transform="translate(-567.85973,-396.49587)">
+      <path
+         style="fill:#c8beb7;fill-rule:evenodd;stroke:#000000;stroke-width:0.25831971px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 643.48582,908.58287 c 0,0 38.99643,31.81078 40.43099,47.22992 1.43457,15.41911 -40.43099,-47.22992 -40.43099,-47.22992 z"
+         id="path4960-8-5"
+         inkscape:connector-curvature="0"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
       <g
          inkscape:label="Cover"
          id="g4352"
@@ -2201,7 +2209,7 @@
          sodipodi:cy="175.71428"
          sodipodi:rx="32.857143"
          sodipodi:ry="32.857143"
-         d="m 86.428574,175.71428 a 32.857143,32.857143 0 1 1 -65.714287,0 32.857143,32.857143 0 1 1 65.714287,0 z"
+         d="m 86.428574,175.71428 c 0,18.1465 -14.710645,32.85714 -32.857144,32.85714 -18.146499,0 -32.857143,-14.71064 -32.857143,-32.85714 0,-18.1465 14.710644,-32.85714 32.857143,-32.85714 18.146499,0 32.857144,14.71064 32.857144,32.85714 z"
          transform="matrix(0,0.22878649,-0.22878649,0,1120.5296,1182.4084)"
          inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
          inkscape:export-xdpi="44.144756"
@@ -2249,7 +2257,7 @@
          sodipodi:cy="311.42856"
          sodipodi:rx="28.571428"
          sodipodi:ry="28.571428"
-         d="m 195,311.42856 a 28.571428,28.571428 0 1 1 -57.14285,0 28.571428,28.571428 0 1 1 57.14285,0 z"
+         d="m 195,311.42856 c 0,15.77956 -12.79186,28.57143 -28.57143,28.57143 -15.77956,0 -28.57142,-12.79187 -28.57142,-28.57143 0,-15.77957 12.79186,-28.57143 28.57142,-28.57143 15.77957,0 28.57143,12.79186 28.57143,28.57143 z"
          transform="matrix(0,0.20590784,-0.20876767,0,1145.3447,1160.3959)"
          inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
          inkscape:export-xdpi="44.144756"
@@ -2262,7 +2270,7 @@
          sodipodi:cy="145.35715"
          sodipodi:rx="5.2008233"
          sodipodi:ry="3.2142856"
-         d="m 129.68735,145.35715 a 5.2008233,3.2142856 0 1 1 -10.40165,0 5.2008233,3.2142856 0 1 1 10.40165,0 z"
+         d="m 129.68735,145.35715 c 0,1.7752 -2.32849,3.21428 -5.20082,3.21428 -2.87234,0 -5.20083,-1.43908 -5.20083,-3.21428 0,-1.7752 2.32849,-3.21429 5.20083,-3.21429 2.87233,0 5.20082,1.43909 5.20082,3.21429 z"
          transform="matrix(0,0.22878649,-0.35589011,0,1144.3583,1152.142)"
          inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\cutBooklet.png"
          inkscape:export-xdpi="44.144756"
@@ -2491,6 +2499,310 @@
              d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
              style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
         </g>
+      </g>
+      <g
+         inkscape:label="Cover"
+         id="g4352-1"
+         style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+         transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,601.24904,914.15952)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           sodipodi:nodetypes="ccccccc"
+           id="path4354-7"
+           d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+           id="path4356-40"
+           sodipodi:nodetypes="ccccccc"
+           inkscape:connector-curvature="0" />
+      </g>
+      <g
+         inkscape:export-ydpi="44.144756"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,597.24904,918.15952)"
+         style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+         id="g4346-9"
+         inkscape:label="Cover">
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+           id="path4348-4"
+           sodipodi:nodetypes="ccccccc" />
+        <path
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccccc"
+           id="path4350-8"
+           d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      </g>
+      <path
+         style="fill:#c8beb7;fill-rule:evenodd;stroke:#000000;stroke-width:0.25831971px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 584.85304,1021.1845 c 0,0 24.89,-43.73939 39.85652,-47.71569 14.9665,-3.9763 -39.85652,47.71569 -39.85652,47.71569 z"
+         id="path4960-8"
+         inkscape:connector-curvature="0"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <g
+         inkscape:label="Cover"
+         id="g5205-7-2"
+         style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+         transform="matrix(0.48128502,0.04994072,0.00501979,0.62562174,593.24904,922.15952)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           sodipodi:nodetypes="ccccccc"
+           id="path5207-8-4"
+           d="m 36.696307,25.038562 154.511333,0 c 8.22626,0 14.84884,6.622581 14.84884,14.848836 l 0,171.109382 c 0,8.22628 -6.62258,14.84884 -14.84884,14.84884 l -154.511333,0 0,-200.807058 z"
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:#c7cff6;fill-opacity:1;stroke:#4d4d4d;stroke-width:1.82315576;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 36.696307,25.038562 154.511333,0 c 16.72454,0.411152 15.61737,0.04001 14.96837,3.388388 l -0.11953,182.56983 c -0.59245,15.22591 2.73518,14.10185 -14.84884,14.84884 l -154.511333,0 z"
+           id="path5209-3-5"
+           sodipodi:nodetypes="ccccccc"
+           inkscape:connector-curvature="0" />
+      </g>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:6, 3;stroke-dashoffset:0"
+         d="m 611.28264,1002.9935 c 68.97463,8.7689 82.12792,10.266 82.12792,10.266"
+         id="path3538-5"
+         inkscape:connector-curvature="0"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756"
+         sodipodi:nodetypes="cc" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#c8beb7;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="path4956-1"
+         sodipodi:cx="53.57143"
+         sodipodi:cy="175.71428"
+         sodipodi:rx="32.857143"
+         sodipodi:ry="32.857143"
+         d="m 86.428574,175.71428 a 32.857143,32.857143 0 1 1 -65.714287,0 32.857143,32.857143 0 1 1 65.714287,0 z"
+         transform="matrix(0,0.22878649,-0.22878649,0,626.09436,1006.9853)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <g
+         transform="translate(0.6684242,62.362311)"
+         id="g3636-9"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598-8"
+           d="m 613.98557,950.2453 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598-7-1"
+           d="m 614.28804,985.80651 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      </g>
+      <g
+         id="g4340-7"
+         transform="matrix(0.88387387,-0.46772533,0.46772533,0.88387387,-911.2054,481.13448)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           transform="matrix(0,0.22878649,-0.22878649,0,1120.2027,1144.005)"
+           d="m 86.428574,175.71428 c 0,18.1465 -14.710645,32.85714 -32.857144,32.85714 -18.146499,0 -32.857143,-14.71064 -32.857143,-32.85714 0,-18.1465 14.710644,-32.85714 32.857143,-32.85714 18.146499,0 32.857144,14.71064 32.857144,32.85714 z"
+           sodipodi:ry="32.857143"
+           sodipodi:rx="32.857143"
+           sodipodi:cy="175.71428"
+           sodipodi:cx="53.57143"
+           id="path4954-1"
+           style="fill:#c8beb7;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           sodipodi:type="arc" />
+        <g
+           id="g4336-1">
+          <path
+             style="fill:#c8beb7;fill-rule:evenodd;stroke:#000000;stroke-width:0.25263646px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             d="m 1079.3365,1156.9215 c 0,0 24.6387,42.2626 39.4541,46.1047 14.8154,3.842 -39.4541,-46.1047 -39.4541,-46.1047 z"
+             id="path4958-5"
+             inkscape:connector-curvature="0" />
+          <path
+             sodipodi:type="arc"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.65521181;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             id="path4964-2"
+             sodipodi:cx="166.42857"
+             sodipodi:cy="311.42856"
+             sodipodi:rx="28.571428"
+             sodipodi:ry="28.571428"
+             d="m 195,311.42856 c 0,15.77956 -12.79186,28.57143 -28.57143,28.57143 -15.77956,0 -28.57142,-12.79187 -28.57142,-28.57143 0,-15.77957 12.79186,-28.57143 28.57142,-28.57143 15.77957,0 28.57143,12.79186 28.57143,28.57143 z"
+             transform="matrix(0,0.20590784,-0.20876767,0,1145.0996,1121.9925)" />
+        </g>
+      </g>
+      <path
+         sodipodi:type="arc"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.65521181;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="path4966-7"
+         sodipodi:cx="166.42857"
+         sodipodi:cy="311.42856"
+         sodipodi:rx="28.571428"
+         sodipodi:ry="28.571428"
+         d="m 195,311.42856 a 28.571428,28.571428 0 1 1 -57.14285,0 28.571428,28.571428 0 1 1 57.14285,0 z"
+         transform="matrix(0,0.20590784,-0.20876767,0,650.90946,984.97281)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#504416;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="path4962-6"
+         sodipodi:cx="124.48653"
+         sodipodi:cy="145.35715"
+         sodipodi:rx="5.2008233"
+         sodipodi:ry="3.2142856"
+         d="m 129.68735,145.35715 a 5.2008233,3.2142856 0 1 1 -10.40165,0 5.2008233,3.2142856 0 1 1 10.40165,0 z"
+         transform="matrix(0,0.22878649,-0.35589011,0,649.92306,976.71891)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <path
+         inkscape:export-ydpi="44.144756"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:connector-curvature="0"
+         id="path3491"
+         d="m 653.85654,945.8905 c -0.7117,82.5692 -2.41496,122.3547 -2.41496,122.3547"
+         style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:6, 3;stroke-dashoffset:0"
+         sodipodi:nodetypes="cc" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#c8beb7;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="path4956-1-7"
+         sodipodi:cx="53.57143"
+         sodipodi:cy="175.71428"
+         sodipodi:rx="32.857143"
+         sodipodi:ry="32.857143"
+         d="m 86.428574,175.71428 a 32.857143,32.857143 0 1 1 -65.714287,0 32.857143,32.857143 0 1 1 65.714287,0 z"
+         transform="matrix(-0.22560701,-0.03800966,0.03800966,-0.22560701,650.63603,951.61005)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <g
+         id="g4340-7-6"
+         transform="matrix(0.31438208,0.94929653,-0.94929653,0.31438208,1424.5797,-476.96288)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           transform="matrix(0,0.22878649,-0.22878649,0,1120.2027,1144.005)"
+           d="m 86.428574,175.71428 c 0,18.1465 -14.710645,32.85714 -32.857144,32.85714 -18.146499,0 -32.857143,-14.71064 -32.857143,-32.85714 0,-18.1465 14.710644,-32.85714 32.857143,-32.85714 18.146499,0 32.857144,14.71064 32.857144,32.85714 z"
+           sodipodi:ry="32.857143"
+           sodipodi:rx="32.857143"
+           sodipodi:cy="175.71428"
+           sodipodi:cx="53.57143"
+           id="path4954-1-1"
+           style="fill:#c8beb7;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           sodipodi:type="arc" />
+        <g
+           id="g4336-1-8">
+          <path
+             style="fill:#c8beb7;fill-rule:evenodd;stroke:#000000;stroke-width:0.25263646px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+             d="m 1079.3365,1156.9215 c 0,0 24.6387,42.2626 39.4541,46.1047 14.8154,3.842 -39.4541,-46.1047 -39.4541,-46.1047 z"
+             id="path4958-5-9"
+             inkscape:connector-curvature="0" />
+          <path
+             sodipodi:type="arc"
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.65521181;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+             id="path4964-2-2"
+             sodipodi:cx="166.42857"
+             sodipodi:cy="311.42856"
+             sodipodi:rx="28.571428"
+             sodipodi:ry="28.571428"
+             d="m 195,311.42856 c 0,15.77956 -12.79186,28.57143 -28.57143,28.57143 -15.77956,0 -28.57142,-12.79187 -28.57142,-28.57143 0,-15.77957 12.79186,-28.57143 28.57142,-28.57143 15.77957,0 28.57143,12.79186 28.57143,28.57143 z"
+             transform="matrix(0,0.20590784,-0.20876767,0,1145.0996,1121.9925)" />
+        </g>
+      </g>
+      <path
+         sodipodi:type="arc"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.65521181;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="path4966-7-7"
+         sodipodi:cx="166.42857"
+         sodipodi:cy="311.42856"
+         sodipodi:rx="28.571428"
+         sodipodi:ry="28.571428"
+         d="m 195,311.42856 a 28.571428,28.571428 0 1 1 -57.14285,0 28.571428,28.571428 0 1 1 57.14285,0 z"
+         transform="matrix(-0.20304631,-0.03420869,0.03468381,-0.2058664,668.21994,979.73736)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <path
+         sodipodi:type="arc"
+         style="fill:#504416;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         id="path4962-6-9"
+         sodipodi:cx="124.48653"
+         sodipodi:cy="145.35715"
+         sodipodi:rx="5.2008233"
+         sodipodi:ry="3.2142856"
+         d="m 129.68735,145.35715 a 5.2008233,3.2142856 0 1 1 -10.40165,0 5.2008233,3.2142856 0 1 1 10.40165,0 z"
+         transform="matrix(-0.22560701,-0.03800966,0.05912613,-0.35094426,676.52301,980.13593)"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756" />
+      <g
+         id="g3636"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598"
+           d="m 613.98557,950.2453 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598-7"
+           d="m 614.28804,985.80651 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      </g>
+      <g
+         transform="translate(43.252423,5.228329)"
+         id="g3636-8"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598-79"
+           d="m 613.98557,950.2453 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598-7-9"
+           d="m 614.28804,985.80651 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      </g>
+      <g
+         transform="translate(43.499845,66.031391)"
+         id="g3636-3"
+         inkscape:export-filename="C:\dev\PdfDroplet\DistFiles\images\4CopyStaple.png"
+         inkscape:export-xdpi="44.144756"
+         inkscape:export-ydpi="44.144756">
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598-0"
+           d="m 613.98557,950.2453 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path3598-7-6"
+           d="m 614.28804,985.80651 c 0,8.51462 0,9.03066 0,9.03066"
+           style="fill:#555753;stroke:#555753;stroke-width:0.92361021px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       </g>
     </g>
   </g>

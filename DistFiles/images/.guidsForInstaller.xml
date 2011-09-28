@@ -7,4 +7,5 @@
   <File Id="originalLandscape.png" Guid="1957d220-b394-4ed1-bfe4-e5d7501e6555" />
   <File Id="originalPortrait.png" Guid="ee62903c-7dbe-4ae8-8586-24e30aec2827" />
   <File Id="sideFoldBooklet.png" Guid="29ca1bef-2abb-4d7a-b3d8-cb96e6278daf" />
+  <File Id="_4CopyStaple.png" Guid="4e5ce1b8-4133-4515-b27b-2ce20c5f8353" />
 </InstallerMetadata>
