@@ -22,10 +22,6 @@ namespace PdfDroplet
             _overBrowserPanel.Bounds = _browser.Bounds;
         }
 
-        private void OnRightToLeft_CheckedChanged(object sender, EventArgs e)
-        {
-            _model.SetRightToLeft(_rightToLeft.Checked);
-        }
 
 
         private void OnLoad(object sender, EventArgs e)
@@ -307,6 +303,17 @@ namespace PdfDroplet
         private void _printLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
            // _model.Print();
+        }
+
+
+        private void OnRightToLeft_CheckedChanged(object sender, EventArgs e)
+        {
+            _model.SetRightToLeft(_rightToLeft.Checked);
+        }
+        
+        private void OnMirrorBox_CheckedChanged(object sender, EventArgs e)
+        {
+            _model.SetMirror(_mirrorBox.Checked);
         }
 
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using Palaso.IO;
+using PdfDroplet.Properties;
 using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -55,7 +57,15 @@ namespace PdfDroplet
             int vacats = numberOfPageSlotsAvailable - inputPages;
 
             LayoutInner(outputDocument, numberOfSheetsOfPaper, numberOfPageSlotsAvailable, vacats);
-
+           
+//            if(true)
+//                foreach (PdfPage page in outputDocument.Pages)
+//                {
+//                    
+//                   var  gfx = XGraphics.FromPdfPage(page);
+//                    gfx.DrawImage(page, 0.0,0.0);
+//                    page.MediaBox = new PdfRectangle(new XPoint(m.X2, m.Y1), new XPoint(m.X1, m.Y2));
+//                }
             outputDocument.Save(outputPath);
         }
 
@@ -64,7 +74,6 @@ namespace PdfDroplet
 
         protected XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)
         {
-
             XGraphics gfx;
             PdfPage page = outputDocument.AddPage();
             //page.Orientation = PageOrientation.Landscape;//review: why does this say it's always landscape (and why does that work?) Or maybe it has no effect?
@@ -72,6 +81,14 @@ namespace PdfDroplet
             page.Height = _outputHeight;
 
             gfx = XGraphics.FromPdfPage(page);
+
+            if (Settings.Default.Mirror)
+            {
+                Matrix mirrorMatrix = new Matrix(-1, 0, 0, 1, 0, 0);
+                gfx.MultiplyTransform(mirrorMatrix);
+                gfx.TranslateTransform(-_outputWidth, 1);
+            }
+
             return gfx;
         }
 

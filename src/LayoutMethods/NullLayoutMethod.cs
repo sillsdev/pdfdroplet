@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using Palaso.IO;
+using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
 namespace PdfDroplet
@@ -12,7 +13,7 @@ namespace PdfDroplet
         {
         }
 
-        public override void Layout(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, PdfSharp.Drawing.XPdfForm inputPdf)
+        public override void Layout(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, XPdfForm inputPdf)
         {
             File.Copy(inputPath, outputPath,true);
         }
