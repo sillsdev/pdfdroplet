@@ -84,13 +84,12 @@
             this._rightToLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._rightToLeft.AutoSize = true;
             this._rightToLeft.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._rightToLeft.Location = new System.Drawing.Point(7, 601);
+            this._rightToLeft.Location = new System.Drawing.Point(7, 600);
             this._rightToLeft.Name = "_rightToLeft";
             this._rightToLeft.Size = new System.Drawing.Size(146, 17);
             this._rightToLeft.TabIndex = 22;
             this._rightToLeft.Text = "Right-to-Left Language";
             this._rightToLeft.UseVisualStyleBackColor = true;
-            this._rightToLeft.CheckedChanged += new System.EventHandler(this.OnRightToLeft_CheckedChanged);
             // 
             // _layoutChoices
             // 
@@ -124,7 +123,7 @@
             this._reloadPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._reloadPrevious.AutoSize = true;
             this._reloadPrevious.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._reloadPrevious.Location = new System.Drawing.Point(272, 605);
+            this._reloadPrevious.Location = new System.Drawing.Point(272, 604);
             this._reloadPrevious.Name = "_reloadPrevious";
             this._reloadPrevious.Size = new System.Drawing.Size(82, 13);
             this._reloadPrevious.TabIndex = 27;
@@ -137,7 +136,7 @@
             this._aboutLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this._aboutLink.AutoSize = true;
             this._aboutLink.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._aboutLink.Location = new System.Drawing.Point(559, 602);
+            this._aboutLink.Location = new System.Drawing.Point(559, 604);
             this._aboutLink.Name = "_aboutLink";
             this._aboutLink.Size = new System.Drawing.Size(107, 13);
             this._aboutLink.TabIndex = 28;
@@ -184,7 +183,7 @@
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkLabel1.Location = new System.Drawing.Point(407, 603);
+            this.linkLabel1.Location = new System.Drawing.Point(407, 604);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(131, 13);
             this.linkLabel1.TabIndex = 27;
@@ -197,13 +196,13 @@
             this._mirrorBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._mirrorBox.AutoSize = true;
             this._mirrorBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._mirrorBox.Location = new System.Drawing.Point(173, 603);
+            this._mirrorBox.Location = new System.Drawing.Point(173, 600);
             this._mirrorBox.Name = "_mirrorBox";
             this._mirrorBox.Size = new System.Drawing.Size(58, 17);
             this._mirrorBox.TabIndex = 30;
             this._mirrorBox.Text = "Mirror";
             this._mirrorBox.UseVisualStyleBackColor = true;
-            this._mirrorBox.CheckedChanged += new System.EventHandler(this.OnMirrorBox_CheckedChanged);
+
             // 
             // WorkspaceControl
             // 
