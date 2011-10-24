@@ -21,7 +21,7 @@ namespace PdfDroplet
         private string _incomingPath;
         private XPdfForm _inputPdf;
         private string _pathToCurrentlyDisplayedPdf;
-
+        
         public WorkSpaceViewModel(WorkspaceControl workspaceControl)
         {
             _view = workspaceControl;
@@ -51,6 +51,16 @@ namespace PdfDroplet
             Settings.Default.RightToLeft = rightToLeft;
             Settings.Default.Save();   
             SetLayoutMethod(SelectedMethod);
+        }
+
+        public void SetMirror(bool doMirror)
+        {
+            Settings.Default.Mirror = doMirror;
+            //Settings.Default.Save();
+            SetLayoutMethod(SelectedMethod);
+            
+            //not sure I want to save it with it on, just yet
+            //Settings.Default.Mirror = false;
         }
 
         public IEnumerable<LayoutMethod> GetLayoutChoices()

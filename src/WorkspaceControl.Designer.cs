@@ -40,6 +40,7 @@
             this._dragStatus = new System.Windows.Forms.Label();
             this._browseForPdf = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this._mirrorBox = new System.Windows.Forms.CheckBox();
             this._layoutChoices.SuspendLayout();
             this._overBrowserPanel.SuspendLayout();
             this.SuspendLayout();
@@ -123,7 +124,7 @@
             this._reloadPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this._reloadPrevious.AutoSize = true;
             this._reloadPrevious.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this._reloadPrevious.Location = new System.Drawing.Point(165, 603);
+            this._reloadPrevious.Location = new System.Drawing.Point(272, 605);
             this._reloadPrevious.Name = "_reloadPrevious";
             this._reloadPrevious.Size = new System.Drawing.Size(82, 13);
             this._reloadPrevious.TabIndex = 27;
@@ -191,12 +192,26 @@
             this.linkLabel1.Text = "Choose a PDF to open...";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkChooseFile_LinkClicked);
             // 
+            // _mirrorBox
+            // 
+            this._mirrorBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this._mirrorBox.AutoSize = true;
+            this._mirrorBox.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._mirrorBox.Location = new System.Drawing.Point(173, 603);
+            this._mirrorBox.Name = "_mirrorBox";
+            this._mirrorBox.Size = new System.Drawing.Size(58, 17);
+            this._mirrorBox.TabIndex = 30;
+            this._mirrorBox.Text = "Mirror";
+            this._mirrorBox.UseVisualStyleBackColor = true;
+            this._mirrorBox.CheckedChanged += new System.EventHandler(this.OnMirrorBox_CheckedChanged);
+            // 
             // WorkspaceControl
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
+            this.Controls.Add(this._mirrorBox);
             this.Controls.Add(this._overBrowserPanel);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this._aboutLink);
@@ -234,5 +249,6 @@
         private System.Windows.Forms.Label _dragStatus;
         private System.Windows.Forms.LinkLabel _browseForPdf;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.CheckBox _mirrorBox;
     }
 }

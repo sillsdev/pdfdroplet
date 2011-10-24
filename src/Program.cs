@@ -66,6 +66,7 @@ namespace PdfDroplet
 #else
                 false
 #endif
+
 );
         }
 
