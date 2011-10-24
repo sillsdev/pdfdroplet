@@ -20,6 +20,11 @@ namespace PdfDroplet
             _model = new WorkSpaceViewModel(this);
             OnDragLeave(null, null);
             _overBrowserPanel.Bounds = _browser.Bounds;
+            _mirrorBox.Checked = Settings.Default.Mirror;
+            _rightToLeft.Checked = Settings.Default.RightToLeft;
+            //important to do this after the above settings
+            this._mirrorBox.CheckedChanged += new System.EventHandler(this.OnMirrorBox_CheckedChanged);
+            this._rightToLeft.CheckedChanged += new System.EventHandler(this.OnRightToLeft_CheckedChanged);
         }
 
 
@@ -46,9 +51,10 @@ namespace PdfDroplet
 
         public void UpdateDisplay()
         {
-            _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
+            _mirrorBox.Enabled = _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
                                       _model.SelectedMethod.GetType() != typeof(NullLayoutMethod);
 
+            
             _overBrowserPanel.Visible = !_model.ShowBrowser;
             foreach (Button button in _layoutChoices.Controls)
             {
@@ -313,7 +319,7 @@ namespace PdfDroplet
         
         private void OnMirrorBox_CheckedChanged(object sender, EventArgs e)
         {
-            _model.SetMirror(_mirrorBox.Checked);
+             _model.SetMirror(_mirrorBox.Checked);
         }
 
 
