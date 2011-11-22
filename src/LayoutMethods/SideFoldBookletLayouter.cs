@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using PdfSharp.Drawing;
+﻿using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfDroplet
+namespace PdfDroplet.LayoutMethods
 {
     /// <summary>
     /// TODO: separate out the calendar case from this (which is triggered when input width>height)
     /// and when that is done, we should also flip the pages (currently you have to flip the physical paper to make it work)
     /// </summary>
-    class SideFoldBooklet : LayoutMethod
+    public class SideFoldBookletLayouter : LayoutMethod
     {
-        public SideFoldBooklet():base("sideFoldBooklet.png")
+        public SideFoldBookletLayouter():base("sideFoldBooklet.png")
         {
             
         }

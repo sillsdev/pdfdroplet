@@ -83,7 +83,7 @@
     </Compile>
     <Compile Include="LayoutMethods\NullLayoutMethod.cs" />
     <Compile Include="LayoutMethods\PaperTarget.cs" />
-    <Compile Include="LayoutMethods\PortraitLayouter.cs" />
+    <Compile Include="LayoutMethods\SideFoldBookletLayouter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorkspaceControl.cs">

@@ -1,10 +1,8 @@
 ﻿using System.Drawing;
-using System.Drawing.Printing;
-using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfDroplet
+namespace PdfDroplet.LayoutMethods
 {
     public class PaperTarget
     {

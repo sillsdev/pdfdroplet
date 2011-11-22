@@ -5,15 +5,15 @@ using Palaso.IO;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfDroplet
+namespace PdfDroplet.LayoutMethods
 {
-    class NullLayoutMethod :LayoutMethod
+    public class NullLayoutMethod :LayoutMethod
     {
         public NullLayoutMethod() : base("")
         {
         }
 
-        public override void Layout(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, XPdfForm inputPdf)
+        public override void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft)
         {
             File.Copy(inputPath, outputPath,true);
         }

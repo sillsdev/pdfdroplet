@@ -8,6 +8,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Palaso.IO;
 using Palaso.Reporting;
+using PdfDroplet.LayoutMethods;
 using PdfDroplet.Properties;
 using PdfSharp;
 using PdfSharp.Drawing;
@@ -66,7 +67,7 @@ namespace PdfDroplet
         public IEnumerable<LayoutMethod> GetLayoutChoices()
         {
             yield return new NullLayoutMethod();
-            yield return new SideFoldBooklet();
+            yield return new SideFoldBookletLayouter();
             yield return new CalendarLayouter();
             yield return new CutLandscapeLayout();
         }
@@ -182,8 +183,8 @@ namespace PdfDroplet
             
 
             try
-            {  
-                SelectedMethod.Layout(_incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft, _inputPdf);
+            {
+				SelectedMethod.Layout(_inputPdf, _incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft);
                      _view.Navigate(_pathToCurrentlyDisplayedPdf);      
 
             }

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 using Palaso.IO;
 using PdfDroplet.Properties;
-using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfDroplet
+namespace PdfDroplet.LayoutMethods
 {
     public abstract class LayoutMethod
     {
@@ -16,7 +14,6 @@ namespace PdfDroplet
         protected XUnit _outputHeight;
         protected XPdfForm _inputPdf;
         protected bool _rightToLeft;
-        //protected bool _landscapeOriginal=false;
         protected bool _calendarMode;
 
         protected LayoutMethod(string imageName)
@@ -29,8 +26,15 @@ namespace PdfDroplet
             get { return false; }
         }
 
-
-        public virtual void Layout(string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, XPdfForm inputPdf)
+		/// <summary>
+		/// Produce a new pdf with rearranged pages
+		/// </summary>
+		/// <param name="inputPdf">the source pdf</param>
+		/// <param name="inputPath">the path to the source pdf (used by null layouter)</param>
+		/// <param name="outputPath"></param>
+		/// <param name="paperTarget">The size of the pages of the output pdf</param>
+		/// <param name="rightToLeft">Is this a right-to-left language?  Might be better-named "backToFront"</param>
+        public virtual void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft)
         {
             _rightToLeft = rightToLeft;
             _inputPdf = inputPdf;

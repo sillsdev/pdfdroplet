@@ -1,9 +1,7 @@
-﻿using System;
-using System.Drawing;
-using PdfSharp.Drawing;
+﻿using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfDroplet
+namespace PdfDroplet.LayoutMethods
 {
     /// <summary>
     /// this is for when the input document is landscape, and we want a printout that can be cut down the middle (e.g. making a4 paper into a5 slices)
