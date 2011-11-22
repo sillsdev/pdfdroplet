@@ -41,7 +41,7 @@
 
 
   <Target Name="Build" DependsOnTargets="SetAssemblyVersion">
-    <MSBuild Projects="$(RootDir)/$(Solution).sln"
+    <MSBuild Projects="$(RootDir)/$(Solution)"
              Targets="Rebuild"
              Properties="Configuration=$(Configuration)" />
     <Message Text="Build Complete"/>
