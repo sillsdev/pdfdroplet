@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using DesktopAnalytics;
 using PdfDroplet.LayoutMethods;
 using PdfDroplet.Properties;
 
@@ -207,10 +208,11 @@ namespace PdfDroplet
 
         private void OnAboutLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            using (var dlg = new AboutBox())
+			using (var dlg = new AboutBox())
             {
                 dlg.ShowDialog();
             }
+			Analytics.Track("Show Instructions");
         }
         private void OnInstructionsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -218,6 +220,7 @@ namespace PdfDroplet
             {
                 dlg.ShowDialog();
             }
+			Analytics.Track("Show Instructions");
         }
 
         private void _layoutChoices_VisibleChanged(object sender, EventArgs e)

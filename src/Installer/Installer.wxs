@@ -20,6 +20,12 @@ http://blogs.msdn.com/robmen/archive/2003/10/04/56479.aspx -->
 
     <Package  Compressed="yes" InstallerVersion="200" />
 
+    <!-- changed schedule from afterInstallInitialize, to afterInstallValidate, hopes that upgrades which have some library (e.g. palaso) with a lower version won't leave us
+        with no palaso at all, as afterInstallInitialize was doing. But it's not clear whether even this will work, as it depends on when the "costing" happens: 
+        http://msdn.microsoft.com/en-us/library/aa371197.aspx -->
+    <MajorUpgrade   Schedule="afterInstallValidate"
+  DowngradeErrorMessage="A later version of PdfDroplet is already installed. If you really want to downgrade, first uninstall PdfDroplet, then do this install again."/>
+
     <Upgrade Id ="$(var.Property_UpgradeCode)" >
       <UpgradeVersion Minimum ="$(var.Property_ProductVersion)" OnlyDetect ="yes" Property ="NEWVERSIONDETECTED" />
       <UpgradeVersion Minimum ="0.0.0" IncludeMinimum ="yes" Maximum ="$(var.Property_ProductVersion)" IncludeMaximum ="no" Property ="OLDERVERSIONBEINGUPGRADED" />
@@ -81,10 +87,23 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
           <Component Id="itextsharp.dll" Guid="{04293B11-3F49-48D7-8B75-E115347172B2}">
             <File Id="itextsharp.dll" Name="itextsharp.dll" KeyPath="yes" Source="..\..\output\release\itextsharp.dll" />
           </Component>
-          
+
           <Component Id="PdfSharp.dll" Guid="{538668B9-E2D0-4D78-BD63-ACC7FBB1EAFC}">
             <File Id="PdfSharp.dll" Name="PdfSharp.dll" KeyPath="yes" Source="..\..\output\release\PdfSharp.dll" />
           </Component>
+          
+          <!--These 3 used for analytics, come in via nuget -->
+          <Component Id="DesktopAnalytics.dll" Guid="{CC30A246-0E27-4078-B37D-7795AB4DC5DA}">
+            <File Id="DesktopAnalytics.dll" Name="DesktopAnalytics.dll" KeyPath="yes" Source="..\..\output\release\DesktopAnalytics.dll" />
+          </Component>
+          <Component Id="Analytics.NET.dll" Guid="{8791AA5B-7F42-4CF9-8A2B-48F36DED625E}">
+            <File Id="Analytics.NET.dll" Name="Analytics.NET.dll" KeyPath="yes" Source="..\..\output\release\Analytics.NET.dll" />
+          </Component>
+          <Component Id="Newtonsoft.Json.dll" Guid="{A46C492A-304B-47b8-A13A-7CE4896B5644}">
+            <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" KeyPath="yes" Source="..\..\output\release\Newtonsoft.Json.dll" />
+          </Component>
+
+
           </Directory>
       </Directory>
     </Directory>
@@ -98,7 +117,9 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
       <ComponentRef Id="itextsharp.dll"/>
       <ComponentRef Id="PdfSharp.dll"/>
       <ComponentGroupRef Id ="DistFiles"/>
- 
+      <ComponentRef Id="DesktopAnalytics.dll" />
+      <ComponentRef Id="Analytics.NET.dll" />
+      <ComponentRef Id="Newtonsoft.Json.dll"/>
     </Feature>
     <Media Id="1" Cabinet="product.cab" EmbedCab="yes" />
     <Icon Id="PdfDroplet.exe" SourceFile ="..\..\output\release\PdfDroplet.exe" />
@@ -113,7 +134,6 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
                   Return="asyncNoWait"/>
     
     <InstallExecuteSequence>
-      <RemoveExistingProducts After="InstallInitialize" />
 
       <!--We need the condition here so that we only launch the executable when we make an installation but not when we remove the product-->
           <Custom Action='LaunchPdfDroplet' After="InstallFinalize">NOT Installed</Custom>

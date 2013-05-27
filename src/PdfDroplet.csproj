@@ -37,8 +37,17 @@
     <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Analytics.NET">
+      <HintPath>..\packages\Analytics.1.1.0\lib\Analytics.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="DesktopAnalytics">
+      <HintPath>..\packages\DesktopAnalytics.0.1.0\lib\net40-client\DesktopAnalytics.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Palaso">
       <HintPath>..\lib\Palaso.dll</HintPath>
@@ -117,6 +126,7 @@
       <DependentUpon>WorkspaceControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -128,6 +138,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ReadMe.md" />
     <None Include="Resources\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup />
