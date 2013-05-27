@@ -4,3 +4,5 @@ glob:output\
 glob:obj\
 glob:bin\
 glob:*.suo
+syntax: glob
+Palaso.*
