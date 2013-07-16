@@ -22,8 +22,8 @@ namespace PdfDroplet
         private string _incomingPath;
         private XPdfForm _inputPdf;
         private string _pathToCurrentlyDisplayedPdf;
-        
-        public WorkSpaceViewModel(WorkspaceControl workspaceControl)
+
+	    public WorkSpaceViewModel(WorkspaceControl workspaceControl)
         {
             _view = workspaceControl;
             //default to whatever the printer's default is
@@ -53,6 +53,15 @@ namespace PdfDroplet
             Settings.Default.Save();   
             SetLayoutMethod(SelectedMethod);
         }
+
+		
+	    public void SetCommercialPrinting(bool doCommercialPrinting)
+	    {
+			Settings.Default.CommercialPrinting = doCommercialPrinting;
+			Settings.Default.Save();
+
+			SetLayoutMethod(SelectedMethod);//cause to re-do it with this setting
+	    }
 
         public void SetMirror(bool doMirror)
         {
@@ -184,7 +193,7 @@ namespace PdfDroplet
 
             try
             {
-				SelectedMethod.Layout(_inputPdf, _incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft);
+				SelectedMethod.Layout(_inputPdf, _incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft, Settings.Default.CommercialPrinting);
                      _view.Navigate(_pathToCurrentlyDisplayedPdf);      
 
             }
@@ -302,5 +311,6 @@ namespace PdfDroplet
             }
             return true;
         }
+
     }
 }

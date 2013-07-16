@@ -13,11 +13,11 @@ namespace PdfDroplet.LayoutMethods
         {
         }
 
-        public override void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft)
+		public override void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool commercialPrinting)
         {
             File.Copy(inputPath, outputPath,true);
         }
-        protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
+		protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
         {
             throw new NotImplementedException();
         }
