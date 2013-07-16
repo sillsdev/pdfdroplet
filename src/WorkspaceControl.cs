@@ -24,10 +24,13 @@ namespace PdfDroplet
             _overBrowserPanel.Bounds = _browser.Bounds;
             _mirrorBox.Checked = Settings.Default.Mirror;
             _rightToLeft.Checked = Settings.Default.RightToLeft;
+	        _commercialPrinting.Checked = Settings.Default.CommercialPrinting;
+
             //important to do this after the above settings
             this._mirrorBox.CheckedChanged += new System.EventHandler(this.OnMirrorBox_CheckedChanged);
             this._rightToLeft.CheckedChanged += new System.EventHandler(this.OnRightToLeft_CheckedChanged);
-        }
+			this._commercialPrinting.CheckedChanged += new System.EventHandler(this.OnCommercialPrinting_CheckedChanged);
+		}
 
 
 
@@ -325,6 +328,11 @@ namespace PdfDroplet
         {
              _model.SetMirror(_mirrorBox.Checked);
         }
+
+		private void OnCommercialPrinting_CheckedChanged(object sender, EventArgs e)
+		{
+			_model.SetCommercialPrinting(_commercialPrinting.Checked);
+		}
 
 
     }

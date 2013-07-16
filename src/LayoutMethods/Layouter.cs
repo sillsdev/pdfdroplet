@@ -10,13 +10,15 @@ namespace PdfDroplet.LayoutMethods
     public abstract class LayoutMethod
     {
         private readonly string _imageName;
-        protected XUnit _outputWidth;
-        protected XUnit _outputHeight;
+        protected XUnit _paperWidth;
+        protected XUnit _paperHeight;
         protected XPdfForm _inputPdf;
         protected bool _rightToLeft;
         protected bool _calendarMode;
+	    private bool _commercialPrinting;
 
-        protected LayoutMethod(string imageName)
+
+	    protected LayoutMethod(string imageName)
         {
             _imageName = imageName;
         }
@@ -26,18 +28,20 @@ namespace PdfDroplet.LayoutMethods
             get { return false; }
         }
 
-		/// <summary>
-		/// Produce a new pdf with rearranged pages
-		/// </summary>
-		/// <param name="inputPdf">the source pdf</param>
-		/// <param name="inputPath">the path to the source pdf (used by null layouter)</param>
-		/// <param name="outputPath"></param>
-		/// <param name="paperTarget">The size of the pages of the output pdf</param>
-		/// <param name="rightToLeft">Is this a right-to-left language?  Might be better-named "backToFront"</param>
-        public virtual void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft)
+	    /// <summary>
+	    /// Produce a new pdf with rearranged pages
+	    /// </summary>
+	    /// <param name="inputPdf">the source pdf</param>
+	    /// <param name="inputPath">the path to the source pdf (used by null layouter)</param>
+	    /// <param name="outputPath"></param>
+	    /// <param name="paperTarget">The size of the pages of the output pdf</param>
+	    /// <param name="rightToLeft">Is this a right-to-left language?  Might be better-named "backToFront"</param>
+	    /// <param name="commercialPrinting">For commercial printing, make a Trimbox, BleedBox, and crop marks</param>
+	    public virtual void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool commercialPrinting)
         {
             _rightToLeft = rightToLeft;
             _inputPdf = inputPdf;
+		    _commercialPrinting = commercialPrinting;
 
             PdfDocument outputDocument = new PdfDocument();
 
@@ -49,8 +53,8 @@ namespace PdfDroplet.LayoutMethods
             outputDocument.PageLayout = PdfPageLayout.SinglePage;
 
             // Determine width and height
-            _outputWidth = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
-            _outputHeight = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
+            _paperWidth = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
+            _paperHeight = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
 
 
             int inputPages = _inputPdf.PageCount;
@@ -60,7 +64,7 @@ namespace PdfDroplet.LayoutMethods
             int numberOfPageSlotsAvailable = 4 * numberOfSheetsOfPaper;
             int vacats = numberOfPageSlotsAvailable - inputPages;
 
-            LayoutInner(outputDocument, numberOfSheetsOfPaper, numberOfPageSlotsAvailable, vacats);
+			LayoutInner(outputDocument, numberOfSheetsOfPaper, numberOfPageSlotsAvailable, vacats);
            
 //            if(true)
 //                foreach (PdfPage page in outputDocument.Pages)
@@ -73,31 +77,88 @@ namespace PdfDroplet.LayoutMethods
             outputDocument.Save(outputPath);
         }
 
-        protected abstract void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats);
+		protected abstract void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats);
 
 
-        protected XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)
-        {
-            XGraphics gfx;
-            PdfPage page = outputDocument.AddPage();
-            //page.Orientation = PageOrientation.Landscape;//review: why does this say it's always landscape (and why does that work?) Or maybe it has no effect?
-            page.Width = _outputWidth;
-            page.Height = _outputHeight;
+	    protected XGraphics GetGraphicsForNewPage(PdfDocument outputDocument)
+	    {
+		    XGraphics gfx;
+		    PdfPage page = outputDocument.AddPage();
+		    //page.Orientation = PageOrientation.Landscape;//review: why does this say it's always landscape (and why does that work?) Or maybe it has no effect?
 
-            gfx = XGraphics.FromPdfPage(page);
+		    const double millimetersBetweenTrimAndMediaBox = 6; //I read that "3.175" is standard, but then the crop marks are barely visible. I'm concerned that if they aren't obvious, people might not understand what they are seeing, and be confused.
+			var xunitsBetweenTrimAndMediaBox = XUnit.FromMillimeter(millimetersBetweenTrimAndMediaBox);
 
-            if (Settings.Default.Mirror)
+			if (_commercialPrinting)
+		    {
+				XPoint upperLeftTrimBoxCorner = new XPoint(xunitsBetweenTrimAndMediaBox, xunitsBetweenTrimAndMediaBox);
+			    page.Width = XUnit.FromMillimeter(_paperWidth.Millimeter+(2.0*millimetersBetweenTrimAndMediaBox));
+				page.Height = XUnit.FromMillimeter(_paperHeight.Millimeter + (2.0 * millimetersBetweenTrimAndMediaBox)); ;
+			    page.TrimBox = new PdfRectangle (upperLeftTrimBoxCorner, new XSize(_paperWidth, _paperHeight));
+			}
+		    else
+		    {
+				page.Width = _paperWidth;
+				page.Height = _paperHeight;
+		    }
+
+			gfx = XGraphics.FromPdfPage(page);
+
+			if (_commercialPrinting)
+		    {
+			    DrawCropMarks(page, gfx, xunitsBetweenTrimAndMediaBox);
+				//push the page down and to the left
+				gfx.TranslateTransform(xunitsBetweenTrimAndMediaBox,xunitsBetweenTrimAndMediaBox);
+		    }
+
+		    if (Settings.Default.Mirror)
             {
                 Matrix mirrorMatrix = new Matrix(-1, 0, 0, 1, 0, 0);
                 gfx.MultiplyTransform(mirrorMatrix);
-                gfx.TranslateTransform(-_outputWidth, 1);
+                gfx.TranslateTransform(-_paperWidth, 1);
             }
 
             return gfx;
         }
 
+	    private static void DrawCropMarks(PdfPage page, XGraphics gfx, XUnit xunitsBetweenTrimAndMediaBox)
+	    {
+		    XPoint upperLeftTrimBoxCorner = page.TrimBox.ToXRect().TopLeft;
+			XPoint upperRightTrimBoxCorner = page.TrimBox.ToXRect().TopRight;
+		    XPoint lowerLeftTrimBoxCorner = page.TrimBox.ToXRect().BottomLeft;
+		    XPoint lowerRightTrimBoxCorner = page.TrimBox.ToXRect().BottomRight;
 
-        public abstract bool GetIsEnabled(bool isLandscape);
+			//while blue would look nicer, then if they make color separations, the marks wouldn't show all all of them. 
+			//Note that in InDesign, there is a "registration color" which looks black but is actually 100% of all each 
+			//sep color, so it always prints. But I don't see a way to do that in PDF.
+			//.25 is a standard width
+			var pen = new XPen(XColor.FromKnownColor(XKnownColor.Black), .25); 
+			
+		    var gapLength = XUnit.FromMillimeter(3.175); // this 3.175 is the industry standard
+
+		    gfx.DrawLine(pen, upperLeftTrimBoxCorner.X - gapLength, upperLeftTrimBoxCorner.Y,
+		                 upperLeftTrimBoxCorner.X - xunitsBetweenTrimAndMediaBox, upperLeftTrimBoxCorner.Y);
+		    gfx.DrawLine(pen, upperLeftTrimBoxCorner.X, upperLeftTrimBoxCorner.Y - gapLength, upperLeftTrimBoxCorner.X,
+		                 upperLeftTrimBoxCorner.Y - xunitsBetweenTrimAndMediaBox);
+
+		    gfx.DrawLine(pen, upperRightTrimBoxCorner.X + gapLength, upperRightTrimBoxCorner.Y,
+		                 upperRightTrimBoxCorner.X + xunitsBetweenTrimAndMediaBox, upperLeftTrimBoxCorner.Y);
+		    gfx.DrawLine(pen, upperRightTrimBoxCorner.X, upperRightTrimBoxCorner.Y - gapLength, upperRightTrimBoxCorner.X,
+		                 upperLeftTrimBoxCorner.Y - xunitsBetweenTrimAndMediaBox);
+
+		    gfx.DrawLine(pen, lowerLeftTrimBoxCorner.X - gapLength, lowerLeftTrimBoxCorner.Y,
+		                 lowerLeftTrimBoxCorner.X - xunitsBetweenTrimAndMediaBox, lowerLeftTrimBoxCorner.Y);
+		    gfx.DrawLine(pen, lowerLeftTrimBoxCorner.X, lowerLeftTrimBoxCorner.Y + gapLength, lowerLeftTrimBoxCorner.X,
+		                 lowerLeftTrimBoxCorner.Y + xunitsBetweenTrimAndMediaBox);
+
+		    gfx.DrawLine(pen, lowerRightTrimBoxCorner.X + gapLength, lowerRightTrimBoxCorner.Y,
+		                 lowerRightTrimBoxCorner.X + xunitsBetweenTrimAndMediaBox, lowerRightTrimBoxCorner.Y);
+		    gfx.DrawLine(pen, lowerRightTrimBoxCorner.X, lowerRightTrimBoxCorner.Y + gapLength, lowerRightTrimBoxCorner.X,
+		                 lowerRightTrimBoxCorner.Y + xunitsBetweenTrimAndMediaBox);
+	    }
+
+
+	    public abstract bool GetIsEnabled(bool isLandscape);
 
         public virtual Image GetImage(bool isLandscape)
         {

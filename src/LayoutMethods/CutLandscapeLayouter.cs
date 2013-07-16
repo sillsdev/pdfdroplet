@@ -23,7 +23,7 @@ namespace PdfDroplet.LayoutMethods
             return isLandscape;
         }
 
-        protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
+		protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
         {
             XGraphics gfx;
             for (int sheetOfPaperIndex = 1; sheetOfPaperIndex <= numberOfSheetsOfPaper; sheetOfPaperIndex++)
@@ -62,14 +62,14 @@ namespace PdfDroplet.LayoutMethods
         private void DrawBottom(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
         {
             _inputPdf.PageNumber = pageNumber;
-            XRect box = new XRect(0, _outputHeight / 2, _outputWidth, _outputHeight / 2);
+            XRect box = new XRect(0, _paperHeight / 2, _paperWidth, _paperHeight / 2);
             gfx.DrawImage(_inputPdf, box);
          }
 
         private void DrawTop(XGraphics gfx, int pageNumber)
         {
             _inputPdf.PageNumber = pageNumber;
-            XRect box = new XRect(0, 0, _outputWidth, _outputHeight / 2);
+            XRect box = new XRect(0, 0, _paperWidth, _paperHeight / 2);
             gfx.DrawImage(_inputPdf, box);
         }
 

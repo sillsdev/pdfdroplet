@@ -73,12 +73,12 @@ namespace PdfDroplet.LayoutMethods
             XRect box;
             if (_inputPdf.PixelWidth > _inputPdf.PixelHeight)//landscape calendar
             {
-                box = new XRect(0, _outputHeight / 2, _outputWidth, _outputHeight / 2);
+                box = new XRect(0, _paperHeight / 2, _paperWidth, _paperHeight / 2);
             }
             else
             {
-                var leftEdge = _rightToLeft ? 0 : _outputWidth / 2;
-                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+                var leftEdge = _rightToLeft ? 0 : _paperWidth / 2;
+                box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight);
             }
             gfx.DrawImage(_inputPdf, box);
         }
@@ -93,13 +93,13 @@ namespace PdfDroplet.LayoutMethods
             XRect box;
             if (_inputPdf.PixelWidth > _inputPdf.PixelHeight)//landscape calendar
             {
-                box = new XRect(0, 0, _outputWidth, _outputHeight / 2);
+                box = new XRect(0, 0, _paperWidth, _paperHeight / 2);
             }
 
             else
             {
-                var leftEdge = _rightToLeft ? _outputWidth / 2 : 0;
-                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+                var leftEdge = _rightToLeft ? _paperWidth / 2 : 0;
+                box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight);
             }
             gfx.DrawImage(_inputPdf, box);
 

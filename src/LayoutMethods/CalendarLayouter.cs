@@ -20,7 +20,7 @@ namespace PdfDroplet.LayoutMethods
             return "Calendar Fold";
         }
 
-        protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
+		protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
         {
             XGraphics gfx;
             for (int idx = 1; idx <= numberOfSheetsOfPaper; idx++)
@@ -47,7 +47,7 @@ namespace PdfDroplet.LayoutMethods
 					//NB: see interesting method for computing how much you have to shift it over, based
 					//on the angle you are rotating:  http://social.msdn.microsoft.com/Forums/en-US/csharpgeneral/thread/a1e62e03-d732-444d-bb3d-6e7907fd5e16
 
-					gfx.TranslateTransform(-_outputWidth, -_outputHeight); 
+					gfx.TranslateTransform(-_paperWidth, -_paperHeight); 
 					
 					if (2 * idx <= _inputPdf.PageCount) //prevent asking for page 2 with a single page document (JH Oct 2010)
                     {
@@ -80,12 +80,12 @@ namespace PdfDroplet.LayoutMethods
             XRect box;
             if (_inputPdf.PixelWidth > _inputPdf.PixelHeight)//landscape calendar
             {
-                box = new XRect(0, _outputHeight / 2, _outputWidth, _outputHeight / 2);
+                box = new XRect(0, _paperHeight / 2, _paperWidth, _paperHeight / 2);
             }
             else
             {
-                var leftEdge = _rightToLeft ? 0 : _outputWidth / 2;
-                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+                var leftEdge = _rightToLeft ? 0 : _paperWidth / 2;
+                box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight);
             }
             gfx.DrawImage(_inputPdf, box);
         }
@@ -100,13 +100,13 @@ namespace PdfDroplet.LayoutMethods
             XRect box;
             if (_inputPdf.PixelWidth > _inputPdf.PixelHeight)//landscape calendar
             {
-                box = new XRect(0, 0, _outputWidth, _outputHeight / 2);
+                box = new XRect(0, 0, _paperWidth, _paperHeight / 2);
             }
 
             else
             {
-                var leftEdge = _rightToLeft ? _outputWidth / 2 : 0;
-                box = new XRect(leftEdge, 0, _outputWidth / 2, _outputHeight);
+                var leftEdge = _rightToLeft ? _paperWidth / 2 : 0;
+                box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight);
             }
             gfx.DrawImage(_inputPdf, box);
 
