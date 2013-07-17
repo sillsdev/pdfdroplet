@@ -13,7 +13,7 @@ namespace PdfDroplet.LayoutMethods
         {
         }
 
-		public override void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool commercialPrinting)
+		public override void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool showCropMarks)
         {
             File.Copy(inputPath, outputPath,true);
         }

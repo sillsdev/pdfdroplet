@@ -55,9 +55,9 @@ namespace PdfDroplet
         }
 
 		
-	    public void SetCommercialPrinting(bool doCommercialPrinting)
+	    public void ShowCropMarks(bool showCropMarks)
 	    {
-			Settings.Default.CommercialPrinting = doCommercialPrinting;
+			Settings.Default.ShowCropMarks = showCropMarks;
 			Settings.Default.Save();
 
 			SetLayoutMethod(SelectedMethod);//cause to re-do it with this setting
@@ -193,7 +193,7 @@ namespace PdfDroplet
 
             try
             {
-				SelectedMethod.Layout(_inputPdf, _incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft, Settings.Default.CommercialPrinting);
+				SelectedMethod.Layout(_inputPdf, _incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft, Settings.Default.ShowCropMarks);
                      _view.Navigate(_pathToCurrentlyDisplayedPdf);      
 
             }
