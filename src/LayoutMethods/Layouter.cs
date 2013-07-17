@@ -15,7 +15,7 @@ namespace PdfDroplet.LayoutMethods
         protected XPdfForm _inputPdf;
         protected bool _rightToLeft;
         protected bool _calendarMode;
-	    private bool _commercialPrinting;
+	    private bool _showCropMarks;
 
 
 	    protected LayoutMethod(string imageName)
@@ -36,12 +36,12 @@ namespace PdfDroplet.LayoutMethods
 	    /// <param name="outputPath"></param>
 	    /// <param name="paperTarget">The size of the pages of the output pdf</param>
 	    /// <param name="rightToLeft">Is this a right-to-left language?  Might be better-named "backToFront"</param>
-	    /// <param name="commercialPrinting">For commercial printing, make a Trimbox, BleedBox, and crop marks</param>
-	    public virtual void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool commercialPrinting)
+	    /// <param name="showCropMarks">For commercial printing, make a Trimbox, BleedBox, and crop marks</param>
+	    public virtual void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool showCropMarks)
         {
             _rightToLeft = rightToLeft;
             _inputPdf = inputPdf;
-		    _commercialPrinting = commercialPrinting;
+		    _showCropMarks = showCropMarks;
 
             PdfDocument outputDocument = new PdfDocument();
 
@@ -89,13 +89,14 @@ namespace PdfDroplet.LayoutMethods
 		    const double millimetersBetweenTrimAndMediaBox = 6; //I read that "3.175" is standard, but then the crop marks are barely visible. I'm concerned that if they aren't obvious, people might not understand what they are seeing, and be confused.
 			var xunitsBetweenTrimAndMediaBox = XUnit.FromMillimeter(millimetersBetweenTrimAndMediaBox);
 
-			if (_commercialPrinting)
+			if (_showCropMarks)
 		    {
 				XPoint upperLeftTrimBoxCorner = new XPoint(xunitsBetweenTrimAndMediaBox, xunitsBetweenTrimAndMediaBox);
 			    page.Width = XUnit.FromMillimeter(_paperWidth.Millimeter+(2.0*millimetersBetweenTrimAndMediaBox));
 				page.Height = XUnit.FromMillimeter(_paperHeight.Millimeter + (2.0 * millimetersBetweenTrimAndMediaBox)); ;
 			    page.TrimBox = new PdfRectangle (upperLeftTrimBoxCorner, new XSize(_paperWidth, _paperHeight));
-			}
+			    //page.CropBox = page.TrimBox;
+		    }
 		    else
 		    {
 				page.Width = _paperWidth;
@@ -104,7 +105,7 @@ namespace PdfDroplet.LayoutMethods
 
 			gfx = XGraphics.FromPdfPage(page);
 
-			if (_commercialPrinting)
+			if (_showCropMarks)
 		    {
 			    DrawCropMarks(page, gfx, xunitsBetweenTrimAndMediaBox);
 				//push the page down and to the left

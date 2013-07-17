@@ -41,7 +41,7 @@
 			this._browseForPdf = new System.Windows.Forms.LinkLabel();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this._mirrorBox = new System.Windows.Forms.CheckBox();
-			this._commercialPrinting = new System.Windows.Forms.CheckBox();
+			this._showCropMarks = new System.Windows.Forms.CheckBox();
 			this._layoutChoices.SuspendLayout();
 			this._overBrowserPanel.SuspendLayout();
 			this.SuspendLayout();
@@ -204,17 +204,17 @@
 			this._mirrorBox.Text = "Mirror";
 			this._mirrorBox.UseVisualStyleBackColor = true;
 			// 
-			// _commercialPrinting
+			// _showCropMarks
 			// 
-			this._commercialPrinting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this._commercialPrinting.AutoSize = true;
-			this._commercialPrinting.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this._commercialPrinting.Location = new System.Drawing.Point(224, 601);
-			this._commercialPrinting.Name = "_commercialPrinting";
-			this._commercialPrinting.Size = new System.Drawing.Size(129, 17);
-			this._commercialPrinting.TabIndex = 31;
-			this._commercialPrinting.Text = "Commercial Printing";
-			this._commercialPrinting.UseVisualStyleBackColor = true;
+			this._showCropMarks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this._showCropMarks.AutoSize = true;
+			this._showCropMarks.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this._showCropMarks.Location = new System.Drawing.Point(224, 601);
+			this._showCropMarks.Name = "_showCropMarks";
+			this._showCropMarks.Size = new System.Drawing.Size(85, 17);
+			this._showCropMarks.TabIndex = 31;
+			this._showCropMarks.Text = "Crop Marks";
+			this._showCropMarks.UseVisualStyleBackColor = true;
 			// 
 			// WorkspaceControl
 			// 
@@ -222,7 +222,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
-			this.Controls.Add(this._commercialPrinting);
+			this.Controls.Add(this._showCropMarks);
 			this.Controls.Add(this._mirrorBox);
 			this.Controls.Add(this._overBrowserPanel);
 			this.Controls.Add(this.linkLabel1);
@@ -262,6 +262,6 @@
         private System.Windows.Forms.LinkLabel _browseForPdf;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.CheckBox _mirrorBox;
-		private System.Windows.Forms.CheckBox _commercialPrinting;
+		private System.Windows.Forms.CheckBox _showCropMarks;
     }
 }

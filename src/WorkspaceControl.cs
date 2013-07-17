@@ -24,12 +24,12 @@ namespace PdfDroplet
             _overBrowserPanel.Bounds = _browser.Bounds;
             _mirrorBox.Checked = Settings.Default.Mirror;
             _rightToLeft.Checked = Settings.Default.RightToLeft;
-	        _commercialPrinting.Checked = Settings.Default.CommercialPrinting;
+	        _showCropMarks.Checked = Settings.Default.ShowCropMarks;
 
             //important to do this after the above settings
             this._mirrorBox.CheckedChanged += new System.EventHandler(this.OnMirrorBox_CheckedChanged);
             this._rightToLeft.CheckedChanged += new System.EventHandler(this.OnRightToLeft_CheckedChanged);
-			this._commercialPrinting.CheckedChanged += new System.EventHandler(this.OnCommercialPrinting_CheckedChanged);
+			this._showCropMarks.CheckedChanged += new System.EventHandler(this.OnShowCropMarks_CheckedChanged);
 		}
 
 
@@ -56,7 +56,7 @@ namespace PdfDroplet
 
         public void UpdateDisplay()
         {
-            _mirrorBox.Enabled = _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
+            _showCropMarks.Enabled= _mirrorBox.Enabled = _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
                                       _model.SelectedMethod.GetType() != typeof(NullLayoutMethod);
 
             
@@ -329,9 +329,9 @@ namespace PdfDroplet
              _model.SetMirror(_mirrorBox.Checked);
         }
 
-		private void OnCommercialPrinting_CheckedChanged(object sender, EventArgs e)
+		private void OnShowCropMarks_CheckedChanged(object sender, EventArgs e)
 		{
-			_model.SetCommercialPrinting(_commercialPrinting.Checked);
+			_model.ShowCropMarks(_showCropMarks.Checked);
 		}
 
 
