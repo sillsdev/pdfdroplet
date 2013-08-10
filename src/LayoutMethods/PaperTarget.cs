@@ -17,8 +17,13 @@ namespace PdfDroplet.LayoutMethods
             p.Size = pageSize;
             _width = p.Width;
             _height = p.Height;
+
+
         }
-        public PaperTarget(string name, System.Drawing.Printing.PaperSize pageSize)
+
+
+
+	    public PaperTarget(string name, System.Drawing.Printing.PaperSize pageSize)
         {
             Name = name;
             _width = XUnit.FromInch(((double)pageSize.Width) / 100d);

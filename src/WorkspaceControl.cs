@@ -56,7 +56,7 @@ namespace PdfDroplet
 
         public void UpdateDisplay()
         {
-            _showCropMarks.Enabled= _mirrorBox.Enabled = _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
+            /*_showCropMarks.Enabled=*/ _mirrorBox.Enabled = _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
                                       _model.SelectedMethod.GetType() != typeof(NullLayoutMethod);
 
             
