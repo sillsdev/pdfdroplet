@@ -15,8 +15,9 @@ namespace PdfDroplet.LayoutMethods
         protected XPdfForm _inputPdf;
         protected bool _rightToLeft;
         protected bool _calendarMode;
-	    private bool _showCropMarks;
+	    protected bool _showCropMarks;
 
+		public const  double kMillimetersBetweenTrimAndMediaBox = 6; //I read that "3.175" is standard, but then the crop marks are barely visible. I'm concerned that if they aren't obvious, people might not understand what they are seeing, and be confused.
 
 	    protected LayoutMethod(string imageName)
         {
@@ -86,15 +87,13 @@ namespace PdfDroplet.LayoutMethods
 		    PdfPage page = outputDocument.AddPage();
 		    //page.Orientation = PageOrientation.Landscape;//review: why does this say it's always landscape (and why does that work?) Or maybe it has no effect?
 
-		    const double millimetersBetweenTrimAndMediaBox = 6; //I read that "3.175" is standard, but then the crop marks are barely visible. I'm concerned that if they aren't obvious, people might not understand what they are seeing, and be confused.
-			var xunitsBetweenTrimAndMediaBox = XUnit.FromMillimeter(millimetersBetweenTrimAndMediaBox);
+			var xunitsBetweenTrimAndMediaBox = XUnit.FromMillimeter(kMillimetersBetweenTrimAndMediaBox);
 
 			if (_showCropMarks)
 		    {
-				XPoint upperLeftTrimBoxCorner = new XPoint(xunitsBetweenTrimAndMediaBox, xunitsBetweenTrimAndMediaBox);
-			    page.Width = XUnit.FromMillimeter(_paperWidth.Millimeter+(2.0*millimetersBetweenTrimAndMediaBox));
-				page.Height = XUnit.FromMillimeter(_paperHeight.Millimeter + (2.0 * millimetersBetweenTrimAndMediaBox)); ;
-			    page.TrimBox = new PdfRectangle (upperLeftTrimBoxCorner, new XSize(_paperWidth, _paperHeight));
+			    page.Width = XUnit.FromMillimeter(_paperWidth.Millimeter+(2.0*kMillimetersBetweenTrimAndMediaBox));
+				page.Height = XUnit.FromMillimeter(_paperHeight.Millimeter + (2.0 * kMillimetersBetweenTrimAndMediaBox)); ;
+			    page.TrimBox = GetTrimBoxRectangle();
 			    //page.CropBox = page.TrimBox;
 		    }
 		    else
@@ -121,6 +120,13 @@ namespace PdfDroplet.LayoutMethods
 
             return gfx;
         }
+
+	    protected PdfRectangle GetTrimBoxRectangle()
+	    {
+			var xunitsBetweenTrimAndMediaBox = XUnit.FromMillimeter(kMillimetersBetweenTrimAndMediaBox);
+			XPoint upperLeftTrimBoxCorner = new XPoint(xunitsBetweenTrimAndMediaBox, xunitsBetweenTrimAndMediaBox); 
+			return new PdfRectangle(upperLeftTrimBoxCorner, new XSize(_paperWidth, _paperHeight));
+	    }
 
 	    private static void DrawCropMarks(PdfPage page, XGraphics gfx, XUnit xunitsBetweenTrimAndMediaBox)
 	    {
