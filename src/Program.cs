@@ -15,57 +15,59 @@ using PdfDroplet.Properties;
 
 namespace PdfDroplet
 {
-    static class Program
+    internal static class Program
     {
-	    /// <summary>
-	    /// The main entry point for the application.
-	    /// </summary>
-	    [STAThread]
-	    private static void Main(string[] args)
-	    {
-		    Application.EnableVisualStyles();
-		    Application.SetCompatibleTextRenderingDefault(false);
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        private static void Main(string[] args)
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
 
 
-		    //bring in settings from any previous version
-		    if (Settings.Default.NeedUpgrade)
-		    {
-			    //see http://stackoverflow.com/questions/3498561/net-applicationsettingsbase-should-i-call-upgrade-every-time-i-load
-			    Settings.Default.Upgrade();
-			    Settings.Default.NeedUpgrade = false;
-			    Settings.Default.Save();
-		    }
-		    if (Settings.Default.Reporting == null)
-			    Settings.Default.Reporting = new ReportingSettings();
-		    SetupErrorHandling();
+            //bring in settings from any previous version
+            if (Settings.Default.NeedUpgrade)
+            {
+                //see http://stackoverflow.com/questions/3498561/net-applicationsettingsbase-should-i-call-upgrade-every-time-i-load
+                Settings.Default.Upgrade();
+                Settings.Default.NeedUpgrade = false;
+                Settings.Default.Save();
+            }
+            if (Settings.Default.Reporting == null)
+                Settings.Default.Reporting = new ReportingSettings();
+            SetupErrorHandling();
 
-		    if (Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Adobe\Acrobat Reader") == null)
-		    {
-			    MessageBox.Show(
-				    "PdfDroplet requires that your computer be set up to show PDFs in Internet Explorer.  If you have problems, make sure Adobe Reader is installed; re-install it if necessary.");
-		    }
+            if (Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Adobe\Acrobat Reader") == null)
+            {
+                MessageBox.Show(
+                    "PdfDroplet requires that your computer be set up to show PDFs in Internet Explorer.  If you have problems, make sure Adobe Reader is installed; re-install it if necessary.");
+            }
 
 #if DEBUG
-			using (new Analytics("mk41r4rtmyh0ejqtuwaf"))//"UA-22170471-5"
+            using (new Analytics("mk41r4rtmyh0ejqtuwaf", new UserInfo(), true))
 #else
-			using (new Analytics("mk41r4rtmyh0ejqtuwaf"))
+            string feedbackSetting = System.Environment.GetEnvironmentVariable("FEEDBACK");
+		        
+			//default is to allow tracking
+			var allowTracking = string.IsNullOrEmpty(feedbackSetting) || feedbackSetting.ToLower() == "yes" || feedbackSetting.ToLower() == "true";
+            using (new Analytics("mk41r4rtmyh0ejqtuwaf",new UserInfo(), allowTracking))
 #endif
-			{
-			    Application.Run(new MainWindow(args.Contains<string>("-about")));
-		    }
+            {
+                Application.Run(new MainWindow(args.Contains<string>("-about")));
+            }
 
-		    Settings.Default.Save();
-	    }
+            Settings.Default.Save();
+        }
 
-	    private static void SetupErrorHandling()
+        private static void SetupErrorHandling()
         {
-            ErrorReport.EmailAddress = "spam@pdfdroplet.palaso.org".Replace("spam","issues");
+            ErrorReport.EmailAddress = "spam@pdfdroplet.palaso.org".Replace("spam", "issues");
             ErrorReport.AddStandardProperties();
             ExceptionHandler.Init();
-			ExceptionHandler.AddDelegate((w, e) => DesktopAnalytics.Analytics.ReportException(e.Exception));
+            ExceptionHandler.AddDelegate((w, e) => DesktopAnalytics.Analytics.ReportException(e.Exception));
         }
     }
-
-  
 }
