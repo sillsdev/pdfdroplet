@@ -39,11 +39,13 @@
     <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Analytics.NET">
-      <HintPath>..\packages\Analytics.1.1.0\lib\Analytics.NET.dll</HintPath>
+    <Reference Include="Analytics.NET, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Analytics.2.0.0\lib\Analytics.NET.dll</HintPath>
     </Reference>
-    <Reference Include="DesktopAnalytics">
-      <HintPath>..\packages\DesktopAnalytics.0.1.0\lib\net40-client\DesktopAnalytics.dll</HintPath>
+    <Reference Include="DesktopAnalytics, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DesktopAnalytics.1.1.2\lib\net40\DesktopAnalytics.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\lib\itextsharp.dll</HintPath>
@@ -138,7 +140,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ReadMe.md" />
     <None Include="Resources\AppIcon.ico" />
   </ItemGroup>
   <ItemGroup />
