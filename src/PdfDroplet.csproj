@@ -87,6 +87,7 @@
     <Compile Include="LayoutMethods\CalendarLayouter.cs" />
     <Compile Include="LayoutMethods\CutLandscapeLayouter.cs" />
     <Compile Include="LayoutMethods\Layouter.cs" />
+    <Compile Include="LayoutMethods\SideFold4UpBookletLayouter.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
