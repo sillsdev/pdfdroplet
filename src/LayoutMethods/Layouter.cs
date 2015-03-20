@@ -54,8 +54,7 @@ namespace PdfDroplet.LayoutMethods
             outputDocument.PageLayout = PdfPageLayout.SinglePage;
 
             // Determine width and height
-            _paperWidth = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
-            _paperHeight = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
+            SetPaperSize(paperTarget);
 
 
             int inputPages = _inputPdf.PageCount;
@@ -77,6 +76,12 @@ namespace PdfDroplet.LayoutMethods
 //                }
             outputDocument.Save(outputPath);
         }
+
+	    protected virtual void SetPaperSize(PaperTarget paperTarget)
+	    {
+		    _paperWidth = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).X;
+		    _paperHeight = paperTarget.GetPaperDimensions(_inputPdf.PixelWidth, _inputPdf.PixelHeight).Y;
+	    }
 
 		protected abstract void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats);
 
