@@ -35,108 +35,57 @@ namespace PdfDroplet.LayoutMethods
 
 		protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
         {
-			// TODO: how do we handle right-to-left?
-
-			// Recalculate for showing 4up instead of 2up on each side of a sheet.
-			int inputPages = _inputPdf.PageCount;
-			numberOfSheetsOfPaper = inputPages / 8;
-			if (numberOfSheetsOfPaper * 8 < inputPages)
-				numberOfSheetsOfPaper += 1;
-			numberOfPageSlotsAvailable = 8 * numberOfSheetsOfPaper;
-			vacats = numberOfPageSlotsAvailable - inputPages;
-	        Debug.Assert(vacats >= 0 && vacats < 8);
-	        int vacatsSkipped = 0;
-	        bool skipLastRow = vacats >= 4;
-
-            XGraphics gfx;
-            for (int idx = 1; idx <= numberOfSheetsOfPaper; idx++)
+			for (var idx = 1; idx <= numberOfSheetsOfPaper; idx++)
             {
-	            bool onFirstSheet = idx == 1;
-	            bool onLastSheet = idx == numberOfSheetsOfPaper;
-
-                // Front side of a sheet:
-				int topLeftFrontPage = numberOfPageSlotsAvailable - (4 * (idx - 1));
-	            if (skipLastRow)
-		            topLeftFrontPage -= 4;
-				int bottomLeftFrontPage = topLeftFrontPage - 2;
-				int topRightFrontPage = 4 * idx - 3;
-				int bottomRightFrontPage = topRightFrontPage + 2;
+	            XGraphics gfx;
+				// Front page of a sheet:
 				using (gfx = GetGraphicsForNewPage(outputDocument))
 				{
-	                if (onFirstSheet && topLeftFrontPage > inputPages)
-		                ++vacatsSkipped;
-	                else
-						DrawTopLeftCorner(gfx, topLeftFrontPage);
-
-					if ((onFirstSheet && bottomLeftFrontPage > inputPages) || (onLastSheet && skipLastRow))
-		                ++vacatsSkipped;
-	                else
-		                DrawBottomLeftCorner(gfx, bottomLeftFrontPage);
-
-	                DrawTopRightCorner(gfx, topRightFrontPage);
-
-					if ((onFirstSheet && bottomRightFrontPage > inputPages) || (onLastSheet && skipLastRow))
-		                ++vacatsSkipped;
+					//Left side of front
+					if (vacats > 0) // Skip if left side has to remain blank
+						vacats -= 1;
 					else
-		                DrawBottomRightCorner(gfx, bottomRightFrontPage);
-                }
+						DrawSuperiorSide(gfx, numberOfPageSlotsAvailable + 2 * (1 - idx));
 
-                // Back side of a sheet:
-				int topLeftBackPage = topRightFrontPage + 1;
-				int bottomLeftBackPage = bottomRightFrontPage + 1;
-				int topRightBackPage = topLeftFrontPage - 1;
-				int bottomRightBackPage = bottomLeftFrontPage - 1;
-				using (gfx = GetGraphicsForNewPage(outputDocument))
-                {
-					if (topLeftBackPage > inputPages)
-						++vacatsSkipped;
-					else
-						DrawTopLeftCorner(gfx, topLeftBackPage);
-
-					if ((onFirstSheet && bottomLeftBackPage > inputPages) || (onLastSheet && skipLastRow))
-						++vacatsSkipped;
-					else
-						DrawBottomLeftCorner(gfx, bottomLeftBackPage);
-
-					if (onFirstSheet && topRightBackPage > inputPages)
-		                ++vacatsSkipped;
-	                else
-		                DrawTopRightCorner(gfx, topRightBackPage);
-
-					if ((onFirstSheet && bottomRightBackPage > inputPages) || (onLastSheet && skipLastRow))
-						++vacatsSkipped;
-					else
-						DrawBottomRightCorner(gfx, bottomRightBackPage);
+					//Right side of the front
+					DrawInferiorSide(gfx, 2 * idx - 1);
 				}
-            }
-			Debug.Assert(vacats == vacatsSkipped);
+
+				// Back page of a sheet
+				using (gfx = GetGraphicsForNewPage(outputDocument))
+				{
+					if (2 * idx <= _inputPdf.PageCount) //prevent asking for page 2 with a single page document (JH Oct 2010)
+						//Left side of back
+						DrawSuperiorSide(gfx, 2 * idx);
+
+					//Right side of the Back
+					if (vacats > 0) // Skip if right side has to remain blank
+						vacats -= 1;
+					else
+						DrawInferiorSide(gfx, numberOfPageSlotsAvailable + 1 - 2 * idx);
+				}
+			}
 		}
 
-		private void DrawTopLeftCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
+		private void DrawInferiorSide(XGraphics gfx, int pageNumber)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(0, 0, _paperWidth / 2, _paperHeight / 2);
+			var leftEdge = _rightToLeft ? 0 : _paperWidth / 2;
+			var box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight / 2);
+			gfx.DrawImage(_inputPdf, box);
+			_inputPdf.PageNumber = pageNumber;
+			box = new XRect(leftEdge, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 
-		private void DrawBottomLeftCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
+		private void DrawSuperiorSide(XGraphics gfx, int pageNumber)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(0, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
+			var leftEdge = _rightToLeft ? _paperWidth / 2 : 0;
+			var box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
-		}
-
-		private void DrawTopRightCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
-		{
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(_paperWidth / 2, 0, _paperWidth / 2, _paperHeight / 2);
-			gfx.DrawImage(_inputPdf, box);
-		}
-
-		private void DrawBottomRightCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
-		{
-			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(_paperWidth / 2, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
+			box = new XRect(leftEdge, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 
