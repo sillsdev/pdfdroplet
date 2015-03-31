@@ -32,10 +32,12 @@
     <Message Text="Version: $(Version)" Importance="high"/>
   </Target>
    
+   <!-- Note: Mono xbuild doesn't support ItemGroup inside Target -->
+  <ItemGroup>
+    <AssemblyInfoFiles Include="$(RootDir)/src/**/assemblyinfo.cs"/>
+  </ItemGroup>
+
   <Target Name="SetAssemblyVersion" DependsOnTargets ="VersionNumbers">
-      <ItemGroup>
-        <AssemblyInfoFiles Include="$(RootDir)/src/**/assemblyinfo.cs"/>
-      </ItemGroup>
       <StampAssemblies Version="$(Version)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
     </Target>
 
