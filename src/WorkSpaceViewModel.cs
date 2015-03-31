@@ -80,6 +80,7 @@ namespace PdfDroplet
             yield return new CalendarLayouter();
             yield return new CutLandscapeLayout();
             yield return new SideFold4UpBookletLayouter();
+	        yield return new SideFold4UpSingleBookletLayouter();
         }
 
         public bool IsLandscape { get { return _inputPdf != null && _inputPdf.PixelWidth > _inputPdf.PixelHeight; } }
