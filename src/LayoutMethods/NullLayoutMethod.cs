@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using Palaso.IO;
+using SIL.IO;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 

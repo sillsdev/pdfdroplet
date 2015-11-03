@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
-using Palaso.IO;
+using SIL.IO;
 using PdfDroplet.Properties;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
