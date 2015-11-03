@@ -9,8 +9,8 @@ using System.Web;
 using System.Windows.Forms;
 using DesktopAnalytics;
 using Microsoft.Win32;
-using Palaso.CommandLineProcessing;
-using Palaso.Reporting;
+using SIL.CommandLineProcessing;
+using SIL.Reporting;
 using PdfDroplet.Properties;
 
 namespace PdfDroplet
