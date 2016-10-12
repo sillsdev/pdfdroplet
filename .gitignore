@@ -1,0 +1,8 @@
+output/
+obj/
+bin/
+packages/
+*.suo
+
+lib/SIL*
+lib/Ionic.Zip.dll
