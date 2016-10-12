@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using DesktopAnalytics;
 using PdfDroplet.LayoutMethods;
 using PdfDroplet.Properties;
+using SIL.IO;
 
 namespace PdfDroplet
 {
@@ -211,12 +212,12 @@ namespace PdfDroplet
 
         private void OnAboutLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-			using (var dlg = new AboutBox())
-            {
-                dlg.ShowDialog();
-            }
-			Analytics.Track("Show Instructions");
-        }
+			string path = FileLocator.GetFileDistributedWithApplication(true, "about.htm");
+			using (var dlg = new SIL.Windows.Forms.Miscellaneous.SILAboutBox(path))
+			{
+				dlg.ShowDialog();
+			}
+		}
         private void OnInstructionsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             using (var dlg = new InstructionsDialogBox())
@@ -232,15 +233,6 @@ namespace PdfDroplet
             if(Visible && !DesignMode)
                 OnLoad(null,null);
         }
-//
-//        private void timer1_Tick(object sender, EventArgs e)
-//        {
-//            timer1.Enabled = false;
-//            using (var dlg = new AboutBox1())
-//            {
-//                dlg.ShowDialog();
-//            }
-//        }
 
         public void ClearThenContinue(Action callWhenDone)
         {
