@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using PdfSharp;
+﻿using System.Diagnostics;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 

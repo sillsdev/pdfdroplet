@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Windows.Forms;
-using SIL.IO;
 using SIL.Reporting;
 using PdfDroplet.LayoutMethods;
 using PdfDroplet.Properties;
 using PdfSharp;
 using PdfSharp.Drawing;
-using PdfSharp.Pdf.Printing;
 
 namespace PdfDroplet
 {
@@ -41,7 +36,7 @@ namespace PdfDroplet
                     return false;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return true;
             }
@@ -298,7 +293,7 @@ namespace PdfDroplet
                 {
                     File.Delete(path);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     try
                     {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using PdfSharp;
-using PdfSharp.Drawing;
+﻿using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
 namespace PdfDroplet.LayoutMethods
