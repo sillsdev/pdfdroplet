@@ -51,7 +51,7 @@
         <NonInteractiveSwitch Condition=" '$(VisualStudioVersion)' != '' AND '$(OS)' == 'Windows_NT' ">-NonInteractive</NonInteractiveSwitch>
         
         <!-- Commands -->
-	<!-- The trailing . is needed by Windows and doesn't hurt anything on Linux. -->
+        <!-- The trailing . is needed by Windows and doesn't hurt anything on Linux. -->
         <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir "$(SolutionDir)."</RestoreCommand>
         <BuildCommand>$(NuGetCommand) pack "$(ProjectPath)" -Properties Configuration=$(Configuration) $(NonInteractiveSwitch) -OutputDirectory "$(PackageOutputDir)" -symbols</BuildCommand>
 
@@ -79,8 +79,10 @@
         <MsBuild Targets="_DownloadNuGet" Projects="$(MSBuildThisFileFullPath)" Properties="Configuration=NOT_IMPORTANT;DownloadNuGetExe=$(DownloadNuGetExe)" />
     </Target>
 
-    <Target Name="_DownloadNuGet">
-        <DownloadNuGet OutputFilename="$(NuGetExePath)" Condition=" '$(DownloadNuGetExe)' == 'true' AND !Exists('$(NuGetExePath)')" />
+    <Target Name="_DownloadNuGet" Condition=" '$(DownloadNuGetExe)' == 'true' AND !Exists('$(NuGetExePath)')">
+        <DownloadNuGet OutputFilename="$(NuGetExePath)" Condition="'$(OS)' == 'Windows_NT'" />
+        <Exec Command="wget https://nuget.org/NuGet.exe" WorkingDirectory="$(NuGetToolsPath)"
+            Condition="'$(OS)' != 'Windows_NT'" />
     </Target>
 
     <Target Name="RestorePackages" DependsOnTargets="CheckPrerequisites">
