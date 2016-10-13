@@ -65,15 +65,15 @@ cd -
 # build: PdfDroplet-Linux-Net40-Dev-Continuous (bt344)
 # project: PdfDroplet
 # URL: http://build.palaso.org/viewType.html?buildTypeId=bt344
-# VCS: http://bitbucket.org/hatton/pdfdroplet [default]
+# VCS: https://github.com/sillsdev/pdfDroplet [master]
 # dependencies:
 # [0] build: palaso-precise64-master Continuous (bt322)
 #     project: libpalaso
 #     URL: http://build.palaso.org/viewType.html?buildTypeId=bt322
 #     clean: false
 #     revision: latest.lastSuccessful
-#     paths: {"SIL.Core.dll*"=>"lib", "NDesk.DBus.dll*"=>"lib", "Ionic.Zip.dll*"=>"lib"}
-#     VCS: https://github.com/sillsdev/libpalaso.git [master]
+#     paths: {"SIL.Core.dll*"=>"lib", "SIL.Windows.Forms.dll*"=>"lib", "L10NSharp.dll*"=>"lib", "NDesk.DBus.dll*"=>"lib", "Ionic.Zip.dll*"=>"lib"}
+#     VCS: https://github.com/sillsdev/libpalaso.git [libpalaso-3.1]
 
 # make sure output directories exist
 mkdir -p ../lib
@@ -82,6 +82,10 @@ mkdir -p ../lib
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/SIL.Core.dll?branch=%3Cdefault%3E ../lib/SIL.Core.dll
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/SIL.Core.dll.config?branch=%3Cdefault%3E ../lib/SIL.Core.dll.config
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/SIL.Core.dll.mdb?branch=%3Cdefault%3E ../lib/SIL.Core.dll.mdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/SIL.Windows.Forms.dll?branch=%3Cdefault%3E ../lib/SIL.Windows.Forms.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/SIL.Windows.Forms.dll.config?branch=%3Cdefault%3E ../lib/SIL.Windows.Forms.dll.config
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/SIL.Windows.Forms.dll.mdb?branch=%3Cdefault%3E ../lib/SIL.Windows.Forms.dll.mdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/L10NSharp.dll?branch=%3Cdefault%3E ../lib/L10NSharp.dll
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/NDesk.DBus.dll?branch=%3Cdefault%3E ../lib/NDesk.DBus.dll
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/NDesk.DBus.dll.config?branch=%3Cdefault%3E ../lib/NDesk.DBus.dll.config
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt322/latest.lastSuccessful/Ionic.Zip.dll?branch=%3Cdefault%3E ../lib/Ionic.Zip.dll
