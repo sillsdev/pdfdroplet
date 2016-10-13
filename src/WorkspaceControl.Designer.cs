@@ -42,6 +42,7 @@
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this._mirrorBox = new System.Windows.Forms.CheckBox();
 			this._showCropMarks = new System.Windows.Forms.CheckBox();
+			this._helpLink = new System.Windows.Forms.LinkLabel();
 			this._layoutChoices.SuspendLayout();
 			this._overBrowserPanel.SuspendLayout();
 			this.SuspendLayout();
@@ -56,7 +57,7 @@
 			this._browser.Location = new System.Drawing.Point(126, 0);
 			this._browser.MinimumSize = new System.Drawing.Size(20, 20);
 			this._browser.Name = "_browser";
-			this._browser.Size = new System.Drawing.Size(569, 595);
+			this._browser.Size = new System.Drawing.Size(648, 595);
 			this._browser.TabIndex = 0;
 			this._browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this._browser_DocumentCompleted);
 			// 
@@ -124,7 +125,7 @@
 			this._reloadPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this._reloadPrevious.AutoSize = true;
 			this._reloadPrevious.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this._reloadPrevious.Location = new System.Drawing.Point(356, 601);
+			this._reloadPrevious.Location = new System.Drawing.Point(339, 600);
 			this._reloadPrevious.Name = "_reloadPrevious";
 			this._reloadPrevious.Size = new System.Drawing.Size(82, 13);
 			this._reloadPrevious.TabIndex = 27;
@@ -137,12 +138,12 @@
 			this._aboutLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this._aboutLink.AutoSize = true;
 			this._aboutLink.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this._aboutLink.Location = new System.Drawing.Point(593, 604);
+			this._aboutLink.Location = new System.Drawing.Point(655, 600);
 			this._aboutLink.Name = "_aboutLink";
-			this._aboutLink.Size = new System.Drawing.Size(107, 13);
+			this._aboutLink.Size = new System.Drawing.Size(113, 13);
 			this._aboutLink.TabIndex = 28;
 			this._aboutLink.TabStop = true;
-			this._aboutLink.Text = "About PdfDroplet...";
+			this._aboutLink.Text = "About PDF Droplet";
 			this._aboutLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnAboutLinkClicked);
 			// 
 			// _overBrowserPanel
@@ -154,7 +155,7 @@
 			this._overBrowserPanel.Controls.Add(this._browseForPdf);
 			this._overBrowserPanel.Location = new System.Drawing.Point(148, 2);
 			this._overBrowserPanel.Name = "_overBrowserPanel";
-			this._overBrowserPanel.Size = new System.Drawing.Size(437, 331);
+			this._overBrowserPanel.Size = new System.Drawing.Size(516, 331);
 			this._overBrowserPanel.TabIndex = 29;
 			// 
 			// _dragStatus
@@ -176,7 +177,7 @@
 			this._browseForPdf.Size = new System.Drawing.Size(172, 21);
 			this._browseForPdf.TabIndex = 27;
 			this._browseForPdf.TabStop = true;
-			this._browseForPdf.Text = "Choose a PDF to open...";
+			this._browseForPdf.Text = "Choose a PDF to open";
 			this._browseForPdf.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkChooseFile_LinkClicked);
 			// 
 			// linkLabel1
@@ -184,12 +185,12 @@
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
 			this.linkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linkLabel1.Location = new System.Drawing.Point(449, 601);
+			this.linkLabel1.Location = new System.Drawing.Point(449, 600);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(131, 13);
 			this.linkLabel1.TabIndex = 27;
 			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "Choose a PDF to open...";
+			this.linkLabel1.Text = "Choose a PDF to open";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._linkChooseFile_LinkClicked);
 			// 
 			// _mirrorBox
@@ -216,12 +217,26 @@
 			this._showCropMarks.Text = "Crop Marks";
 			this._showCropMarks.UseVisualStyleBackColor = true;
 			// 
+			// _helpLink
+			// 
+			this._helpLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this._helpLink.AutoSize = true;
+			this._helpLink.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this._helpLink.Location = new System.Drawing.Point(605, 600);
+			this._helpLink.Name = "_helpLink";
+			this._helpLink.Size = new System.Drawing.Size(31, 13);
+			this._helpLink.TabIndex = 32;
+			this._helpLink.TabStop = true;
+			this._helpLink.Text = "Help";
+			this._helpLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnInstructionsLinkClicked);
+			// 
 			// WorkspaceControl
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(230)))), ((int)(((byte)(230)))));
+			this.Controls.Add(this._helpLink);
 			this.Controls.Add(this._showCropMarks);
 			this.Controls.Add(this._mirrorBox);
 			this.Controls.Add(this._overBrowserPanel);
@@ -234,7 +249,7 @@
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this._browser);
 			this.Name = "WorkspaceControl";
-			this.Size = new System.Drawing.Size(698, 618);
+			this.Size = new System.Drawing.Size(777, 618);
 			this.Load += new System.EventHandler(this.OnLoad);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnDragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnDragEnter);
@@ -263,5 +278,6 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.CheckBox _mirrorBox;
 		private System.Windows.Forms.CheckBox _showCropMarks;
-    }
+		private System.Windows.Forms.LinkLabel _helpLink;
+	}
 }

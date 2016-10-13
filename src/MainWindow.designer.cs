@@ -44,7 +44,7 @@ namespace PdfDroplet
             this.linkLabel2.Size = new System.Drawing.Size(97, 13);
             this.linkLabel2.TabIndex = 0;
             this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "About PdfDroplet...";
+            this.linkLabel2.Text = "About PDF Droplet...";
             // 
             // workspaceControl1
             // 
