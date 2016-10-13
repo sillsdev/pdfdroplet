@@ -65,15 +65,15 @@ cd -
 # build: PdfDroplet-Win-Dev-Continuous (bt54)
 # project: PdfDroplet
 # URL: http://build.palaso.org/viewType.html?buildTypeId=bt54
-# VCS: http://bitbucket.org/hatton/pdfdroplet [default]
+# VCS: https://github.com/sillsdev/pdfDroplet [master]
 # dependencies:
 # [0] build: palaso-win32-master-nostrongname Continuous (bt436)
 #     project: libpalaso
 #     URL: http://build.palaso.org/viewType.html?buildTypeId=bt436
 #     clean: false
 #     revision: latest.lastSuccessful
-#     paths: {"SIL.Core.dll*"=>"lib", "SIL.Core.pdb"=>"lib", "Ionic.Zip.dll*"=>"lib"}
-#     VCS: https://github.com/sillsdev/libpalaso.git []
+#     paths: {"SIL.Core.dll*"=>"lib", "SIL.Core.pdb"=>"lib", "SIL.Windows.Forms.dll"=>"lib", "SIL.Windows.Forms.pdb"=>"lib", "L10NSharp.dll"=>"lib", "L10NSharp.pdb"=>"lib", "Ionic.Zip.dll*"=>"lib"}
+#     VCS: https://github.com/sillsdev/libpalaso.git [libpalaso-3.1]
 
 # make sure output directories exist
 mkdir -p ../lib
@@ -82,5 +82,9 @@ mkdir -p ../lib
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Core.dll?branch=%3Cdefault%3E ../lib/SIL.Core.dll
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Core.dll.config?branch=%3Cdefault%3E ../lib/SIL.Core.dll.config
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Core.pdb?branch=%3Cdefault%3E ../lib/SIL.Core.pdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Windows.Forms.dll?branch=%3Cdefault%3E ../lib/SIL.Windows.Forms.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Windows.Forms.pdb?branch=%3Cdefault%3E ../lib/SIL.Windows.Forms.pdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/L10NSharp.dll?branch=%3Cdefault%3E ../lib/L10NSharp.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/L10NSharp.pdb?branch=%3Cdefault%3E ../lib/L10NSharp.pdb
 copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/Ionic.Zip.dll?branch=%3Cdefault%3E ../lib/Ionic.Zip.dll
 # End of script
