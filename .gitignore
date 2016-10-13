@@ -9,3 +9,4 @@ lib/L10NSharp.dll
 lib/Ionic.Zip.dll
 lib/*.pdb
 _Resharper*
+.nuget/NuGet.exe
