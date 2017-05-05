@@ -33,8 +33,6 @@ namespace PdfDroplet.LayoutMethods
 
 		protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
         {
-			// TODO: how do we handle right-to-left?
-
 			// Recalculate for showing 4up instead of 2up on each side of a sheet.
 			// This layout minimizes the use of paper for a single booklet.
 			int inputPages = _inputPdf.PageCount;
@@ -114,28 +112,28 @@ namespace PdfDroplet.LayoutMethods
 		private void DrawTopLeftCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(0, 0, _paperWidth / 2, _paperHeight / 2);
+			var box = new XRect(LeftEdgeForSuperiorPage, 0, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 
 		private void DrawBottomLeftCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(0, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
+			var box = new XRect(LeftEdgeForSuperiorPage, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 
 		private void DrawTopRightCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(_paperWidth / 2, 0, _paperWidth / 2, _paperHeight / 2);
+			var box = new XRect(LeftEdgeForInferiorPage, 0, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 
 		private void DrawBottomRightCorner(XGraphics gfx, int pageNumber /* NB: page number is one-based*/)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(_paperWidth / 2, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
+			var box = new XRect(LeftEdgeForInferiorPage, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 

@@ -131,6 +131,16 @@ namespace PdfDroplet.LayoutMethods
 			var xunitsBetweenTrimAndMediaBox = XUnit.FromMillimeter(kMillimetersBetweenTrimAndMediaBox);
 			XPoint upperLeftTrimBoxCorner = new XPoint(xunitsBetweenTrimAndMediaBox, xunitsBetweenTrimAndMediaBox);
 			return new PdfRectangle(upperLeftTrimBoxCorner, new XSize(_paperWidth, _paperHeight));
+		}
+
+	    protected double LeftEdgeForSuperiorPage
+	    {
+		    get { return _rightToLeft ? _paperWidth / 2 : 0; }
+	    }
+
+	    protected double LeftEdgeForInferiorPage
+	    {
+		    get { return _rightToLeft ? 0 : _paperWidth / 2; }
 	    }
 
 	    private static void DrawCropMarks(PdfPage page, XGraphics gfx, XUnit xunitsBetweenTrimAndMediaBox)
