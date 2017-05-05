@@ -11,7 +11,7 @@ namespace PdfDroplet.LayoutMethods
     {
         public SideFold4UpBookletLayouter():base("sideFoldCut4UpBooklet.png")
         {
-            
+
         }
 
         public override string ToString()

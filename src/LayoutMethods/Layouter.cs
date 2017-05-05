@@ -65,11 +65,11 @@ namespace PdfDroplet.LayoutMethods
             int vacats = numberOfPageSlotsAvailable - inputPages;
 
 			LayoutInner(outputDocument, numberOfSheetsOfPaper, numberOfPageSlotsAvailable, vacats);
-           
+
 //            if(true)
 //                foreach (PdfPage page in outputDocument.Pages)
 //                {
-//                    
+//
 //                   var  gfx = XGraphics.FromPdfPage(page);
 //                    gfx.DrawImage(page, 0.0,0.0);
 //                    page.MediaBox = new PdfRectangle(new XPoint(m.X2, m.Y1), new XPoint(m.X1, m.Y2));
@@ -129,7 +129,7 @@ namespace PdfDroplet.LayoutMethods
 	    protected PdfRectangle GetTrimBoxRectangle()
 	    {
 			var xunitsBetweenTrimAndMediaBox = XUnit.FromMillimeter(kMillimetersBetweenTrimAndMediaBox);
-			XPoint upperLeftTrimBoxCorner = new XPoint(xunitsBetweenTrimAndMediaBox, xunitsBetweenTrimAndMediaBox); 
+			XPoint upperLeftTrimBoxCorner = new XPoint(xunitsBetweenTrimAndMediaBox, xunitsBetweenTrimAndMediaBox);
 			return new PdfRectangle(upperLeftTrimBoxCorner, new XSize(_paperWidth, _paperHeight));
 	    }
 
@@ -140,12 +140,12 @@ namespace PdfDroplet.LayoutMethods
 		    XPoint lowerLeftTrimBoxCorner = page.TrimBox.ToXRect().BottomLeft;
 		    XPoint lowerRightTrimBoxCorner = page.TrimBox.ToXRect().BottomRight;
 
-			//while blue would look nicer, then if they make color separations, the marks wouldn't show all all of them. 
-			//Note that in InDesign, there is a "registration color" which looks black but is actually 100% of all each 
+			//while blue would look nicer, then if they make color separations, the marks wouldn't show all all of them.
+			//Note that in InDesign, there is a "registration color" which looks black but is actually 100% of all each
 			//sep color, so it always prints. But I don't see a way to do that in PDF.
 			//.25 is a standard width
-			var pen = new XPen(XColor.FromKnownColor(XKnownColor.Black), .25); 
-			
+			var pen = new XPen(XColor.FromKnownColor(XKnownColor.Black), .25);
+
 		    var gapLength = XUnit.FromMillimeter(3.175); // this 3.175 is the industry standard
 
 		    gfx.DrawLine(pen, upperLeftTrimBoxCorner.X - gapLength, upperLeftTrimBoxCorner.Y,
