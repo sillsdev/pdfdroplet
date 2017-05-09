@@ -11,7 +11,7 @@ namespace PdfDroplet.LayoutMethods
     {
         public SideFold4UpBookletLayouter():base("sideFoldCut4UpBooklet.png")
         {
-            
+
         }
 
         public override string ToString()
@@ -67,22 +67,20 @@ namespace PdfDroplet.LayoutMethods
 		private void DrawInferiorSide(XGraphics gfx, int pageNumber)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var leftEdge = _rightToLeft ? 0 : _paperWidth / 2;
-			var box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight / 2);
+			var box = new XRect(LeftEdgeForInferiorPage, 0, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 			_inputPdf.PageNumber = pageNumber;
-			box = new XRect(leftEdge, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
+			box = new XRect(LeftEdgeForInferiorPage, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 
 		private void DrawSuperiorSide(XGraphics gfx, int pageNumber)
 		{
 			_inputPdf.PageNumber = pageNumber;
-			var leftEdge = _rightToLeft ? _paperWidth / 2 : 0;
-			var box = new XRect(leftEdge, 0, _paperWidth / 2, _paperHeight / 2);
+			var box = new XRect(LeftEdgeForSuperiorPage, 0, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 			_inputPdf.PageNumber = pageNumber;
-			box = new XRect(leftEdge, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
+			box = new XRect(LeftEdgeForSuperiorPage, _paperHeight / 2, _paperWidth / 2, _paperHeight / 2);
 			gfx.DrawImage(_inputPdf, box);
 		}
 
