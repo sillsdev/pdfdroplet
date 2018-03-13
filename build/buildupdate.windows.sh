@@ -30,10 +30,10 @@ where_curl=$(type -P curl)
 where_wget=$(type -P wget)
 if [ "$where_curl" != "" ]
 then
-copy_curl $1 $2
+copy_curl "$1" "$2"
 elif [ "$where_wget" != "" ]
 then
-copy_wget $1 $2
+copy_wget "$1" "$2"
 else
 echo "Missing curl or wget"
 exit 1
@@ -45,18 +45,22 @@ copy_curl() {
 echo "curl: $2 <= $1"
 if [ -e "$2" ] && [ "$force" != "1" ]
 then
-curl -# -L -z $2 -o $2 $1
+curl -# -L -z "$2" -o "$2" "$1"
 else
-curl -# -L -o $2 $1
+curl -# -L -o "$2" "$1"
 fi
 }
 
 copy_wget() {
 echo "wget: $2 <= $1"
-f=$(basename $2)
-d=$(dirname $2)
-cd $d
-wget -q -L -N $1
+f1=$(basename $1)
+f2=$(basename $2)
+cd $(dirname $2)
+wget -q -L -N "$1"
+# wget has no true equivalent of curl's -o option.
+# Different versions of wget handle (or not) % escaping differently.
+# A URL query is the only reason why $f1 and $f2 should differ.
+if [ "$f1" != "$f2" ]; then mv $f2\?* $f2; fi
 cd -
 }
 
@@ -67,24 +71,25 @@ cd -
 # URL: http://build.palaso.org/viewType.html?buildTypeId=bt54
 # VCS: https://github.com/sillsdev/pdfDroplet [master]
 # dependencies:
-# [0] build: palaso-win32-master-nostrongname Continuous (bt436)
+# [0] build: palaso-win32-master-nostrongname Continuous (Libpalaso_PalasoWin32masterNostrongnameContinuous)
 #     project: libpalaso
-#     URL: http://build.palaso.org/viewType.html?buildTypeId=bt436
+#     URL: http://build.palaso.org/viewType.html?buildTypeId=Libpalaso_PalasoWin32masterNostrongnameContinuous
 #     clean: false
 #     revision: latest.lastSuccessful
-#     paths: {"SIL.Core.dll*"=>"lib", "SIL.Core.pdb"=>"lib", "SIL.Windows.Forms.dll"=>"lib", "SIL.Windows.Forms.pdb"=>"lib", "L10NSharp.dll"=>"lib", "L10NSharp.pdb"=>"lib", "Ionic.Zip.dll*"=>"lib"}
-#     VCS: https://github.com/sillsdev/libpalaso.git [libpalaso-3.1]
+#     paths: {"SIL.Core.dll*"=>"lib", "SIL.Core.pdb"=>"lib", "SIL.Core.Desktop.dll*"=>"lib", "SIL.Core.Desktop.pdb"=>"lib", "SIL.Windows.Forms.dll"=>"lib", "SIL.Windows.Forms.pdb"=>"lib", "L10NSharp.dll"=>"lib", "L10NSharp.pdb"=>"lib", "Ionic.Zip.dll*"=>"lib"}
+#     VCS: https://github.com/sillsdev/libpalaso.git [master]
 
 # make sure output directories exist
 mkdir -p ../lib
 
 # download artifact dependencies
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Core.dll?branch=%3Cdefault%3E ../lib/SIL.Core.dll
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Core.dll.config?branch=%3Cdefault%3E ../lib/SIL.Core.dll.config
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Core.pdb?branch=%3Cdefault%3E ../lib/SIL.Core.pdb
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Windows.Forms.dll?branch=%3Cdefault%3E ../lib/SIL.Windows.Forms.dll
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/SIL.Windows.Forms.pdb?branch=%3Cdefault%3E ../lib/SIL.Windows.Forms.pdb
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/L10NSharp.dll?branch=%3Cdefault%3E ../lib/L10NSharp.dll
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/L10NSharp.pdb?branch=%3Cdefault%3E ../lib/L10NSharp.pdb
-copy_auto http://build.palaso.org/guestAuth/repository/download/bt436/latest.lastSuccessful/Ionic.Zip.dll?branch=%3Cdefault%3E ../lib/Ionic.Zip.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/SIL.Core.dll ../lib/SIL.Core.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/SIL.Core.pdb ../lib/SIL.Core.pdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/SIL.Core.Desktop.dll ../lib/SIL.Core.Desktop.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/SIL.Core.Desktop.pdb ../lib/SIL.Core.Desktop.pdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/SIL.Windows.Forms.dll ../lib/SIL.Windows.Forms.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/SIL.Windows.Forms.pdb ../lib/SIL.Windows.Forms.pdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/L10NSharp.dll ../lib/L10NSharp.dll
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/L10NSharp.pdb ../lib/L10NSharp.pdb
+copy_auto http://build.palaso.org/guestAuth/repository/download/Libpalaso_PalasoWin32masterNostrongnameContinuous/latest.lastSuccessful/Ionic.Zip.dll ../lib/Ionic.Zip.dll
 # End of script
