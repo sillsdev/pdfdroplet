@@ -10,3 +10,4 @@ lib/Ionic.Zip.dll
 lib/*.pdb
 _Resharper*
 .nuget/NuGet.exe
+/.vs/
