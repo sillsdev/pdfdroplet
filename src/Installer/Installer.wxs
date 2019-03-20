@@ -82,6 +82,9 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 					<Component Id="SIL.Core.dll" Guid="{AAC129F0-8291-46E3-9115-0E79A98300AA}">
 						<File Id="SIL.Core.dll" Name="SIL.Core.dll" KeyPath="yes" Source="..\..\output\release\SIL.Core.dll" />
 					</Component>
+					<Component Id="SIL.Core.Desktop.dll" Guid="{16742603-16BF-4B0C-BB88-30CC4C656C18}">
+						<File Id="SIL.Core.Desktop.dll" Name="SIL.Core.Desktop.dll" KeyPath="yes" Source="..\..\output\release\SIL.Core.Desktop.dll" />
+					</Component>
 					<Component Id="itextsharp.dll" Guid="{04293B11-3F49-48D7-8B75-E115347172B2}">
 						<File Id="itextsharp.dll" Name="itextsharp.dll" KeyPath="yes" Source="..\..\output\release\itextsharp.dll" />
 					</Component>
@@ -119,6 +122,7 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 			<ComponentRef Id ="removeShortcutDir"/>
 			<ComponentRef Id="PdfDroplet.exe"/>
 			<ComponentRef Id="SIL.Core.dll"/>
+			<ComponentRef Id="SIL.Core.Desktop.dll"/>
 			<ComponentRef Id="itextsharp.dll"/>
 			<ComponentRef Id="PdfSharp.dll"/>
 			<ComponentGroupRef Id ="DistFiles"/>
