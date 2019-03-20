@@ -14,4 +14,13 @@
   <File Id="license.rtf" Guid="4f7601a4-3a4a-4296-a940-0666d0246355" />
   <File Id="LogoForAbout.png" Guid="9a1f6cee-4f4b-46fc-b18d-1acadf339089" />
   <File Id="AGPL_License.txt" Guid="5c0cbf57-660f-464e-b654-eafcfb6f3935" />
+  <File Id="ProgramDir.about.htm" Guid="c3ec32bb-8ece-4206-b7b2-068c1927b6a6" />
+  <File Id="ProgramDir.AGPL_License.txt" Guid="423e981f-7be5-400a-9a6f-f754ffc4f906" />
+  <File Id="ProgramDir.instructions.htm" Guid="b978831a-b0df-4201-abb0-2d84d50b3580" />
+  <File Id="ProgramDir.instructions_step1.png" Guid="44a65161-5ba5-49da-971a-a22c1106706f" />
+  <File Id="ProgramDir.instructions_step2.png" Guid="d889a689-f7c4-40c3-ab87-44f1002d89c7" />
+  <File Id="ProgramDir.instructions_step3.png" Guid="558a4fc7-bd0f-4d78-bda0-befa5475f1a8" />
+  <File Id="ProgramDir.instructions_step4.png" Guid="2903f51c-b553-472a-bf40-736d97db6f6d" />
+  <File Id="ProgramDir.license.rtf" Guid="3b8e1967-344f-4fa7-b84c-f0ccd409309f" />
+  <File Id="ProgramDir.LogoForAbout.png" Guid="3e2660b1-b956-4fba-8650-8fbf4cf1f3b5" />
 </InstallerMetadata>
