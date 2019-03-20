@@ -9,4 +9,11 @@
   <File Id="sideFoldBooklet.png" Guid="29ca1bef-2abb-4d7a-b3d8-cb96e6278daf" />
   <File Id="sideFoldCut4UpBooklet.png" Guid="d47f4156-8752-42d1-8c74-6c7c10ceaec2" />
   <File Id="sideFoldCut4UpSingleBooklet.png" Guid="a2f69e01-4492-469b-a0a4-fc53559f0254" />
+  <File Id="ProgramDir.images.calendar.png" Guid="328d327d-83dc-4359-988f-f8b65ebd3dc5" />
+  <File Id="ProgramDir.images.cutBooklet.png" Guid="8aa1b80e-3dbc-4e69-9e5f-76adcd9c27c0" />
+  <File Id="ProgramDir.images.originalLandscape.png" Guid="af6cafa2-afaa-4b71-9071-8fb694e1b517" />
+  <File Id="ProgramDir.images.originalPortrait.png" Guid="e862bb89-b342-445e-9069-3f0bf05a2dba" />
+  <File Id="ProgramDir.images.sideFoldBooklet.png" Guid="235b66ee-8186-40d6-948c-387914739638" />
+  <File Id="ProgramDir.images.sideFoldCut4UpBooklet.png" Guid="c4c01931-cff3-486a-a223-16435ef4a182" />
+  <File Id="ProgramDir.images.sideFoldCut4UpSingleBooklet.png" Guid="f12e2825-a047-47ce-b4b4-c90fe0fd5406" />
 </InstallerMetadata>

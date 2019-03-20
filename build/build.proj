@@ -3,10 +3,10 @@
 		<RootDir>$(teamcity_build_checkoutDir)</RootDir>
 	</PropertyGroup>
 
-	<UsingTask TaskName="StampAssemblies" AssemblyFile="$(RootDir)/build/Palaso.BuildTasks.dll" />
-	<UsingTask TaskName="MakeWixForDirTree" AssemblyFile="$(RootDir)/build/Palaso.BuildTasks.dll" />
-	<UsingTask TaskName="Split" AssemblyFile="$(RootDir)/build/Palaso.BuildTasks.dll" />
-	<UsingTask TaskName="FileUpdate" AssemblyFile="$(RootDir)/build/Palaso.BuildTasks.dll" />
+	<UsingTask TaskName="StampAssemblies" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
+	<UsingTask TaskName="MakeWixForDirTree" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
+	<UsingTask TaskName="Split" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
+	<UsingTask TaskName="FileUpdate" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
 	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)"
 		Condition=" '$(teamcity_version)' != '' And '$(OS)'=='Windows_NT'"/>
 	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_agent_home_dir)/plugins/dotnetPlugin/bin/JetBrains.BuildServer.MSBuildLoggers.dll"
@@ -33,6 +33,10 @@
 		</CreateProperty>
 
 		<Message Text="Version: $(Version)" Importance="high"/>
+
+		<CreateProperty Value="PdfDropletInstaller-$(Version).msi" Condition=" '$(Label)' == '' ">
+			<Output PropertyName="InstallerFileName" TaskParameter="Value"/>
+		</CreateProperty>
 	</Target>
 
 	<!-- Note: Mono xbuild doesn't support ItemGroup inside Target -->
@@ -58,34 +62,9 @@
 			<Output ItemName="TestAssemblies" TaskParameter="Include" />
 		</CreateItem>
 		<NUnitTeamCity
-			Assemblies="@(TestAssemblies)" 
+			Assemblies="@(TestAssemblies)"
 			ExcludeCategory="SkipOnTeamCity"
 			NUnitVersion="NUnit-2.5.5" />
-	</Target>
-
-	<Target Name="MakeDownloadPointers" DependsOnTargets="VersionNumbers" >
-
-		<!-- copy it so we aren't modifying the original, which then is a pain on dev machines -->
-		<Copy SourceFiles ="$(RootDir)\src\Installer\DownloadPointers.htm"
-			DestinationFolder ="$(RootDir)\output\Installer"/>
-
-		<!-- replace some parts of the file with the version number & date -->
-		<FileUpdate File="$(RootDir)\output\Installer\DownloadPointers.htm"
-				DatePlaceholder='DEV_RELEASE_DATE'
-				Regex='DEV_VERSION_NUMBER'
-				ReplacementText ="$(Version)" />
-
-		<!-- push up to the web so that on our downloads page, we can give a link to the latest version -->
-		<Message Text="Attempting rsync of DownloadPointers.htm" Importance="high"/>
-		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw,o+r -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/DownloadPointers.htm" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/DownloadPointers.htm' /> 
-	</Target>
-
-	<Target Name="Upload" DependsOnTargets="VersionNumbers; Installer" >
-		<Message Text="Attempting rsync of PdfDropletInstaller-$(Version).msi" Importance="high"/>
-
-		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw,o+r -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/PdfDropletInstaller-$(Version).msi" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/PdfDropletInstaller-$(Version).msi' /> 
-
-		<CallTarget Targets ='MakeDownloadPointers'/>
 	</Target>
 
 
@@ -96,15 +75,43 @@
 
 
 		<!-- remove an existing one with the same name, if necessary -->
-		<Delete Files="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).msi" TreatErrorsAsWarnings="false" />
+		<Delete Files="$(RootDir)\output\installer\$(InstallerFileName)" TreatErrorsAsWarnings="false" />
 
 		<Copy SourceFiles="$(RootDir)\output\installer\PdfDropletInstaller.msi"
-			DestinationFiles="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).msi"
+			DestinationFiles="$(RootDir)\output\installer\$(InstallerFileName)"
 			/>
 
 		<!-- remove the installer which has no version number (wouldn't need this if the copy above was a move, instead) -->
 		<Delete Files="$(RootDir)\output\installer\PdfDropletInstaller.msi" TreatErrorsAsWarnings="false" />
 
+		<!-- copy it so we aren't modifying the original, which then is a pain on dev machines -->
+		<Copy SourceFiles ="$(RootDir)\src\installer\template.download_info"
+			DestinationFiles ="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).download_info"/>
+
+		<FileUpdate File="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).download_info"
+			DatePlaceHolder='_DATE_'
+			DateFormat='yyyy-MM-dd'
+			Regex='_VERSION_'
+			ReplacementText ="$(Version)" />
+
+	</Target>
+
+	<!-- These targets are designed to be additional steps on TeamCity after running target Installer. Pick the appropriate one
+	depending on whether your project's output MUST be signed or it's only nice if it is. For example, a continuous build
+	might use SignIfPossible, while a Publication build must use SignInstaller.-->
+	<Target Name="SignInstaller" DependsOnTargets="VersionNumbers">
+		<Exec Command='sign "$(RootDir)\output\installer\$(InstallerFileName)"'></Exec>
+		<Message Text="Signed installer at $(RootDir)\output\installer\$(InstallerFileName)" Importance="high"/>
+	</Target>
+	<Target Name="SignIfPossible" DependsOnTargets="VersionNumbers">
+		<Exec Command='sign "$(RootDir)\output\installer\$(InstallerFileName)"' ContinueOnError="true"></Exec>
+	</Target>
+
+	<Target Name="Upload" DependsOnTargets="VersionNumbers; Installer" >
+		<Message Text="Attempting rsync of $(InstallerFileName)" Importance="high"/>
+
+		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vzlt --chmod=Dug=rwx,Fu=rw,go=r --stats --rsync-path="sudo -u vu2004 rsync" -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=/cygdrive/c/BuildAgent/conf/bob.key -l root"  "../output/installer/$(InstallerFileName)" root@software.sil.org:/var/www/virtual/software.sil.org/htdocs/downloads/r/pdfdroplet' />
+		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vzlt --chmod=Dug=rwx,Fu=rw,go=r --stats --rsync-path="sudo -u vu2004 rsync" -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=/cygdrive/c/BuildAgent/conf/bob.key -l root"  "../output/installer/PdfDropletInstaller-$(Version).download_info" root@software.sil.org:/var/www/virtual/software.sil.org/htdocs/downloads/r/pdfdroplet/' />
 	</Target>
 
 	<Target Name="MakeWixForDistFiles">
