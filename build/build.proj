@@ -17,40 +17,40 @@
 		<ApplicationName>PdfDroplet</ApplicationName>
 		<Configuration>Release</Configuration>
 	</PropertyGroup>
-  
-  <Target Name="VersionNumbers">
-    <Message Text="BUILD_NUMBER: $(BUILD_NUMBER)" Importance="high"/>
 
-    <Split Input="$(BUILD_NUMBER)" Delimiter="." OutputSubString="2">
-      <Output TaskParameter="ReturnValue" PropertyName="BuildCounter" />
-    </Split>
+	<Target Name="VersionNumbers">
+		<Message Text="BUILD_NUMBER: $(BUILD_NUMBER)" Importance="high"/>
 
-    <Message Text="BuildCounter: $(BuildCounter)" Importance="high"/>
+		<Split Input="$(BUILD_NUMBER)" Delimiter="." OutputSubString="2">
+			<Output TaskParameter="ReturnValue" PropertyName="BuildCounter" />
+		</Split>
 
-    <!-- Note, after some thought, we've decided this is the best place to keep the version number (not on TeamCity, not in the assemblies).     -->
-    <CreateProperty Value="2.4.$(BuildCounter)">
-      <Output PropertyName="Version" TaskParameter="Value"/>
-    </CreateProperty>
-   
-    <Message Text="Version: $(Version)" Importance="high"/>
-  </Target>
-   
-   <!-- Note: Mono xbuild doesn't support ItemGroup inside Target -->
-  <ItemGroup>
-    <AssemblyInfoFiles Include="$(RootDir)/src/**/assemblyinfo.cs"/>
-  </ItemGroup>
+		<Message Text="BuildCounter: $(BuildCounter)" Importance="high"/>
 
-  <Target Name="SetAssemblyVersion" DependsOnTargets ="VersionNumbers">
-      <StampAssemblies Version="$(Version)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
-    </Target>
+		<!-- Note, after some thought, we've decided this is the best place to keep the version number (not on TeamCity, not in the assemblies). -->
+		<CreateProperty Value="2.4.$(BuildCounter)">
+			<Output PropertyName="Version" TaskParameter="Value"/>
+		</CreateProperty>
+
+		<Message Text="Version: $(Version)" Importance="high"/>
+	</Target>
+
+	<!-- Note: Mono xbuild doesn't support ItemGroup inside Target -->
+	<ItemGroup>
+		<AssemblyInfoFiles Include="$(RootDir)/src/**/assemblyinfo.cs"/>
+	</ItemGroup>
+
+	<Target Name="SetAssemblyVersion" DependsOnTargets ="VersionNumbers">
+		<StampAssemblies Version="$(Version)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
+	</Target>
 
 
-  <Target Name="Build" DependsOnTargets="SetAssemblyVersion">
-    <MSBuild Projects="$(RootDir)/$(Solution)"
-             Targets="Rebuild"
-             Properties="Configuration=$(Configuration)" />
-    <Message Text="Build Complete"/>
-  </Target>
+	<Target Name="Build" DependsOnTargets="SetAssemblyVersion">
+		<MSBuild Projects="$(RootDir)/$(Solution)"
+			 Targets="Rebuild"
+			 Properties="Configuration=$(Configuration)" />
+		<Message Text="Build Complete"/>
+	</Target>
 
 
 	<Target Name="Test" DependsOnTargets="Build">
@@ -63,78 +63,62 @@
 			NUnitVersion="NUnit-2.5.5" />
 	</Target>
 
-  <Target Name="MakeDownloadPointers" DependsOnTargets="VersionNumbers" >
+	<Target Name="MakeDownloadPointers" DependsOnTargets="VersionNumbers" >
 
-    <!-- copy it so we aren't modifying the original, which then is a pain on dev machines -->
-    <Copy SourceFiles ="$(RootDir)\src\Installer\DownloadPointers.htm"
-           DestinationFolder ="$(RootDir)\output\Installer"/>
-    
-    <!-- replace some parts of the file with the version number & date -->
-    
-    <FileUpdate File="$(RootDir)\output\Installer\DownloadPointers.htm"
-                 DatePlaceholder='DEV_RELEASE_DATE'
-                Regex='DEV_VERSION_NUMBER'
-                 ReplacementText ="$(Version)" />
+		<!-- copy it so we aren't modifying the original, which then is a pain on dev machines -->
+		<Copy SourceFiles ="$(RootDir)\src\Installer\DownloadPointers.htm"
+			DestinationFolder ="$(RootDir)\output\Installer"/>
 
+		<!-- replace some parts of the file with the version number & date -->
+		<FileUpdate File="$(RootDir)\output\Installer\DownloadPointers.htm"
+				DatePlaceholder='DEV_RELEASE_DATE'
+				Regex='DEV_VERSION_NUMBER'
+				ReplacementText ="$(Version)" />
 
-    
-    <!-- push up to the web so that on our downloads page, we can give a link to the latest version -->
-     
-    <Message Text="Attempting rsync of DownloadPointers.htm" Importance="high"/>
-    <Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw,o+r -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/DownloadPointers.htm" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/DownloadPointers.htm' /> 
-  </Target>
-  
+		<!-- push up to the web so that on our downloads page, we can give a link to the latest version -->
+		<Message Text="Attempting rsync of DownloadPointers.htm" Importance="high"/>
+		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw,o+r -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/DownloadPointers.htm" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/DownloadPointers.htm' /> 
+	</Target>
 
+	<Target Name="Upload" DependsOnTargets="VersionNumbers; Installer" >
+		<Message Text="Attempting rsync of PdfDropletInstaller-$(Version).msi" Importance="high"/>
 
-  <Target Name="Upload" DependsOnTargets="VersionNumbers; Installer" >
-    <Message Text="Attempting rsync of PdfDropletInstaller-$(Version).msi" Importance="high"/>
+		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw,o+r -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/PdfDropletInstaller-$(Version).msi" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/PdfDropletInstaller-$(Version).msi' /> 
 
-    <Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vz -p --chmod=ug+rw,o+r -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=C:\BuildAgent\conf\bob.key -l bob"  "../output/installer/PdfDropletInstaller-$(Version).msi" bob@palaso.org:/var/www/virtual/palaso.org/pdfdroplet/htdocs/files/PdfDropletInstaller-$(Version).msi' /> 
-
-    <CallTarget Targets ='MakeDownloadPointers'/>
-  </Target>
-
-   
-  <Target Name="Installer" DependsOnTargets="VersionNumbers; MakeWixForDistFiles; Build ">
-    
-    <!-- set the version number in the installer configuration program.  Perhaps there's a way to just send in the variables rather than this brute-force
-		changing of the script, but I haven't figured that out. -->
-    
-    <FileUpdate File="$(RootDir)\src\Installer\Installer.wxs" Regex='Property_ProductVersion = ".*"'
-                ReplacementText ="Property_ProductVersion = &quot;$(Version)&quot;" />
+		<CallTarget Targets ='MakeDownloadPointers'/>
+	</Target>
 
 
-    <Message Text="Making Installer Version: $(Version)" Importance="high"  />
+	<Target Name="Installer" DependsOnTargets="VersionNumbers; MakeWixForDistFiles; Build ">
+		<Message Text="Making Installer Version: $(Version)" Importance="high"/>
 
-    <MSBuild Projects="$(RootDir)\src\Installer\Installer.wixproj"/>
-
-    
-    <!-- remove an existing one with the same name, if necessary -->
-    <Delete Files="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).msi" TreatErrorsAsWarnings="false" />
-
-    <Copy SourceFiles="$(RootDir)\output\installer\PdfDropletInstaller.msi"
-          DestinationFiles="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).msi"
-          />
-
-    <!-- remove the installer which has no version number (wouldn't need this if the copy above was a move, instead) -->
-    <Delete Files="$(RootDir)\output\installer\PdfDropletInstaller.msi" TreatErrorsAsWarnings="false" />
-
-  </Target>
+		<MSBuild Projects="$(RootDir)\src\Installer\Installer.wixproj" Properties="DefineConstants=Property_ProductVersion=$(Version)"/>
 
 
+		<!-- remove an existing one with the same name, if necessary -->
+		<Delete Files="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).msi" TreatErrorsAsWarnings="false" />
 
-  <Target Name="MakeWixForDistFiles">
-    <MakeDir Directories="$(RootDir)\output\Installer\"/>
-    
-    <MakeWixForDirTree
-                DirectoryReferenceId="ProgramDir"
-            		ComponentGroupId="DistFiles"
-				        RootDirectory="$(RootDir)\DistFiles"
-                OutputFilePath="$(RootDir)\output\Installer\GeneratedDistFiles.wxs"
-                MatchRegExPattern=".*"
+		<Copy SourceFiles="$(RootDir)\output\installer\PdfDropletInstaller.msi"
+			DestinationFiles="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).msi"
+			/>
+
+		<!-- remove the installer which has no version number (wouldn't need this if the copy above was a move, instead) -->
+		<Delete Files="$(RootDir)\output\installer\PdfDropletInstaller.msi" TreatErrorsAsWarnings="false" />
+
+	</Target>
+
+	<Target Name="MakeWixForDistFiles">
+		<MakeDir Directories="$(RootDir)\output\Installer\"/>
+
+		<MakeWixForDirTree
+				DirectoryReferenceId="ProgramDir"
+					ComponentGroupId="DistFiles"
+						RootDirectory="$(RootDir)\DistFiles"
+				OutputFilePath="$(RootDir)\output\Installer\GeneratedDistFiles.wxs"
+				MatchRegExPattern=".*"
 				>
-      <!--what does this do?-->
-      <Output TaskParameter="OutputFilePath" ItemName="Compile" />
-    </MakeWixForDirTree>
-  </Target>
+			<!--what does this do?-->
+			<Output TaskParameter="OutputFilePath" ItemName="Compile" />
+		</MakeWixForDirTree>
+	</Target>
 </Project>
