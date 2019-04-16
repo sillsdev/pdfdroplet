@@ -78,6 +78,9 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 							 WorkingDirectory="ProgramDir" Target="[!PdfDroplet.exe]"  Icon ="PdfDroplet.exe" />
 
 					</Component>
+					<Component Id="PdfDroplet.exe.config" Guid="{3723d845-1e46-434e-bf77-059b81117e70}">
+						<File Id="PdfDroplet.exe.config" Name="PdfDroplet.exe.config" KeyPath="yes" Source="..\..\output\release\PdfDroplet.exe.config" />
+					</Component>
 
 					<Component Id="SIL.Core.dll" Guid="{AAC129F0-8291-46E3-9115-0E79A98300AA}">
 						<File Id="SIL.Core.dll" Name="SIL.Core.dll" KeyPath="yes" Source="..\..\output\release\SIL.Core.dll" />
@@ -121,6 +124,7 @@ are trying to support, you're better off using non-advertised shortcuts. "-->
 
 			<ComponentRef Id ="removeShortcutDir"/>
 			<ComponentRef Id="PdfDroplet.exe"/>
+			<ComponentRef Id="PdfDroplet.exe.config"/>
 			<ComponentRef Id="SIL.Core.dll"/>
 			<ComponentRef Id="SIL.Core.Desktop.dll"/>
 			<ComponentRef Id="itextsharp.dll"/>
