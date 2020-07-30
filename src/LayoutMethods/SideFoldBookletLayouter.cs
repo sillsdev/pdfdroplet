@@ -59,9 +59,9 @@ namespace PdfDroplet.LayoutMethods
             }
         }
 
-        public override bool GetIsEnabled(bool isLandscape)
+        public override bool GetIsEnabled(XPdfForm inputPdf)
         {
-            return !isLandscape;
+            return IsPortrait(inputPdf);
         }
 
 

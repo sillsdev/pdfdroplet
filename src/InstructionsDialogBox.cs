@@ -12,7 +12,7 @@ namespace PdfDroplet
         {
             InitializeComponent();
         
-            _browser.Navigate(FileLocator.GetFileDistributedWithApplication("instructions.htm"));
+            _browser.Navigate(FileLocationUtilities.GetFileDistributedWithApplication("instructions.htm"));
         }
 
 

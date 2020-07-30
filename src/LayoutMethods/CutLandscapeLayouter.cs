@@ -18,9 +18,9 @@ namespace PdfDroplet.LayoutMethods
             return "Cut && Stack";
         }
 
-        public override bool GetIsEnabled(bool isLandscape)
+        public override bool GetIsEnabled(XPdfForm inputPdf)
         {
-            return isLandscape;
+            return IsLandscape(inputPdf);
         }
 
 		protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)

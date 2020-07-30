@@ -180,11 +180,26 @@ namespace PdfDroplet.LayoutMethods
 	    }
 
 
-	    public abstract bool GetIsEnabled(bool isLandscape);
+	    public abstract bool GetIsEnabled(XPdfForm inputPdf);
 
         public virtual Image GetImage(bool isLandscape)
         {
-            return Image.FromFile(FileLocator.GetFileDistributedWithApplication("images", _imageName));
+            return Image.FromFile(FileLocationUtilities.GetFileDistributedWithApplication("images", _imageName));
+        }
+
+        public static bool IsLandscape(XPdfForm inputPdf)
+        {
+            return inputPdf != null && inputPdf.PixelWidth > inputPdf.PixelHeight;
+        }
+
+        public static bool IsPortrait(XPdfForm inputPdf)
+        {
+            return inputPdf != null && inputPdf.PixelWidth < inputPdf.PixelHeight;
+        }
+
+        public static bool IsSquare(XPdfForm inputPdf)
+        {
+            return inputPdf != null && inputPdf.PixelWidth == inputPdf.PixelHeight;
         }
     }
 }
