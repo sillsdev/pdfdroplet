@@ -62,7 +62,7 @@ namespace PdfDroplet.LayoutMethods
 		    targetGraphicsPort.DrawImage(_inputPdf, sourceRect);
 	    }
 
-	    public override bool GetIsEnabled(bool isLandscape)
+	    public override bool GetIsEnabled(XPdfForm inputPdf)
         {
             return true;
         }
@@ -73,7 +73,7 @@ namespace PdfDroplet.LayoutMethods
 
         public override Image GetImage(bool isLandscape)
         {
-            return Image.FromFile(FileLocator.GetFileDistributedWithApplication("images", isLandscape ? "originalLandscape.png" : "originalPortrait.png"));
+            return Image.FromFile(FileLocationUtilities.GetFileDistributedWithApplication("images", isLandscape ? "originalLandscape.png" : "originalPortrait.png"));
         }
 
         public override bool ImageIsSensitiveToOrientation

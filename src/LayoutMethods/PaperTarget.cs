@@ -36,7 +36,7 @@ namespace PdfDroplet.LayoutMethods
             {
                 return new Point((int)_height, (int)_width);//portrait
             }
-            else
+            else  // Square is laid out on portrait 6up, so treat it the same as 4up landscape for printer paper orientation.
             {
                 return new Point((int)_width, (int)_height); //landscape
             }

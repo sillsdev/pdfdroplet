@@ -67,9 +67,9 @@ namespace PdfDroplet
                 var method = ((LayoutMethod)button.Tag);
                 if(method.ImageIsSensitiveToOrientation)
                 {
-                    button.Image = method.GetImage(_model.IsLandscape);
+                    button.Image = method.GetImage(LayoutMethod.IsLandscape(_model.InputPdf));
                 }
-                button.Enabled = _model.HaveIncomingPdf && method.GetIsEnabled(_model.IsLandscape);
+                button.Enabled = _model.HaveIncomingPdf && method.GetIsEnabled(_model.InputPdf);
                 button.FlatAppearance.BorderSize = _model.SelectedMethod!=null && method.GetType() == _model.SelectedMethod.GetType() ? 2 : 0;
             }
             SetupPreviousLink();
@@ -96,7 +96,7 @@ namespace PdfDroplet
                 var button = new Button();
                 button.Tag = choice;
                 button.Text = choice.ToString();
-                button.Image = choice.GetImage(_model.IsLandscape);
+                button.Image = choice.GetImage(LayoutMethod.IsLandscape(_model.InputPdf));
                 button.FlatStyle = FlatStyle.Flat;
                 button.FlatAppearance.BorderSize = 0;
                // item.Enabled = choice.GetIsEnabled(_model.IsLandscape);
@@ -212,7 +212,7 @@ namespace PdfDroplet
 
         private void OnAboutLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-			string path = FileLocator.GetFileDistributedWithApplication(true, "about.htm");
+			string path = FileLocationUtilities.GetFileDistributedWithApplication(true, "about.htm");
 			using (var dlg = new SIL.Windows.Forms.Miscellaneous.SILAboutBox(path))
 			{
 				dlg.ShowDialog();

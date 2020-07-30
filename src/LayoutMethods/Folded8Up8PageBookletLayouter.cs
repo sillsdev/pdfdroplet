@@ -26,9 +26,9 @@ namespace PdfDroplet.LayoutMethods
 			return "Fold/Cut 8Up 8 Page Booklet";
 		}
 
-		public override bool GetIsEnabled(bool isLandscape)
+		public override bool GetIsEnabled(XPdfForm inputPdf)
 		{
-			return !isLandscape;
+			return IsPortrait(inputPdf);
 		}
 
 		protected override void LayoutInner(PdfDocument outputDocument, int numberOfSheetsOfPaper, int numberOfPageSlotsAvailable, int vacats)
