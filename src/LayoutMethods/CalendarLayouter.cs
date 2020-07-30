@@ -66,7 +66,7 @@ namespace PdfDroplet.LayoutMethods
             }
         }
 
-        public override bool GetIsEnabled(bool isLandscape)
+        public override bool GetIsEnabled(bool isLandscape, bool isSquare)
         {
             return isLandscape;
         }

@@ -137,9 +137,9 @@ namespace PdfDroplet.LayoutMethods
 			gfx.DrawImage(_inputPdf, box);
 		}
 
-        public override bool GetIsEnabled(bool isLandscape)
+        public override bool GetIsEnabled(bool isLandscape, bool isSquare)
         {
-            return true;
+            return !isSquare;
         }
     }
 }

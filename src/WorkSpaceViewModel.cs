@@ -77,9 +77,12 @@ namespace PdfDroplet
             yield return new SideFold4UpBookletLayouter();
 	        yield return new SideFold4UpSingleBookletLayouter();
 			yield return new Folded8Up8PageBookletLayouter();
+            yield return new Square6UpBookletLayouter();
         }
 
         public bool IsLandscape { get { return _inputPdf != null && _inputPdf.PixelWidth > _inputPdf.PixelHeight; } }
+
+        public bool IsSquare { get { return _inputPdf != null && _inputPdf.PixelWidth == _inputPdf.PixelHeight;  } }
 
         public bool ShowBrowser
         {

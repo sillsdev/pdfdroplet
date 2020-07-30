@@ -69,7 +69,7 @@ namespace PdfDroplet
                 {
                     button.Image = method.GetImage(_model.IsLandscape);
                 }
-                button.Enabled = _model.HaveIncomingPdf && method.GetIsEnabled(_model.IsLandscape);
+                button.Enabled = _model.HaveIncomingPdf && method.GetIsEnabled(_model.IsLandscape, _model.IsSquare);
                 button.FlatAppearance.BorderSize = _model.SelectedMethod!=null && method.GetType() == _model.SelectedMethod.GetType() ? 2 : 0;
             }
             SetupPreviousLink();
@@ -212,7 +212,7 @@ namespace PdfDroplet
 
         private void OnAboutLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-			string path = FileLocator.GetFileDistributedWithApplication(true, "about.htm");
+			string path = FileLocationUtilities.GetFileDistributedWithApplication(true, "about.htm");
 			using (var dlg = new SIL.Windows.Forms.Miscellaneous.SILAboutBox(path))
 			{
 				dlg.ShowDialog();

@@ -180,11 +180,11 @@ namespace PdfDroplet.LayoutMethods
 	    }
 
 
-	    public abstract bool GetIsEnabled(bool isLandscape);
+	    public abstract bool GetIsEnabled(bool isLandscape, bool isSquare);
 
         public virtual Image GetImage(bool isLandscape)
         {
-            return Image.FromFile(FileLocator.GetFileDistributedWithApplication("images", _imageName));
+            return Image.FromFile(FileLocationUtilities.GetFileDistributedWithApplication("images", _imageName));
         }
     }
 }

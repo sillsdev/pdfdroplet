@@ -18,7 +18,7 @@ namespace PdfDroplet.LayoutMethods
             return "Cut && Stack";
         }
 
-        public override bool GetIsEnabled(bool isLandscape)
+        public override bool GetIsEnabled(bool isLandscape, bool isSquare)
         {
             return isLandscape;
         }
