@@ -9,18 +9,20 @@ namespace PdfDroplet.LayoutMethods
 {
     public class NullLayoutMethod :LayoutMethod
     {
-        public NullLayoutMethod() : base("")
-        {
-        }
+		protected double _trimBoxDelta;
+		public NullLayoutMethod(double trimBoxDelta=0.0) : base("")
+		{
+			_trimBoxDelta = trimBoxDelta;
+		}
 
 		public override void Layout(XPdfForm inputPdf, string inputPath, string outputPath, PaperTarget paperTarget, bool rightToLeft, bool showCropMarks)
         {
-            if (!showCropMarks)
-            {
-	            File.Copy(inputPath, outputPath,true); // we don't have any value to add, so just deliver a copy of the original
-            }
-            else
-            {
+	        if (!showCropMarks && _trimBoxDelta < 0.1) // could say _trimBoxDelta==0.0 if we fully trusted double comparisons...
+	        {
+		        File.Copy(inputPath, outputPath, true); // we don't have any value to add, so just deliver a copy of the original
+	        }
+			else
+			{
 				//_rightToLeft = rightToLeft;
 				_inputPdf = inputPdf;
 				_showCropMarks = showCropMarks;
@@ -28,14 +30,24 @@ namespace PdfDroplet.LayoutMethods
 	            PdfDocument outputDocument = new PdfDocument();
 				outputDocument.PageLayout = PdfPageLayout.SinglePage;
 
-	            _paperWidth = _inputPdf.PixelWidth;
-				_paperHeight =_inputPdf.PixelHeight;
-//	            if (showCropMarks)
-//	            {
-//					_paperWidth.Millimeter += (2.0 * LayoutMethod.kMillimetersBetweenTrimAndMediaBox);
-//					_paperHeight.Millimeter += (2.0 * LayoutMethod.kMillimetersBetweenTrimAndMediaBox);
-//	            }
-	            for (int idx = 1; idx <= _inputPdf.PageCount; idx++)
+				// Despite the name, PixelWidth is the same as PointWidth, just as an integer instead of
+				// double precision.  We may as well use all the precision we can get.
+				_paperWidth = _inputPdf.PointWidth;
+				_paperHeight =_inputPdf.PointHeight;
+
+				if (_trimBoxDelta > 0.1)
+				{
+					// This sets the ArtBox and TrimBox to be offset inside the page boundaries,
+					// and increases the page size (CropBox, BleedBox, and MediaBox) accordingly.
+					// If we don't set the TrimMargins, only the MediaBox is set inside the PDF,
+					// and that to the original values for the input PDF's page size.
+					outputDocument.Settings.TrimMargins = new TrimMargins
+					{
+						All = new XUnit(_trimBoxDelta, XGraphicsUnit.Millimeter)
+					};
+				}
+
+				for (int idx = 1; idx <= _inputPdf.PageCount; idx++)
 	            {
 		            using (XGraphics gfx = GetGraphicsForNewPage(outputDocument))
 		            {
