@@ -115,15 +115,8 @@ namespace PdfDroplet
             SelectedMethod = method;
             if (HaveIncomingPdf)
             {
-                if (method is NullLayoutMethod)
-                {
-                    _pathToCurrentlyDisplayedPdf = _incomingPath;
-                    _view.ClearThenContinue(()=>_view.Navigate(_incomingPath)); 
-                }
-                else
-                {
-                    _view.ClearThenContinue(ContinueConversionAndNavigation);
-                }
+                // Handle NullLayoutMethod the same as the others to allow testing crop marks.
+                _view.ClearThenContinue(ContinueConversionAndNavigation);
             }
             if (!string.IsNullOrEmpty(_incomingPath) && Settings.Default.PreviousIncomingPath != _incomingPath)
             {
@@ -198,7 +191,7 @@ namespace PdfDroplet
             }
             catch (Exception error)
             {
-                ErrorReport.NotifyUserOfProblem(error, "PdfBooket was unable to convert that file.");
+                ErrorReport.NotifyUserOfProblem(error, "PdfBooklet was unable to convert that file.");
             }
             _view.UpdateDisplay();
          

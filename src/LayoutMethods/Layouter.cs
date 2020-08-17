@@ -118,7 +118,7 @@ namespace PdfDroplet.LayoutMethods
 
 		    if (Settings.Default.Mirror)
             {
-                Matrix mirrorMatrix = new Matrix(-1, 0, 0, 1, 0, 0);
+                var mirrorMatrix = new XMatrix(-1, 0, 0, 1, 0, 0);
                 gfx.MultiplyTransform(mirrorMatrix);
                 gfx.TranslateTransform(-_paperWidth, 1);
             }
