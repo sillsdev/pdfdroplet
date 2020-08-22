@@ -75,8 +75,10 @@ namespace PdfDroplet.LayoutMethods
 						var trimBox = new PdfRectangle(trimLocation, new XSize(page.MediaBox.Width - 2 * bleedMargin.Point, page.MediaBox.Height - 2 * bleedMargin.Point));
 						// All of the boxes start out the same size: MediaBox, CropBox, BleedBox, ArtBox, and TrimBox.
 						// MediaBox is presumably the physical paper size.
-						// Leave CropBox the same as MediaBox.  Cropbox limits what you see in Adobe Acrobat Reader DC and maybe elsewhere.
-						// Also leave BleedBox the same as MediaBox.  See https://i0.wp.com/makingcomics.spiltink.org/wp-content/uploads/2015/05/averageamericancomicsized.jpg.
+						// Set CropBox the same as MediaBox.  CropBox limits what you see in Adobe Acrobat Reader DC and even Acrobat Pro.
+						// Also set BleedBox the same as MediaBox.  See https://i0.wp.com/makingcomics.spiltink.org/wp-content/uploads/2015/05/averageamericancomicsized.jpg.
+						page.BleedBox = page.MediaBox;
+						page.CropBox = page.MediaBox;
 						page.ArtBox = trimBox;
 						page.TrimBox = trimBox;
 						realOutput.AddPage(page);
