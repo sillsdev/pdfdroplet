@@ -6,15 +6,7 @@ The gui has only been released on Windows, but on Linux PdfDroplet has been used
 
 ## Building ##
 
-In the `build` directory, run
-
-`buildupdate.windows.sh` or 'buildupdate.linux.sh'
-
-(To do this on windows, you'll need some way to run bash scripts.)
-
-That script will fetch dependencies from our TeamCity server. It could take a minute the first time; afterwards, it will be quick as it only downloads what has changed. When you change branches, run this again.
-
-Next build the solution. On Windows, use at least the 2015 Community edition of Visual Studio.
+Build the solution PdfDroplet.sln. On Windows, use at least the 2015 Community edition of Visual Studio.
 
 In order to get a preview of the output inside of PdfDroplet, you will need a PDF viewer which integrates with Internet Explorer. Acrobat Reader, PdfXchange, and FoxIt all do this.
 
