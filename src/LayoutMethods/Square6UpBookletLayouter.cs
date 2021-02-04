@@ -6,16 +6,19 @@ namespace PdfDroplet.LayoutMethods
 {
     /// <summary>
     /// Layout a 6up square booklet that will be folded vertically and cut horizontally.  The actual
-    /// paper will be treated as portrait to fit the 6 square pages.  (Vertical cuts may be needed
-    /// to trim the actual pages, which are laid out centered vertically but aligned to the top of
-    /// the paper.)
+    /// paper will be treated as portrait to fit the 6 square pages.  (The actual pages are laid out
+    /// centered both vertically and horizontally inside the A3 page, which produces 15mm margins top
+    /// and bottom and 18.5mm margins left and right.)
     /// </summary>
     /// <remarks>
     /// Similarly to how the SideFold4UpBookletLayouter produces 2 copies of the booklet, this
-    /// layout method produces 3 copies of the booklet.
+    /// layout method produces 3 copies of the booklet.  It assumes printing on A3 paper.
     /// </remarks>
     public class Square6UpBookletLayouter : LayoutMethod
     {
+	    // 42.5197pt = 15mm.  This centers 6up 13cm square pages vertically on A3 paper [(420-390)/2 = 15]
+	    private const double TopMargin = 42.5197;
+
         public Square6UpBookletLayouter():base("square6UpBooklet.png")
         {
 
@@ -82,13 +85,13 @@ namespace PdfDroplet.LayoutMethods
                 boxSize = _inputPdf.PointWidth;
             }
             _inputPdf.PageNumber = pageNumber;
-			var box = new XRect(leftEdge, 0, boxSize, boxSize);
+			var box = new XRect(leftEdge, TopMargin, boxSize, boxSize);
 			gfx.DrawImage(_inputPdf, box);
             _inputPdf.PageNumber = pageNumber;
-            box = new XRect(leftEdge, boxSize, boxSize, boxSize);
+            box = new XRect(leftEdge, boxSize + TopMargin, boxSize, boxSize);
             gfx.DrawImage(_inputPdf, box);
             _inputPdf.PageNumber = pageNumber;
-            box = new XRect(leftEdge, 2 * boxSize, boxSize, boxSize);
+            box = new XRect(leftEdge, 2 * boxSize + TopMargin, boxSize, boxSize);
             gfx.DrawImage(_inputPdf, box);
 		}
 
@@ -103,13 +106,13 @@ namespace PdfDroplet.LayoutMethods
                 boxSize = _inputPdf.PointWidth;
             }
 			_inputPdf.PageNumber = pageNumber;
-			var box = new XRect(leftEdge, 0, boxSize, boxSize);
+			var box = new XRect(leftEdge, TopMargin, boxSize, boxSize);
 			gfx.DrawImage(_inputPdf, box);
             _inputPdf.PageNumber = pageNumber;
-            box = new XRect(leftEdge, boxSize, boxSize, boxSize);
+            box = new XRect(leftEdge, boxSize + TopMargin, boxSize, boxSize);
             gfx.DrawImage(_inputPdf, box);
             _inputPdf.PageNumber = pageNumber;
-            box = new XRect(leftEdge, 2* boxSize, boxSize, boxSize);
+            box = new XRect(leftEdge, 2* boxSize + TopMargin, boxSize, boxSize);
             gfx.DrawImage(_inputPdf, box);
 		}
 
