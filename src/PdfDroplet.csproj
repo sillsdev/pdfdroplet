@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -106,17 +106,17 @@
     <Reference Include="PdfSharp">
       <HintPath>..\packages\PDFsharp.1.50.5147\lib\net20\PdfSharp.dll</HintPath>
     </Reference>
-    <Reference Include="SIL.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
-      <HintPath>..\packages\SIL.Core.8.0.0-beta0239\lib\net461\SIL.Core.dll</HintPath>
+    <Reference Include="SIL.Core, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
+      <HintPath>..\packages\SIL.Core.9.0.0-beta0040\lib\net461\SIL.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SIL.Core.Desktop, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
-      <HintPath>..\packages\SIL.Core.Desktop.8.0.0-beta0239\lib\net461\SIL.Core.Desktop.dll</HintPath>
+    <Reference Include="SIL.Core.Desktop, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
+      <HintPath>..\packages\SIL.Core.Desktop.9.0.0-beta0040\lib\net461\SIL.Core.Desktop.dll</HintPath>
     </Reference>
-    <Reference Include="SIL.Windows.Forms, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
-      <HintPath>..\packages\SIL.Windows.Forms.8.0.0-beta0239\lib\net461\SIL.Windows.Forms.dll</HintPath>
+    <Reference Include="SIL.Windows.Forms, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
+      <HintPath>..\packages\SIL.Windows.Forms.9.0.0-beta0040\lib\net461\SIL.Windows.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="SIL.WritingSystems, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
-      <HintPath>..\packages\SIL.WritingSystems.8.0.0-beta0239\lib\net461\SIL.WritingSystems.dll</HintPath>
+    <Reference Include="SIL.WritingSystems, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cab3c8c5232dfcf2, processorArchitecture=MSIL">
+      <HintPath>..\packages\SIL.WritingSystems.9.0.0-beta0040\lib\net461\SIL.WritingSystems.dll</HintPath>
     </Reference>
     <Reference Include="Spart, Version=1.0.0.0, Culture=neutral, PublicKeyToken=14d24e064e474331, processorArchitecture=MSIL">
       <HintPath>..\packages\Spart.1.0.0\lib\net461\Spart.dll</HintPath>
@@ -240,10 +240,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NDesk.DBus.0.15.0\build\NDesk.DBus.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NDesk.DBus.0.15.0\build\NDesk.DBus.targets'))" />
     <Error Condition="!Exists('..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets'))" />
-    <Error Condition="!Exists('..\packages\SIL.Windows.Forms.8.0.0-beta0239\build\SIL.Windows.Forms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SIL.Windows.Forms.8.0.0-beta0239\build\SIL.Windows.Forms.targets'))" />
+    <Error Condition="!Exists('..\packages\SIL.Windows.Forms.9.0.0-beta0040\build\SIL.Windows.Forms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SIL.Windows.Forms.9.0.0-beta0040\build\SIL.Windows.Forms.targets'))" />
   </Target>
   <Import Project="..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets" Condition="Exists('..\packages\Mono.Posix.5.4.0.201\build\net45\Mono.Posix.targets')" />
-  <Import Project="..\packages\SIL.Windows.Forms.8.0.0-beta0239\build\SIL.Windows.Forms.targets" Condition="Exists('..\packages\SIL.Windows.Forms.8.0.0-beta0239\build\SIL.Windows.Forms.targets')" />
+  <Import Project="..\packages\SIL.Windows.Forms.9.0.0-beta0040\build\SIL.Windows.Forms.targets" Condition="Exists('..\packages\SIL.Windows.Forms.9.0.0-beta0040\build\SIL.Windows.Forms.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
