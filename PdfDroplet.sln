@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfDroplet", "src\PdfDroplet.csproj", "{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfDroplet", "src\PdfDroplet.csproj", "{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{07FF96E4-B831-4D6A-8A92-893960A08000}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,12 +17,15 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Debug|x86.ActiveCfg = Debug|x86
-		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Debug|x86.Build.0 = Debug|x86
+		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Debug|x86.Build.0 = Debug|Any CPU
 		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Release|x86.ActiveCfg = Release|x86
 		{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A46D1B3F-9A5F-4684-8172-020228303206}
 	EndGlobalSection
 EndGlobal
