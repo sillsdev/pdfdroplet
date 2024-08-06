@@ -59,7 +59,8 @@ namespace PdfDroplet
         {
             ErrorReport.EmailAddress = "spam@pdfdroplet.palaso.org".Replace("spam", "issues");
             ErrorReport.AddStandardProperties();
-            ExceptionHandler.Init();
+
+			ExceptionHandler.Init(new SIL.Windows.Forms.Reporting.WinFormsExceptionHandler());
             ExceptionHandler.AddDelegate((w, e) => DesktopAnalytics.Analytics.ReportException(e.Exception));
         }
     }
