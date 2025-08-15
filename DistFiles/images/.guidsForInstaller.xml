@@ -16,4 +16,6 @@
   <File Id="ProgramDir.images.sideFoldBooklet.png" Guid="235b66ee-8186-40d6-948c-387914739638" />
   <File Id="ProgramDir.images.sideFoldCut4UpBooklet.png" Guid="c4c01931-cff3-486a-a223-16435ef4a182" />
   <File Id="ProgramDir.images.sideFoldCut4UpSingleBooklet.png" Guid="f12e2825-a047-47ce-b4b4-c90fe0fd5406" />
+  <File Id="ProgramDir.images.folded8Up8PageBooklet.png" Guid="b6344f84-2666-4137-af48-ae9c5f228fe7" />
+  <File Id="ProgramDir.images.square6UpBooklet.png" Guid="817bcc9e-a43e-4976-994b-1fd9a39ae758" />
 </InstallerMetadata>
