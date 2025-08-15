@@ -4,15 +4,15 @@
         <ProjectGuid>{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}</ProjectGuid>
         <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
         <OutputPath>..\output\$(Configuration)\</OutputPath>
-        <Platform>x86</Platform>
-        <AssemblyTitle>PdfDroplet</AssemblyTitle>
+		<Platform>x86</Platform>
+		<AssemblyTitle>PdfDroplet</AssemblyTitle>
         <Company>SIL</Company>
         <Product>PdfDroplet</Product>
         <Copyright>© SIL International 2012-2024</Copyright>
         <Version>2.5</Version>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <BuildDependsOn>$(BuildDependsOn);AfterBuildMigrated</BuildDependsOn>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
         <LangVersion>9.0</LangVersion>
         <PostBuildEvent></PostBuildEvent>
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -22,7 +22,7 @@
         <StartupObject />
     </PropertyGroup>
     <PropertyGroup>
-        <PlatformTarget>x86</PlatformTarget>
+        <PlatformTarget>AnyCPU</PlatformTarget>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
         <DebugType>full</DebugType>
@@ -76,20 +76,20 @@
         <PackageReference Include="GioSharp-signed" Version="3.22.24.37" />
         <PackageReference Include="GLibSharp-signed" Version="3.22.24.37" />
         <PackageReference Include="GtkSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="icu.net" Version="2.8.1" />
-        <PackageReference Include="L10NSharp" Version="7.0.0" />
-        <PackageReference Include="Markdig.Signed" Version="0.30.4" />
+        <PackageReference Include="icu.net" Version="3.0.1" />
+        <PackageReference Include="L10NSharp" Version="8.0.0" />
+        <PackageReference Include="Markdig.Signed" Version="0.37.0" />
         <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="2.0.4" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.0.4" />
         <PackageReference Include="Mono.Posix" Version="5.4.0.201" />
         <PackageReference Include="NDesk.DBus" Version="0.15.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="PangoSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="PdfSharp" Version="1.50.5147" />
-        <PackageReference Include="SIL.Core" Version="14.2.0-beta0019" />
-        <PackageReference Include="SIL.Core.Desktop" Version="14.2.0-beta0019" />
-        <PackageReference Include="SIL.Windows.Forms" Version="14.2.0-beta0019" />
-        <PackageReference Include="SIL.WritingSystems" Version="14.2.0-beta0019" />
+		<PackageReference Include="PdfSharp" Version="6.2.1" />
+        <PackageReference Include="SIL.Core" Version="16.1.0-*" />
+        <PackageReference Include="SIL.Core.Desktop" Version="16.1.0-*" />
+        <PackageReference Include="SIL.Windows.Forms" Version="16.1.0-*" />
+        <PackageReference Include="SIL.WritingSystems" Version="16.1.0-*" />
         <PackageReference Include="Spart" Version="1.0.0" />
         <PackageReference Include="System.Buffers" Version="4.5.1" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
