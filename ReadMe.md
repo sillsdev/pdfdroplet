@@ -8,7 +8,7 @@ The gui has only been released on Windows, but on Linux PdfDroplet has been used
 
 Build the solution PdfDroplet.sln. On Windows, use at least the 2022 Community edition of Visual Studio.  On Linux, you need msbuild and at least mono 6.
 
-In order to get a preview of the output inside of PdfDroplet, you will need a PDF viewer which integrates with Internet Explorer. Acrobat Reader, PdfXchange, and FoxIt all do this.
+In order to get a preview of the output inside of PdfDroplet, you will need a PDF viewer which integrates with Internet Explorer. Acrobat Reader, PdfXchange, and FoxIt all do this. Or, use https://github.com/sillsdev/SmallPdfDropletTest to test via command line.
 
 ## Disable Analytics
 
