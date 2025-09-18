@@ -33,10 +33,11 @@ namespace PdfDroplet
                 Settings.Default.Reporting = new ReportingSettings();
             SetupErrorHandling();
 
-            if (Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Adobe\Acrobat Reader") == null)
+            if (Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Adobe\Acrobat Reader") == null &&
+                Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Adobe\Adobe Acrobat\DC\AdobeViewer") == null)
             {
                 MessageBox.Show(
-                    "PdfDroplet requires that your computer be set up to show PDFs in Internet Explorer.  If you have problems, make sure Adobe Reader is installed; re-install it if necessary.");
+                    "PdfDroplet requires that your computer be set up to show PDFs with Adobe Acrobat.  If you have problems, make sure Adobe Acrobat is installed; re-install it if necessary.");
             }
 
 #if DEBUG
