@@ -65,11 +65,11 @@ namespace PdfDroplet
             this.Controls.Add(this.workspaceControl1);
             this.Controls.Add(this.linkLabel2);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(800, 400);
             this.Name = "MainWindow";
             this.Text = "PdfDroplet 0.1";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

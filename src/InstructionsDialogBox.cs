@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
 using SIL.IO;
 
 namespace PdfDroplet
@@ -11,8 +13,25 @@ namespace PdfDroplet
         public InstructionsDialogBox()
         {
             InitializeComponent();
-        
-            _browser.Navigate(FileLocationUtilities.GetFileDistributedWithApplication("instructions.htm"));
+
+            InitializeWebView2Async();
+        }
+
+        private async void InitializeWebView2Async()
+        {
+            try
+            {
+                await _browser.EnsureCoreWebView2Async(null);
+                _browser.CoreWebView2.Navigate(FileLocationUtilities.GetFileDistributedWithApplication("instructions.htm"));
+
+                // After first navigation, intercept further navigation to open in external browser
+                _browser.CoreWebView2.NavigationStarting += OnNavigationStarting;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing WebView2: {ex.Message}",
+                    "WebView2 Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
@@ -102,20 +121,28 @@ namespace PdfDroplet
             Close();
         }
 
-        /// <summary>
-        /// forward any link-clicks to their main browser, not this window
-        /// </summary>
-        private void OnNavigating(object sender, WebBrowserNavigatingEventArgs e)
-        {
-            e.Cancel = true;
-            Process.Start(e.Url.AbsoluteUri);
-        }
+        private bool _firstNavigation = true;
 
-        private void OnNavigated(object sender, WebBrowserNavigatedEventArgs e)
+        /// <summary>
+        /// forward any link-clicks to their main browser, not this window (except first navigation)
+        /// </summary>
+        private void OnNavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
-            //after this first one, no more navigating. From now on, use a webbrowser to follow links
-            this._browser.Navigated -= new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.OnNavigated);
-            this._browser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.OnNavigating);
+            if (_firstNavigation)
+            {
+                _firstNavigation = false;
+                return;
+            }
+
+            e.Cancel = true;
+            try
+            {
+                Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not open link: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

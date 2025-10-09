@@ -1,113 +1,115 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <!--ApplicationManifest>app.manifest</ApplicationManifest-->
-        <ProjectGuid>{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}</ProjectGuid>
-        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-        <OutputPath>..\output\$(Configuration)\</OutputPath>
+	<PropertyGroup>
+		<!--ApplicationManifest>app.manifest</ApplicationManifest-->
+		<ProjectGuid>{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}</ProjectGuid>
+		<SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+		<OutputPath>..\output\$(Configuration)\</OutputPath>
 		<Platform>x86</Platform>
 		<AssemblyTitle>PdfDroplet</AssemblyTitle>
-        <Company>SIL</Company>
-        <Product>PdfDroplet</Product>
-        <Copyright>© SIL International 2012-2024</Copyright>
-        <Version>2.5</Version>
-        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-        <BuildDependsOn>$(BuildDependsOn);AfterBuildMigrated</BuildDependsOn>
-        <TargetFramework>net8.0-windows</TargetFramework>
-        <LangVersion>9.0</LangVersion>
-        <PostBuildEvent></PostBuildEvent>
-        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    </PropertyGroup>
-    <PropertyGroup>
-        <StartupObject />
-    </PropertyGroup>
-    <PropertyGroup>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-        <DebugType>full</DebugType>
-        <CodeAnalysisLogFile>..\output\Debug\PdfDroplet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-        <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-        <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-        <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-        <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
-        <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-        <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-        <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-        <DebugType>pdbonly</DebugType>
-        <CodeAnalysisLogFile>..\output\Release\PdfDroplet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-        <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-        <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-        <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-        <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-        <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-        <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
-        <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
-        <Optimize>false</Optimize>
-        <DebugSymbols>true</DebugSymbols>
-    </PropertyGroup>
-    <PropertyGroup>
-        <OutputType>WinExe</OutputType>
-    </PropertyGroup>
-    <PropertyGroup>
-        <RootNamespace>PdfDroplet</RootNamespace>
-    </PropertyGroup>
-    <PropertyGroup>
-        <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
-    </PropertyGroup>
-    <PropertyGroup>
-        <AssemblyName>PdfDroplet</AssemblyName>
-    </PropertyGroup>
-    <PropertyGroup>
-        <StartupObject />
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="Analytics" Version="2.0.0" />
-        <PackageReference Include="AtkSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="CairoSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="DesktopAnalytics" Version="1.2.3" />
-        <PackageReference Include="DialogAdapters.Gtk2" Version="0.1.11" />
-        <PackageReference Include="Enchant.Net" Version="1.4.2" />
-        <PackageReference Include="GdkSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="GioSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="GLibSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="GtkSharp-signed" Version="3.22.24.37" />
-        <PackageReference Include="icu.net" Version="3.0.1" />
-        <PackageReference Include="L10NSharp" Version="8.0.0" />
-        <PackageReference Include="Markdig.Signed" Version="0.37.0" />
-        <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="2.0.4" />
-        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.0.4" />
-        <PackageReference Include="Mono.Posix" Version="5.4.0.201" />
-        <PackageReference Include="NDesk.DBus" Version="0.15.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="PangoSharp-signed" Version="3.22.24.37" />
+		<Company>SIL</Company>
+		<Product>PdfDroplet</Product>
+		<Copyright>© SIL International 2012-2024</Copyright>
+		<Version>2.6</Version>
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+		<BuildDependsOn>$(BuildDependsOn);AfterBuildMigrated</BuildDependsOn>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<LangVersion>9.0</LangVersion>
+		<PostBuildEvent></PostBuildEvent>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+	<PropertyGroup>
+		<StartupObject />
+	</PropertyGroup>
+	<PropertyGroup>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+		<DebugType>full</DebugType>
+		<CodeAnalysisLogFile>..\output\Debug\PdfDroplet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+		<CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+		<CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+		<CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+		<CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+		<CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+		<CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+		<DebugType>pdbonly</DebugType>
+		<CodeAnalysisLogFile>..\output\Release\PdfDroplet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+		<CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+		<CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+		<CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+		<CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+		<CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+		<CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+		<Optimize>false</Optimize>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+	<PropertyGroup>
+		<RootNamespace>PdfDroplet</RootNamespace>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
+	</PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>PdfDroplet</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup>
+		<StartupObject />
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Analytics" Version="2.0.0" />
+		<PackageReference Include="AtkSharp-signed" Version="3.22.24.37" />
+		<PackageReference Include="CairoSharp-signed" Version="3.22.24.37" />
+		<PackageReference Include="DesktopAnalytics" Version="1.2.3" />
+		<PackageReference Include="DialogAdapters.Gtk2" Version="0.1.11" />
+		<PackageReference Include="Enchant.Net" Version="1.4.2" />
+		<PackageReference Include="GdkSharp-signed" Version="3.22.24.37" />
+		<PackageReference Include="GioSharp-signed" Version="3.22.24.37" />
+		<PackageReference Include="GLibSharp-signed" Version="3.22.24.37" />
+		<PackageReference Include="GtkSharp-signed" Version="3.22.24.37" />
+		<PackageReference Include="icu.net" Version="3.0.1" />
+		<PackageReference Include="L10NSharp" Version="8.0.0" />
+		<PackageReference Include="Markdig.Signed" Version="0.37.0" />
+		<PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="2.0.4" />
+		<PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.0.4" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
+		<PackageReference Include="Mono.Posix" Version="5.4.0.201" />
+		<PackageReference Include="NDesk.DBus" Version="0.15.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="PangoSharp-signed" Version="3.22.24.37" />
 		<PackageReference Include="PdfSharp" Version="6.2.1" />
-        <PackageReference Include="SIL.Core" Version="16.1.0-*" />
-        <PackageReference Include="SIL.Core.Desktop" Version="16.1.0-*" />
-        <PackageReference Include="SIL.Windows.Forms" Version="16.1.0-*" />
-        <PackageReference Include="SIL.WritingSystems" Version="16.1.0-*" />
-        <PackageReference Include="Spart" Version="1.0.0" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-        <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-        <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
-        <PackageReference Include="System.Memory" Version="4.5.5" />
-        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-        <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-        <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
-        <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
-        <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
-        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-        <PackageReference Include="TagLibSharp" Version="2.3.0" />
-    </ItemGroup>
-    <ItemGroup>
-      <Reference Include="itextsharp">
-        <HintPath>..\lib\itextsharp.dll</HintPath>
-        <Private>True</Private>
-      </Reference>
-    </ItemGroup>
+		<PackageReference Include="SIL.Core" Version="16.1.0-*" />
+		<PackageReference Include="SIL.Core.Desktop" Version="16.1.0-*" />
+		<PackageReference Include="SIL.Windows.Forms" Version="16.1.0-*" />
+		<PackageReference Include="SIL.WritingSystems" Version="16.1.0-*" />
+		<PackageReference Include="Spart" Version="1.0.0" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+		<PackageReference Include="System.Memory" Version="4.5.5" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
+		<PackageReference Include="System.Security.Permissions" Version="6.0.0" />
+		<PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+		<PackageReference Include="TagLibSharp" Version="2.3.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="itextsharp">
+			<HintPath>..\lib\itextsharp.dll</HintPath>
+			<Private>True</Private>
+		</Reference>
+	</ItemGroup>
 </Project>

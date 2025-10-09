@@ -2,8 +2,10 @@
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DesktopAnalytics;
+using Microsoft.Web.WebView2.Core;
 using PdfDroplet.LayoutMethods;
 using PdfDroplet.Properties;
 using SIL.IO;
@@ -25,13 +27,29 @@ namespace PdfDroplet
             _overBrowserPanel.Bounds = _browser.Bounds;
             _mirrorBox.Checked = Settings.Default.Mirror;
             _rightToLeft.Checked = Settings.Default.RightToLeft;
-	        _showCropMarks.Checked = Settings.Default.ShowCropMarks;
+            _showCropMarks.Checked = Settings.Default.ShowCropMarks;
 
             //important to do this after the above settings
             this._mirrorBox.CheckedChanged += new System.EventHandler(this.OnMirrorBox_CheckedChanged);
             this._rightToLeft.CheckedChanged += new System.EventHandler(this.OnRightToLeft_CheckedChanged);
-			this._showCropMarks.CheckedChanged += new System.EventHandler(this.OnShowCropMarks_CheckedChanged);
-		}
+            this._showCropMarks.CheckedChanged += new System.EventHandler(this.OnShowCropMarks_CheckedChanged);
+
+            // Initialize WebView2
+            InitializeWebView2Async();
+        }
+
+        private async void InitializeWebView2Async()
+        {
+            try
+            {
+                await _browser.EnsureCoreWebView2Async(null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing WebView2: {ex.Message}\n\nPlease ensure WebView2 Runtime is installed.",
+                    "WebView2 Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
 
 
@@ -48,7 +66,7 @@ namespace PdfDroplet
             foreach (PaperTarget paperChoice in _model.PaperChoices)
             {
                 _paperSizeCombo.Items.Add(paperChoice);
-                if(_model.PaperTarget.Name == paperChoice.Name)
+                if (_model.PaperTarget.Name == paperChoice.Name)
                 {
                     _paperSizeCombo.SelectedItem = paperChoice;
                 }
@@ -57,20 +75,31 @@ namespace PdfDroplet
 
         public void UpdateDisplay()
         {
-            /*_showCropMarks.Enabled=*/ _mirrorBox.Enabled = _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
-                                      _model.SelectedMethod.GetType() != typeof(NullLayoutMethod);
+            /*_showCropMarks.Enabled=*/
+            _mirrorBox.Enabled = _paperSizeCombo.Enabled = _model.SelectedMethod != null &&
+          _model.SelectedMethod.GetType() != typeof(NullLayoutMethod);
 
-            
+
             _overBrowserPanel.Visible = !_model.ShowBrowser;
             foreach (Button button in _layoutChoices.Controls)
             {
                 var method = ((LayoutMethod)button.Tag);
-                if(method.ImageIsSensitiveToOrientation)
+                if (method.ImageIsSensitiveToOrientation)
                 {
-                    button.Image = method.GetImage(LayoutMethod.IsLandscape(_model.InputPdf));
+                    var originalImage = method.GetImage(LayoutMethod.IsLandscape(_model.InputPdf));
+                    var resizedImage = ResizeImageForButton(originalImage);
+                    originalImage.Dispose();
+
+                    // Dispose old image if it exists
+                    if (button.Image != null)
+                    {
+                        button.Image.Dispose();
+                    }
+
+                    button.Image = resizedImage;
                 }
                 button.Enabled = _model.HaveIncomingPdf && method.GetIsEnabled(_model.InputPdf);
-                button.FlatAppearance.BorderSize = _model.SelectedMethod!=null && method.GetType() == _model.SelectedMethod.GetType() ? 2 : 0;
+                button.FlatAppearance.BorderSize = _model.SelectedMethod != null && method.GetType() == _model.SelectedMethod.GetType() ? 2 : 0;
             }
             SetupPreviousLink();
         }
@@ -85,9 +114,36 @@ namespace PdfDroplet
             }
         }
 
+        private Image ResizeImageForButton(Image originalImage)
+        {
+            // Reserve space for text (approximately 30-40 pixels) and some padding
+            int maxImageHeight = 80;
+            int maxImageWidth = 70;
+            // Calculate scale factors for both dimensions
+            double scaleWidth = (double)maxImageWidth / originalImage.Width;
+            double scaleHeight = (double)maxImageHeight / originalImage.Height;
+
+            // Use the smaller scale factor to ensure the image fits within both constraints
+            // This will make the image as large as possible while staying within the bounds
+            double scale = Math.Min(scaleWidth, scaleHeight);
+
+            int newWidth = (int)(originalImage.Width * scale);
+            int newHeight = (int)(originalImage.Height * scale);
+
+            // Create resized image
+            var resizedImage = new Bitmap(newWidth, newHeight);
+            using (var graphics = Graphics.FromImage(resizedImage))
+            {
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                graphics.DrawImage(originalImage, 0, 0, newWidth, newHeight);
+            }
+
+            return resizedImage;
+        }
+
         private void PopulateLayoutList()
         {
-            this.BackColor = SystemColors.Control;
+            _layoutChoices.BackColor = Color.White;
             _layoutChoices.Controls.Clear();
             _layoutChoices.RowCount = 0;
             _layoutChoices.RowStyles.Clear();
@@ -96,14 +152,22 @@ namespace PdfDroplet
                 var button = new Button();
                 button.Tag = choice;
                 button.Text = choice.ToString();
-                button.Image = choice.GetImage(LayoutMethod.IsLandscape(_model.InputPdf));
+
+                // Get the original image and resize it to fit within the button
+                var originalImage = choice.GetImage(LayoutMethod.IsLandscape(_model.InputPdf));
+                var resizedImage = ResizeImageForButton(originalImage);
+                originalImage.Dispose();
+
+                button.Image = resizedImage;
                 button.FlatStyle = FlatStyle.Flat;
                 button.FlatAppearance.BorderSize = 0;
-               // item.Enabled = choice.GetIsEnabled(_model.IsLandscape);
+                // item.Enabled = choice.GetIsEnabled(_model.IsLandscape);
                 button.Click += new EventHandler((object sender, EventArgs e) => OnLayoutButtonClick((LayoutMethod)((Button)sender).Tag));
-                button.Height = 100;
+                button.Height = 130;
                 button.Width = 80;// _layoutChoices.GetColumnWidths()[0] - 20;
                 button.TextImageRelation = TextImageRelation.ImageAboveText;
+                button.TextAlign = ContentAlignment.BottomCenter; // Align text to bottom
+                button.ImageAlign = ContentAlignment.TopCenter; // Align image to top
                 button.TabIndex = _layoutChoices.RowCount;
                 _layoutChoices.Controls.Add(button);
                 _layoutChoices.RowCount++;
@@ -117,11 +181,11 @@ namespace PdfDroplet
             _model.SetLayoutMethod(method);
         }
 
-     
+
 
         private void OnDragDrop(object sender, DragEventArgs e)
         {
-            OnDragLeave(null,null);
+            OnDragLeave(null, null);
             _overBrowserPanel.Visible = false;
             _model.SetPath(GetPathFromDropEvent(e));
         }
@@ -141,7 +205,7 @@ namespace PdfDroplet
         private void OnDragEnter(object sender, DragEventArgs e)
         {
             _dragStatus.ForeColor = Color.Black;
-            
+
             e.Effect = DragDropEffects.None;
             if (!e.Data.GetDataPresent(DataFormats.FileDrop))
                 return;
@@ -161,7 +225,7 @@ namespace PdfDroplet
             {
                 _dragStatus.Text = "Looks good, drop it.";
                 _overBrowserPanel.Visible = true;
-                
+
                 this.BackColor = Color.LightBlue;
                 //this._dragStatus.BackColor = this.BackColor;
                 e.Effect = DragDropEffects.Copy;
@@ -209,38 +273,29 @@ namespace PdfDroplet
             _model.SetPath(dialog.FileName);
         }
 
-
-        private void OnAboutLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-			string path = FileLocationUtilities.GetFileDistributedWithApplication(true, "about.htm");
-			using (var dlg = new SIL.Windows.Forms.Miscellaneous.SILAboutBox(path))
-			{
-				dlg.ShowDialog();
-			}
-		}
         private void OnInstructionsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             using (var dlg = new InstructionsDialogBox())
             {
                 dlg.ShowDialog();
             }
-			Analytics.Track("Show Instructions");
+            Analytics.Track("Show Instructions");
         }
 
         private void _layoutChoices_VisibleChanged(object sender, EventArgs e)
         {
             //the Load event never fires, so...
-            if(Visible && !DesignMode)
-                OnLoad(null,null);
+            if (Visible && !DesignMode)
+                OnLoad(null, null);
         }
 
         public void ClearThenContinue(Action callWhenDone)
         {
             _callWhenNavigated = callWhenDone;
-            if (_browser.Url != null && _browser.Url.AbsolutePath.Contains("pdf"))
+            if (_browser.CoreWebView2 != null && _browser.Source != null && _browser.Source.AbsolutePath.Contains("pdf"))
             {
-                _urlWeWereShowing = _browser.Url.AbsolutePath;
-                _browser.Navigate("about:blank"); //stop holding on to the previous output
+                _urlWeWereShowing = _browser.Source.AbsolutePath;
+                _browser.CoreWebView2.Navigate("about:blank"); //stop holding on to the previous output
             }
             else
             {
@@ -260,9 +315,12 @@ namespace PdfDroplet
 
         public void Navigate(string path)
         {
-            //http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/acrobat/pdfs/pdf_open_parameters.pdf
-            path += "#view=Fit&navpanes=0&pagemode=thumbs&toolbar=1";
-            _browser.Navigate(path);
+            //WebView2 can display PDFs directly without Acrobat
+            //PDF viewing parameters are not needed as WebView2 uses its own PDF viewer
+            if (_browser.CoreWebView2 != null)
+            {
+                _browser.CoreWebView2.Navigate(path);
+            }
         }
 
         private void _reloadPrevious_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
@@ -270,7 +328,7 @@ namespace PdfDroplet
             _model.ReloadPrevious();
         }
 
-        private void _browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        private void _browser_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             if (_callWhenNavigated == null)
                 return;
@@ -280,7 +338,7 @@ namespace PdfDroplet
                 Thread.Sleep(100);
             }
 
-            CallBackNow(); 
+            CallBackNow();
         }
 
         public bool CanWrite(string path)
@@ -301,13 +359,13 @@ namespace PdfDroplet
 
         private void _paperSizeCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(_paperSizeCombo.SelectedItem!=null)
+            if (_paperSizeCombo.SelectedItem != null)
                 _model.SetPaperTarget(_paperSizeCombo.SelectedItem as PaperTarget);
         }
 
         private void _printLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-           // _model.Print();
+            // _model.Print();
         }
 
 
@@ -315,16 +373,16 @@ namespace PdfDroplet
         {
             _model.SetRightToLeft(_rightToLeft.Checked);
         }
-        
+
         private void OnMirrorBox_CheckedChanged(object sender, EventArgs e)
         {
-             _model.SetMirror(_mirrorBox.Checked);
+            _model.SetMirror(_mirrorBox.Checked);
         }
 
-		private void OnShowCropMarks_CheckedChanged(object sender, EventArgs e)
-		{
-			_model.ShowCropMarks(_showCropMarks.Checked);
-		}
+        private void OnShowCropMarks_CheckedChanged(object sender, EventArgs e)
+        {
+            _model.ShowCropMarks(_showCropMarks.Checked);
+        }
 
 
     }

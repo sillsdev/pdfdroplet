@@ -28,23 +28,23 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstructionsDialogBox));
-            this._browser = new System.Windows.Forms.WebBrowser();
+            this._browser = new Microsoft.Web.WebView2.WinForms.WebView2();
+            ((System.ComponentModel.ISupportInitialize)(this._browser)).BeginInit();
             this.SuspendLayout();
             // 
             // _browser
             // 
-            this._browser.AllowWebBrowserDrop = false;
+            this._browser.AllowExternalDrop = false;
             this._browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this._browser.IsWebBrowserContextMenuEnabled = false;
+            this._browser.CreationProperties = null;
+            this._browser.DefaultBackgroundColor = System.Drawing.Color.White;
             this._browser.Location = new System.Drawing.Point(0, 1);
-            this._browser.MinimumSize = new System.Drawing.Size(20, 20);
             this._browser.Name = "_browser";
             this._browser.Size = new System.Drawing.Size(595, 420);
             this._browser.TabIndex = 26;
-            this._browser.WebBrowserShortcutsEnabled = false;
-            this._browser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.OnNavigated);
+            this._browser.ZoomFactor = 1D;
             // 
             // InstructionsDialogBox
             // 
@@ -62,13 +62,14 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PdfDroplet";
+            ((System.ComponentModel.ISupportInitialize)(this._browser)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.WebBrowser _browser;
+        private Microsoft.Web.WebView2.WinForms.WebView2 _browser;
 
     }
 }

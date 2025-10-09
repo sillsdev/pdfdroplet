@@ -1,41 +1,41 @@
 ﻿namespace PdfDroplet
 {
-    partial class WorkspaceControl
-    {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class WorkspaceControl
+	{
+		/// <summary> 
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Component Designer generated code
+		#region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
-			this._browser = new System.Windows.Forms.WebBrowser();
+		/// <summary> 
+		/// Required method for Designer support - do not modify 
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			this._browser = new Microsoft.Web.WebView2.WinForms.WebView2();
+			((System.ComponentModel.ISupportInitialize)(this._browser)).BeginInit();
 			this.label1 = new System.Windows.Forms.Label();
 			this._paperSizeCombo = new System.Windows.Forms.ComboBox();
 			this._rightToLeft = new System.Windows.Forms.CheckBox();
 			this._layoutChoices = new System.Windows.Forms.TableLayoutPanel();
 			this.button1 = new System.Windows.Forms.Button();
 			this._reloadPrevious = new System.Windows.Forms.LinkLabel();
-			this._aboutLink = new System.Windows.Forms.LinkLabel();
 			this._overBrowserPanel = new System.Windows.Forms.Panel();
 			this._dragStatus = new System.Windows.Forms.Label();
 			this._browseForPdf = new System.Windows.Forms.LinkLabel();
@@ -49,17 +49,18 @@
 			// 
 			// _browser
 			// 
-			this._browser.AllowWebBrowserDrop = false;
-			this._browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this._browser.IsWebBrowserContextMenuEnabled = false;
+			this._browser.AllowExternalDrop = false;
+			this._browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this._browser.CreationProperties = null;
+			this._browser.DefaultBackgroundColor = System.Drawing.Color.White;
 			this._browser.Location = new System.Drawing.Point(126, 0);
-			this._browser.MinimumSize = new System.Drawing.Size(20, 20);
 			this._browser.Name = "_browser";
 			this._browser.Size = new System.Drawing.Size(648, 595);
 			this._browser.TabIndex = 0;
-			this._browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this._browser_DocumentCompleted);
+			this._browser.ZoomFactor = 1D;
+			this._browser.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this._browser_NavigationCompleted);
 			// 
 			// label1
 			// 
@@ -95,8 +96,8 @@
 			// 
 			// _layoutChoices
 			// 
-			this._layoutChoices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			this._layoutChoices.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)));
 			this._layoutChoices.AutoScroll = true;
 			this._layoutChoices.ColumnCount = 1;
 			this._layoutChoices.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -125,7 +126,7 @@
 			this._reloadPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this._reloadPrevious.AutoSize = true;
 			this._reloadPrevious.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this._reloadPrevious.Location = new System.Drawing.Point(339, 600);
+			this._reloadPrevious.Location = new System.Drawing.Point(339, 603);
 			this._reloadPrevious.Name = "_reloadPrevious";
 			this._reloadPrevious.Size = new System.Drawing.Size(82, 13);
 			this._reloadPrevious.TabIndex = 27;
@@ -133,24 +134,11 @@
 			this._reloadPrevious.Text = "Open Previous";
 			this._reloadPrevious.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this._reloadPrevious_LinkClicked_1);
 			// 
-			// _aboutLink
-			// 
-			this._aboutLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this._aboutLink.AutoSize = true;
-			this._aboutLink.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this._aboutLink.Location = new System.Drawing.Point(655, 600);
-			this._aboutLink.Name = "_aboutLink";
-			this._aboutLink.Size = new System.Drawing.Size(113, 13);
-			this._aboutLink.TabIndex = 28;
-			this._aboutLink.TabStop = true;
-			this._aboutLink.Text = "About PDF Droplet";
-			this._aboutLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnAboutLinkClicked);
-			// 
 			// _overBrowserPanel
 			// 
-			this._overBrowserPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this._overBrowserPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this._overBrowserPanel.Controls.Add(this._dragStatus);
 			this._overBrowserPanel.Controls.Add(this._browseForPdf);
 			this._overBrowserPanel.Location = new System.Drawing.Point(148, 2);
@@ -185,7 +173,7 @@
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.AutoSize = true;
 			this.linkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linkLabel1.Location = new System.Drawing.Point(449, 600);
+			this.linkLabel1.Location = new System.Drawing.Point(605, 603);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(131, 13);
 			this.linkLabel1.TabIndex = 27;
@@ -222,7 +210,7 @@
 			this._helpLink.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this._helpLink.AutoSize = true;
 			this._helpLink.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this._helpLink.Location = new System.Drawing.Point(605, 600);
+			this._helpLink.Location = new System.Drawing.Point(746, 603);
 			this._helpLink.Name = "_helpLink";
 			this._helpLink.Size = new System.Drawing.Size(31, 13);
 			this._helpLink.TabIndex = 32;
@@ -241,7 +229,6 @@
 			this.Controls.Add(this._mirrorBox);
 			this.Controls.Add(this._overBrowserPanel);
 			this.Controls.Add(this.linkLabel1);
-			this.Controls.Add(this._aboutLink);
 			this.Controls.Add(this._reloadPrevious);
 			this.Controls.Add(this._layoutChoices);
 			this.Controls.Add(this._rightToLeft);
@@ -255,28 +242,28 @@
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnDragEnter);
 			this.DragLeave += new System.EventHandler(this.OnDragLeave);
 			this._layoutChoices.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this._browser)).EndInit();
 			this._overBrowserPanel.ResumeLayout(false);
 			this._overBrowserPanel.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.WebBrowser _browser;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox _paperSizeCombo;
-        private System.Windows.Forms.CheckBox _rightToLeft;
-        private System.Windows.Forms.TableLayoutPanel _layoutChoices;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.LinkLabel _reloadPrevious;
-        private System.Windows.Forms.LinkLabel _aboutLink;
-        private System.Windows.Forms.Panel _overBrowserPanel;
-        private System.Windows.Forms.Label _dragStatus;
-        private System.Windows.Forms.LinkLabel _browseForPdf;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.CheckBox _mirrorBox;
+		private Microsoft.Web.WebView2.WinForms.WebView2 _browser;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ComboBox _paperSizeCombo;
+		private System.Windows.Forms.CheckBox _rightToLeft;
+		private System.Windows.Forms.TableLayoutPanel _layoutChoices;
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.LinkLabel _reloadPrevious;
+		private System.Windows.Forms.Panel _overBrowserPanel;
+		private System.Windows.Forms.Label _dragStatus;
+		private System.Windows.Forms.LinkLabel _browseForPdf;
+		private System.Windows.Forms.LinkLabel linkLabel1;
+		private System.Windows.Forms.CheckBox _mirrorBox;
 		private System.Windows.Forms.CheckBox _showCropMarks;
 		private System.Windows.Forms.LinkLabel _helpLink;
 	}
