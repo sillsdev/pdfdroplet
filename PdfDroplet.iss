@@ -2,7 +2,9 @@
 ; https://jrsoftware.org/isinfo.php
 
 #define MyAppName "PdfDroplet"
-#define MyAppVersion "2.6"
+#ifndef MyAppVersion
+  #error MyAppVersion must be defined (use /DMyAppVersion="x.y.z")
+#endif
 #define MyAppPublisher "SIL International"
 #define MyAppURL "https://github.com/sillsdev/pdfdroplet"
 #define MyAppExeName "PdfDroplet.exe"

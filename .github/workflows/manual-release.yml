@@ -31,11 +31,6 @@ jobs:
               with:
                   dotnet-version: ${{ env.DOTNET_VERSION }}
 
-            - name: Setup Inno Setup
-              uses: crazy-max/ghaction-setup-inno@v3
-              with:
-                  version: "6.2.2"
-
             - name: Determine version
               id: version
               shell: pwsh
@@ -75,21 +70,27 @@ jobs:
             - name: Build
               run: dotnet build $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER /p:Platform=x86
 
+            - name: Publish
+              run: dotnet publish $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER --output output/Release/win-x86 /p:Platform=x86 /p:PublishSingleFile=false
+
+            - name: Install Inno Setup
+              shell: pwsh
+              run: |
+                  choco install innosetup --yes --no-progress
+
             - name: Build Inno Setup installer
               shell: pwsh
               run: |
-                  $installerVersion = '${{ steps.installer_version.outputs.value }}'
-                  if ([string]::IsNullOrWhiteSpace($installerVersion)) {
-                    throw 'Installer version could not be determined.'
+                  $version = '${{ steps.installer_version.outputs.value }}'
+                  if ([string]::IsNullOrWhiteSpace($version)) {
+                    throw 'Installer version output missing.'
                   }
-                  # Update version in Inno Setup script
-                  $issPath = Join-Path $env:GITHUB_WORKSPACE 'PdfDroplet.iss'
-                  $issContent = Get-Content $issPath -Raw
-                  $issContent = $issContent -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$installerVersion`""
-                  Set-Content $issPath $issContent -NoNewline
-
-                  # Compile the installer
-                  iscc.exe PdfDroplet.iss
+                  $programFilesX86 = [System.Environment]::GetFolderPath('ProgramFilesX86')
+                  $isccPath = Join-Path $programFilesX86 'Inno Setup 6\ISCC.exe'
+                  if (-not (Test-Path $isccPath)) {
+                    throw "Inno Setup compiler not found at $isccPath"
+                  }
+                  & $isccPath "PdfDroplet.iss" "/DMyAppVersion=$version"
 
             - name: Prepare installer asset
               id: installer
@@ -99,7 +100,7 @@ jobs:
                   if ([string]::IsNullOrWhiteSpace($version)) {
                     throw 'Installer version output missing.'
                   }
-                  $source = Join-Path $env:GITHUB_WORKSPACE 'output\installer\PdfDropletInstaller.exe'
+                  $source = Join-Path $env:GITHUB_WORKSPACE 'output\Installer\PdfDropletInstaller.exe'
                   if (-not (Test-Path $source)) {
                     throw "Expected installer at $source"
                   }
@@ -131,23 +132,11 @@ jobs:
                   "body=$notes" >> $env:GITHUB_OUTPUT
 
             - name: Create GitHub release
-              id: create_release
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: softprops/action-gh-release@v2
               with:
                   tag_name: ${{ steps.release.outputs.tag_name }}
-                  release_name: ${{ steps.release.outputs.release_name }}
+                  name: ${{ steps.release.outputs.release_name }}
                   body: ${{ steps.release.outputs.body }}
                   draft: true
                   prerelease: ${{ inputs.prerelease }}
-
-            - name: Upload release asset
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ${{ steps.installer.outputs.installer_path }}
-                  asset_name: ${{ steps.installer.outputs.artifact_name }}.exe
-                  asset_content_type: application/octet-stream
+                  files: ${{ steps.installer.outputs.installer_path }}
