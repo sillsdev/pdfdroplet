@@ -11,3 +11,5 @@ lib/*.pdb
 _Resharper*
 .nuget/NuGet.exe
 /.vs/
+publish/
+artifacts/

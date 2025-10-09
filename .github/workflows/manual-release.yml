@@ -1,0 +1,114 @@
+name: Manual Release Build
+
+on:
+    workflow_dispatch:
+        inputs:
+            prerelease:
+                description: "Mark the release as a pre-release."
+                required: false
+                type: boolean
+                default: false
+
+jobs:
+    build-and-release:
+        name: Build and publish installer
+        runs-on: windows-latest
+        permissions:
+            contents: write
+        env:
+            PROJECT_PATH: src/PdfDroplet.csproj
+            BUILD_CONFIGURATION: Release
+            RUNTIME_IDENTIFIER: win-x86
+            PUBLISH_DIR: publish
+            # SDK used to build; project target version remains defined in Directory.Build.props / csproj
+            DOTNET_VERSION: "8.0.x"
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            - name: Determine version
+              id: version
+              shell: pwsh
+              run: |
+                  $propsPath = Join-Path $env:GITHUB_WORKSPACE 'Directory.Build.props'
+                  if (-not (Test-Path $propsPath)) {
+                    throw "Directory.Build.props not found at $propsPath"
+                  }
+                  [xml]$props = Get-Content $propsPath
+                  $version = $props.Project.PropertyGroup.Version
+                  if ([string]::IsNullOrWhiteSpace($version)) {
+                    throw 'Version property not found in Directory.Build.props'
+                  }
+                  "value=$version" >> $env:GITHUB_OUTPUT
+
+            - name: Restore dependencies
+              run: dotnet restore $env:PROJECT_PATH --runtime $env:RUNTIME_IDENTIFIER
+
+            - name: Build
+              run: dotnet build $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER /p:Platform=x86
+
+            - name: Publish win-x86 binaries
+              run: dotnet publish $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-build --runtime $env:RUNTIME_IDENTIFIER --self-contained false --output $env:PUBLISH_DIR /p:Platform=x86
+
+            - name: Package release asset
+              id: package
+              shell: pwsh
+              run: |
+                  if (Test-Path artifacts) { Remove-Item artifacts -Recurse -Force }
+                  New-Item -ItemType Directory -Path artifacts | Out-Null
+                  $publishPath = Resolve-Path $env:PUBLISH_DIR
+                  $zipDirectory = Resolve-Path artifacts
+                  $artifactName = "PdfDroplet-win-x86-${{ steps.version.outputs.value }}"
+                  $zipPath = Join-Path $zipDirectory "$artifactName.zip"
+                  $itemsToZip = Join-Path $publishPath '*'
+                  Compress-Archive -Path $itemsToZip -DestinationPath $zipPath -Force
+                  "artifact_name=$artifactName" >> $env:GITHUB_OUTPUT
+                  "zip_path=$zipPath" >> $env:GITHUB_OUTPUT
+
+            - name: Upload build artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ steps.package.outputs.artifact_name }}
+                  path: ${{ steps.package.outputs.zip_path }}
+
+            - name: Resolve release metadata
+              id: release
+              shell: pwsh
+              run: |
+                  $version = '${{ steps.version.outputs.value }}'
+                  if ([string]::IsNullOrWhiteSpace($version)) {
+                    throw 'Version step did not provide a value.'
+                  }
+                  $tag = "v$version"
+                  $name = "PdfDroplet $version"
+                  $notes = "Automated release generated from the Manual Release Build workflow."
+                  "tag_name=$tag" >> $env:GITHUB_OUTPUT
+                  "release_name=$name" >> $env:GITHUB_OUTPUT
+                  "body=$notes" >> $env:GITHUB_OUTPUT
+
+            - name: Create GitHub release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ steps.release.outputs.tag_name }}
+                  release_name: ${{ steps.release.outputs.release_name }}
+                  body: ${{ steps.release.outputs.body }}
+                  draft: true
+                  prerelease: ${{ inputs.prerelease }}
+
+            - name: Upload release asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ${{ steps.package.outputs.zip_path }}
+                  asset_name: ${{ steps.package.outputs.artifact_name }}.zip
+                  asset_content_type: application/zip
