@@ -31,6 +31,11 @@ jobs:
               with:
                   dotnet-version: ${{ env.DOTNET_VERSION }}
 
+            - name: Setup Inno Setup
+              uses: crazy-max/ghaction-setup-inno@v3
+              with:
+                  version: "6.2.2"
+
             - name: Determine version
               id: version
               shell: pwsh
@@ -46,35 +51,69 @@ jobs:
                   }
                   "value=$version" >> $env:GITHUB_OUTPUT
 
+            - name: Normalize installer version
+              id: installer_version
+              shell: pwsh
+              run: |
+                  $raw = '${{ steps.version.outputs.value }}'
+                  if ([string]::IsNullOrWhiteSpace($raw)) {
+                    throw 'Version step did not provide a value.'
+                  }
+                  $segments = $raw.Split('.')
+                  while ($segments.Count -lt 3) {
+                    $segments += '0'
+                  }
+                  if ($segments.Count -gt 3) {
+                    $segments = $segments[0..2]
+                  }
+                  $normalized = [string]::Join('.', $segments)
+                  "value=$normalized" >> $env:GITHUB_OUTPUT
+
             - name: Restore dependencies
               run: dotnet restore $env:PROJECT_PATH --runtime $env:RUNTIME_IDENTIFIER
 
             - name: Build
               run: dotnet build $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER /p:Platform=x86
 
-            - name: Publish win-x86 binaries
-              run: dotnet publish $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-build --runtime $env:RUNTIME_IDENTIFIER --self-contained false --output $env:PUBLISH_DIR /p:Platform=x86
-
-            - name: Package release asset
-              id: package
+            - name: Build Inno Setup installer
               shell: pwsh
               run: |
-                  if (Test-Path artifacts) { Remove-Item artifacts -Recurse -Force }
-                  New-Item -ItemType Directory -Path artifacts | Out-Null
-                  $publishPath = Resolve-Path $env:PUBLISH_DIR
-                  $zipDirectory = Resolve-Path artifacts
-                  $artifactName = "PdfDroplet-win-x86-${{ steps.version.outputs.value }}"
-                  $zipPath = Join-Path $zipDirectory "$artifactName.zip"
-                  $itemsToZip = Join-Path $publishPath '*'
-                  Compress-Archive -Path $itemsToZip -DestinationPath $zipPath -Force
+                  $installerVersion = '${{ steps.installer_version.outputs.value }}'
+                  if ([string]::IsNullOrWhiteSpace($installerVersion)) {
+                    throw 'Installer version could not be determined.'
+                  }
+                  # Update version in Inno Setup script
+                  $issPath = Join-Path $env:GITHUB_WORKSPACE 'PdfDroplet.iss'
+                  $issContent = Get-Content $issPath -Raw
+                  $issContent = $issContent -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$installerVersion`""
+                  Set-Content $issPath $issContent -NoNewline
+
+                  # Compile the installer
+                  iscc.exe PdfDroplet.iss
+
+            - name: Prepare installer asset
+              id: installer
+              shell: pwsh
+              run: |
+                  $version = '${{ steps.installer_version.outputs.value }}'
+                  if ([string]::IsNullOrWhiteSpace($version)) {
+                    throw 'Installer version output missing.'
+                  }
+                  $source = Join-Path $env:GITHUB_WORKSPACE 'output\installer\PdfDropletInstaller.exe'
+                  if (-not (Test-Path $source)) {
+                    throw "Expected installer at $source"
+                  }
+                  $artifactName = "PdfDropletInstaller-$version"
+                  $destination = Join-Path (Split-Path $source -Parent) ("$artifactName.exe")
+                  Copy-Item $source $destination -Force
                   "artifact_name=$artifactName" >> $env:GITHUB_OUTPUT
-                  "zip_path=$zipPath" >> $env:GITHUB_OUTPUT
+                  "installer_path=$destination" >> $env:GITHUB_OUTPUT
 
             - name: Upload build artifact
               uses: actions/upload-artifact@v4
               with:
-                  name: ${{ steps.package.outputs.artifact_name }}
-                  path: ${{ steps.package.outputs.zip_path }}
+                  name: ${{ steps.installer.outputs.artifact_name }}
+                  path: ${{ steps.installer.outputs.installer_path }}
 
             - name: Resolve release metadata
               id: release
@@ -86,7 +125,7 @@ jobs:
                   }
                   $tag = "v$version"
                   $name = "PdfDroplet $version"
-                  $notes = "Automated release generated from the Manual Release Build workflow."
+                  $notes = "Automated release generated from the Manual Release Build workflow, including the Windows installer built with Inno Setup."
                   "tag_name=$tag" >> $env:GITHUB_OUTPUT
                   "release_name=$name" >> $env:GITHUB_OUTPUT
                   "body=$notes" >> $env:GITHUB_OUTPUT
@@ -109,6 +148,6 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ${{ steps.package.outputs.zip_path }}
-                  asset_name: ${{ steps.package.outputs.artifact_name }}.zip
-                  asset_content_type: application/zip
+                  asset_path: ${{ steps.installer.outputs.installer_path }}
+                  asset_name: ${{ steps.installer.outputs.artifact_name }}.exe
+                  asset_content_type: application/octet-stream

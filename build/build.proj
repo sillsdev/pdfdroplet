@@ -1,131 +1,84 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<RootDir>$(teamcity_build_checkoutDir)</RootDir>
-	</PropertyGroup>
-
-	<UsingTask TaskName="StampAssemblies" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
-	<UsingTask TaskName="MakeWixForDirTree" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
-	<UsingTask TaskName="Split" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
-	<UsingTask TaskName="FileUpdate" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
-	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)"
+    <PropertyGroup>
+        <RootDir>$(teamcity_build_checkoutDir)</RootDir>
+    </PropertyGroup>
+    <UsingTask TaskName="StampAssemblies" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
+    <UsingTask TaskName="Split" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
+    <UsingTask TaskName="FileUpdate" AssemblyFile="$(RootDir)/build/SIL.BuildTasks.dll" />
+    <UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)"
 		Condition=" '$(teamcity_version)' != '' And '$(OS)'=='Windows_NT'"/>
-	<UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_agent_home_dir)/plugins/dotnetPlugin/bin/JetBrains.BuildServer.MSBuildLoggers.dll"
+    <UsingTask TaskName="NUnitTeamCity" AssemblyFile="$(teamcity_agent_home_dir)/plugins/dotnetPlugin/bin/JetBrains.BuildServer.MSBuildLoggers.dll"
 		Condition=" '$(teamcity_version)' != '' And '$(OS)'!='Windows_NT'"/>
-
-	<PropertyGroup>
-		<Solution>PdfDroplet.sln</Solution>
-		<ApplicationName>PdfDroplet</ApplicationName>
-		<Configuration>Release</Configuration>
-	</PropertyGroup>
-
-	<Target Name="VersionNumbers">
-		<Message Text="BUILD_NUMBER: $(BUILD_NUMBER)" Importance="high"/>
-
-		<Split Input="$(BUILD_NUMBER)" Delimiter="." OutputSubString="2">
-			<Output TaskParameter="ReturnValue" PropertyName="BuildCounter" />
-		</Split>
-
-		<Message Text="BuildCounter: $(BuildCounter)" Importance="high"/>
-
-		<!-- Note, after some thought, we've decided this is the best place to keep the version number (not on TeamCity, not in the assemblies). -->
-		<CreateProperty Value="2.4.$(BuildCounter)">
-			<Output PropertyName="Version" TaskParameter="Value"/>
-		</CreateProperty>
-
-		<Message Text="Version: $(Version)" Importance="high"/>
-
-		<CreateProperty Value="PdfDropletInstaller-$(Version).msi" Condition=" '$(Label)' == '' ">
-			<Output PropertyName="InstallerFileName" TaskParameter="Value"/>
-		</CreateProperty>
-	</Target>
-
-	<!-- Note: Mono xbuild doesn't support ItemGroup inside Target -->
-	<ItemGroup>
-		<AssemblyInfoFiles Include="$(RootDir)/src/**/assemblyinfo.cs"/>
-	</ItemGroup>
-
-	<Target Name="SetAssemblyVersion" DependsOnTargets ="VersionNumbers">
-		<StampAssemblies Version="$(Version)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
-	</Target>
-
-
-	<Target Name="Build" DependsOnTargets="SetAssemblyVersion">
-		<MSBuild Projects="$(RootDir)/$(Solution)"
+    <PropertyGroup>
+        <Solution>PdfDroplet.sln</Solution>
+        <ApplicationName>PdfDroplet</ApplicationName>
+        <Configuration>Release</Configuration>
+    </PropertyGroup>
+    <Target Name="VersionNumbers">
+        <Message Text="BUILD_NUMBER: $(BUILD_NUMBER)" Importance="high"/>
+        <Split Input="$(BUILD_NUMBER)" Delimiter="." OutputSubString="2">
+            <Output TaskParameter="ReturnValue" PropertyName="BuildCounter" />
+        </Split>
+        <Message Text="BuildCounter: $(BuildCounter)" Importance="high"/>
+        <!-- Note, after some thought, we've decided this is the best place to keep the version number (not on TeamCity, not in the assemblies). -->
+        <CreateProperty Value="2.4.$(BuildCounter)">
+            <Output PropertyName="Version" TaskParameter="Value"/>
+        </CreateProperty>
+        <Message Text="Version: $(Version)" Importance="high"/>
+        <CreateProperty Value="PdfDropletInstaller-$(Version).exe" Condition=" '$(Label)' == '' ">
+            <Output PropertyName="InstallerFileName" TaskParameter="Value"/>
+        </CreateProperty>
+    </Target>
+    <!-- Note: Mono xbuild doesn't support ItemGroup inside Target -->
+    <ItemGroup>
+        <AssemblyInfoFiles Include="$(RootDir)/src/**/assemblyinfo.cs"/>
+    </ItemGroup>
+    <Target Name="SetAssemblyVersion" DependsOnTargets ="VersionNumbers">
+        <StampAssemblies Version="$(Version)" InputAssemblyPaths="@(AssemblyInfoFiles)" />
+    </Target>
+    <Target Name="Build" DependsOnTargets="SetAssemblyVersion">
+        <MSBuild Projects="$(RootDir)/$(Solution)"
 			 Targets="Rebuild"
 			 Properties="Configuration=$(Configuration)" />
-		<Message Text="Build Complete"/>
-	</Target>
-
-
-	<Target Name="Test" DependsOnTargets="Build">
-		<CreateItem Include="$(RootDir)/output/$(Configuration)/*Tests.dll">
-			<Output ItemName="TestAssemblies" TaskParameter="Include" />
-		</CreateItem>
-		<NUnitTeamCity
+        <Message Text="Build Complete"/>
+    </Target>
+    <Target Name="Test" DependsOnTargets="Build">
+        <CreateItem Include="$(RootDir)/output/$(Configuration)/*Tests.dll">
+            <Output ItemName="TestAssemblies" TaskParameter="Include" />
+        </CreateItem>
+        <NUnitTeamCity
 			Assemblies="@(TestAssemblies)"
 			ExcludeCategory="SkipOnTeamCity"
 			NUnitVersion="NUnit-2.5.5" />
-	</Target>
-
-
-	<Target Name="Installer" DependsOnTargets="VersionNumbers; MakeWixForDistFiles; Build ">
-		<Message Text="Making Installer Version: $(Version)" Importance="high"/>
-
-		<MSBuild Projects="$(RootDir)\src\Installer\Installer.wixproj" Properties="DefineConstants=Property_ProductVersion=$(Version)"/>
-
-
-		<!-- remove an existing one with the same name, if necessary -->
-		<Delete Files="$(RootDir)\output\installer\$(InstallerFileName)" TreatErrorsAsWarnings="false" />
-
-		<Copy SourceFiles="$(RootDir)\output\installer\PdfDropletInstaller.msi"
+    </Target>
+    <Target Name="Installer" DependsOnTargets="VersionNumbers; Build ">
+        <Message Text="Making Installer Version: $(Version)" Importance="high"/>
+        <!-- Update version in Inno Setup script -->
+        <FileUpdate File="$(RootDir)\PdfDroplet.iss"
+			Regex='#define MyAppVersion ".*"'
+			ReplacementText ='#define MyAppVersion "$(Version)"' />
+        <!-- Compile with Inno Setup -->
+        <Exec Command='"$(ISCC)" "$(RootDir)\PdfDroplet.iss"' />
+        <!-- remove an existing one with the same name, if necessary -->
+        <Delete Files="$(RootDir)\output\installer\$(InstallerFileName)" TreatErrorsAsWarnings="false" />
+        <Copy SourceFiles="$(RootDir)\output\installer\PdfDropletInstaller.exe"
 			DestinationFiles="$(RootDir)\output\installer\$(InstallerFileName)"
 			/>
-
-		<!-- remove the installer which has no version number (wouldn't need this if the copy above was a move, instead) -->
-		<Delete Files="$(RootDir)\output\installer\PdfDropletInstaller.msi" TreatErrorsAsWarnings="false" />
-
-		<!-- copy it so we aren't modifying the original, which then is a pain on dev machines -->
-		<Copy SourceFiles ="$(RootDir)\src\installer\template.download_info"
-			DestinationFiles ="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).download_info"/>
-
-		<FileUpdate File="$(RootDir)\output\installer\PdfDropletInstaller-$(Version).download_info"
-			DatePlaceHolder='_DATE_'
-			DateFormat='yyyy-MM-dd'
-			Regex='_VERSION_'
-			ReplacementText ="$(Version)" />
-
-	</Target>
-
-	<!-- These targets are designed to be additional steps on TeamCity after running target Installer. Pick the appropriate one
+        <!-- remove the installer which has no version number (wouldn't need this if the copy above was a move, instead) -->
+        <Delete Files="$(RootDir)\output\installer\PdfDropletInstaller.exe" TreatErrorsAsWarnings="false" />
+    </Target>
+    <!-- These targets are designed to be additional steps on TeamCity after running target Installer. Pick the appropriate one
 	depending on whether your project's output MUST be signed or it's only nice if it is. For example, a continuous build
 	might use SignIfPossible, while a Publication build must use SignInstaller.-->
-	<Target Name="SignInstaller" DependsOnTargets="VersionNumbers">
-		<Exec Command='sign "$(RootDir)\output\installer\$(InstallerFileName)"'></Exec>
-		<Message Text="Signed installer at $(RootDir)\output\installer\$(InstallerFileName)" Importance="high"/>
-	</Target>
-	<Target Name="SignIfPossible" DependsOnTargets="VersionNumbers">
-		<Exec Command='sign "$(RootDir)\output\installer\$(InstallerFileName)"' ContinueOnError="true"></Exec>
-	</Target>
-
-	<Target Name="Upload" DependsOnTargets="VersionNumbers; Installer" >
-		<Message Text="Attempting rsync of $(InstallerFileName)" Importance="high"/>
-
-		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vzlt --chmod=Dug=rwx,Fu=rw,go=r --stats --rsync-path="sudo -u vu2004 rsync" -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=/cygdrive/c/BuildAgent/conf/bob.key -l root"  "../output/installer/$(InstallerFileName)" root@software.sil.org:/var/www/virtual/software.sil.org/htdocs/downloads/r/pdfdroplet/' />
-		<Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vzlt --chmod=Dug=rwx,Fu=rw,go=r --stats --rsync-path="sudo -u vu2004 rsync" -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=/cygdrive/c/BuildAgent/conf/bob.key -l root"  "../output/installer/PdfDropletInstaller-$(Version).download_info" root@software.sil.org:/var/www/virtual/software.sil.org/htdocs/downloads/r/pdfdroplet/' />
-	</Target>
-
-	<Target Name="MakeWixForDistFiles">
-		<MakeDir Directories="$(RootDir)\output\Installer\"/>
-
-		<MakeWixForDirTree
-				DirectoryReferenceId="ProgramDir"
-					ComponentGroupId="DistFiles"
-						RootDirectory="$(RootDir)\DistFiles"
-				OutputFilePath="$(RootDir)\output\Installer\GeneratedDistFiles.wxs"
-				MatchRegExPattern=".*"
-				>
-			<!--what does this do?-->
-			<Output TaskParameter="OutputFilePath" ItemName="Compile" />
-		</MakeWixForDirTree>
-	</Target>
+    <Target Name="SignInstaller" DependsOnTargets="VersionNumbers">
+        <Exec Command='sign "$(RootDir)\output\installer\$(InstallerFileName)"'></Exec>
+        <Message Text="Signed installer at $(RootDir)\output\installer\$(InstallerFileName)" Importance="high"/>
+    </Target>
+    <Target Name="SignIfPossible" DependsOnTargets="VersionNumbers">
+        <Exec Command='sign "$(RootDir)\output\installer\$(InstallerFileName)"' ContinueOnError="true"></Exec>
+    </Target>
+    <Target Name="Upload" DependsOnTargets="VersionNumbers; Installer" >
+        <Message Text="Attempting rsync of $(InstallerFileName)" Importance="high"/>
+        <Exec Command ='"c:\program files\cwRsync\bin\rsync.exe" -vzlt --chmod=Dug=rwx,Fu=rw,go=r --stats --rsync-path="sudo -u vu2004 rsync" -e"\"c:\program files\cwRsync\bin\ssh\" -oUserKnownHostsFile=C:\BuildAgent\conf\known_hosts -oIdentityFile=/cygdrive/c/BuildAgent/conf/bob.key -l root"  "../output/installer/$(InstallerFileName)" root@software.sil.org:/var/www/virtual/software.sil.org/htdocs/downloads/r/pdfdroplet/' />
+    </Target>
 </Project>

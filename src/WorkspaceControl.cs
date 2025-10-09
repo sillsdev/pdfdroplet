@@ -42,7 +42,13 @@ namespace PdfDroplet
         {
             try
             {
-                await _browser.EnsureCoreWebView2Async(null);
+                // Set user data folder to a writable location in AppData
+                var userDataFolder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "PdfDroplet", "WebView2");
+
+                var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
+                await _browser.EnsureCoreWebView2Async(environment);
             }
             catch (Exception ex)
             {
