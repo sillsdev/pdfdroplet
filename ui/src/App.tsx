@@ -15,6 +15,7 @@ import {
   type PaperTargetInfo,
   type WorkspaceState,
 } from "./lib/bridge";
+import { extractDroppedPath } from "./lib/pathHandling";
 
 function toPreviewSrc(path: string | null | undefined) {
   if (!path) {
@@ -32,120 +33,6 @@ function toPreviewSrc(path: string | null | undefined) {
 
   const normalized = trimmed.replace(/\\/g, "/").replace(/^\/+/, "");
   return `file:///${normalized}`;
-}
-
-function normalizeWindowsPath(path: string) {
-  if (!path) {
-    return "";
-  }
-
-  const trimmed = path.trim();
-  if (!trimmed) {
-    return "";
-  }
-
-  return trimmed.replace(/\//g, "\\");
-}
-
-function tryParseFileUri(value: string | null | undefined) {
-  if (!value) {
-    return null;
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  try {
-    const url = new URL(trimmed);
-    if (url.protocol !== "file:") {
-      return null;
-    }
-
-    const decodedPath = decodeURIComponent(url.pathname || "");
-    if (url.hostname) {
-      const host = url.hostname;
-      const uncPath = decodedPath.replace(/\//g, "\\");
-      return `\\\\${host}${uncPath}`;
-    }
-
-    const withoutLeadingSlash = decodedPath.startsWith("/")
-      ? decodedPath.slice(1)
-      : decodedPath;
-    return normalizeWindowsPath(withoutLeadingSlash);
-  } catch (error) {
-    console.debug("Failed to parse file URI", value, error);
-    return null;
-  }
-}
-
-function extractDroppedPath(event: DragEvent<HTMLDivElement>) {
-  const parseCandidate = (candidate: string | null | undefined) => {
-    if (!candidate) {
-      return null;
-    }
-
-    const trimmed = candidate.replace(/\0/g, "").trim();
-    if (!trimmed) {
-      return null;
-    }
-
-    const uriParsed = tryParseFileUri(trimmed);
-    if (uriParsed) {
-      return uriParsed;
-    }
-
-    if (/^[a-zA-Z]:\\/.test(trimmed) || trimmed.startsWith("\\\\")) {
-      return normalizeWindowsPath(trimmed);
-    }
-
-    return null;
-  };
-
-  const file = event.dataTransfer.files?.[0];
-  const explicitPath = (file as unknown as { path?: string })?.path;
-  if (explicitPath) {
-    return normalizeWindowsPath(explicitPath);
-  }
-
-  const fileDrop = event.dataTransfer.getData("FileDrop");
-  if (fileDrop) {
-    const lines = fileDrop
-      .split(/\0|\r?\n/)
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
-
-    for (const line of lines) {
-      const parsed = parseCandidate(line);
-      if (parsed) {
-        return parsed;
-      }
-    }
-  }
-
-  const uriList = event.dataTransfer.getData("text/uri-list");
-  if (uriList) {
-    const lines = uriList
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0 && !line.startsWith("#"));
-
-    for (const line of lines) {
-      const parsed = parseCandidate(line);
-      if (parsed) {
-        return parsed;
-      }
-    }
-  }
-
-  const plainText = event.dataTransfer.getData("text/plain");
-  const parsedPlain = parseCandidate(plainText);
-  if (parsedPlain) {
-    return parsedPlain;
-  }
-
-  return null;
 }
 
 function App() {
@@ -238,6 +125,54 @@ function App() {
     []
   );
 
+  const processDroppedPdf = useCallback(
+    (
+      rawPath: string | null | undefined,
+      context: { source: "dom" | "host"; formats?: string[] } = {
+        source: "dom",
+      }
+    ) => {
+      const descriptor = context.source === "host" ? "[drop][host]" : "[drop]";
+
+      if (!rawPath) {
+        console.warn(
+          `${descriptor} No usable path was resolved from the drop payload`,
+          context.formats ?? []
+        );
+        setErrorMessage(
+          "We couldn't read the dropped file path. Try dropping a PDF from File Explorer or use the Choose button."
+        );
+        return;
+      }
+
+      const normalized = rawPath.trim();
+      if (!normalized) {
+        console.warn(`${descriptor} Dropped path contained only whitespace.`);
+        setErrorMessage(
+          "We couldn't read the dropped file path. Try dropping a PDF from File Explorer or use the Choose button."
+        );
+        return;
+      }
+
+      if (!normalized.toLowerCase().endsWith(".pdf")) {
+        console.warn(`${descriptor} Dropped file did not have a .pdf extension`, {
+          path: normalized,
+          formats: context.formats,
+        });
+        setErrorMessage("That file must have a .pdf extension.");
+        return;
+      }
+
+      console.info(`${descriptor} Initiating dropPdf workspace command`, {
+        path: normalized,
+        formats: context.formats,
+      });
+      setErrorMessage(null);
+      void runCommand(() => bridge.dropPdf(normalized));
+    },
+    [runCommand]
+  );
+
   const handlePickPdf = useCallback(
     () => runCommand(() => bridge.pickPdf()),
     [runCommand]
@@ -252,24 +187,45 @@ function App() {
     (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       setIsDragActive(false);
-      const path = extractDroppedPath(event);
 
-      if (!path) {
-        setErrorMessage(
-          "We couldn't read the dropped file path. Try dropping a PDF from File Explorer or use the Choose button."
-        );
-        return;
+      const dataTransfer = event.dataTransfer;
+      const types = Array.from(dataTransfer?.types ?? []);
+
+      console.groupCollapsed(
+        `[drop] handleDrop captured: types=${
+          types.length > 0 ? types.join(", ") : "(none)"
+        }`
+      );
+
+      try {
+        if (dataTransfer) {
+          const files = dataTransfer.files;
+          if (files && files.length > 0) {
+            const summaries = Array.from(files).map((file) => ({
+              name: file.name,
+              size: file.size,
+              type: file.type,
+            }));
+            console.info("[drop] handleDrop files metadata", summaries);
+          } else {
+            console.info("[drop] handleDrop received no File entries");
+          }
+
+          console.info("[drop] handleDrop dropEffect/effectAllowed", {
+            dropEffect: dataTransfer.dropEffect,
+            effectAllowed: dataTransfer.effectAllowed,
+          });
+        }
+
+        const path = extractDroppedPath(event);
+        console.info("[drop] handleDrop extracted path", path);
+
+        processDroppedPdf(path, { source: "dom", formats: types });
+      } finally {
+        console.groupEnd();
       }
-
-      if (!path.toLowerCase().endsWith(".pdf")) {
-        setErrorMessage("That file must have a .pdf extension.");
-        return;
-      }
-
-      setErrorMessage(null);
-      void runCommand(() => bridge.dropPdf(path));
     },
-    [runCommand]
+    [processDroppedPdf]
   );
 
   const handleDragEnter = useCallback((event: DragEvent<HTMLDivElement>) => {
@@ -311,6 +267,34 @@ function App() {
     (enabled: boolean) => runCommand(() => bridge.setCropMarks(enabled)),
     [runCommand]
   );
+
+  useEffect(() => {
+    const unsubscribeDragState = bridge.on(
+      "externalDragState",
+      ({ isActive }) => {
+        setIsDragActive(isActive);
+      }
+    );
+
+    const unsubscribeExternalDrop = bridge.on(
+      "externalDrop",
+      ({ path, formats }) => {
+        console.groupCollapsed(
+          `[drop][host] externalDrop received: path=${
+            path ?? "(none)"
+          }`
+        );
+        console.info("[drop][host] available formats", formats);
+        console.groupEnd();
+        processDroppedPdf(path, { source: "host", formats });
+      }
+    );
+
+    return () => {
+      unsubscribeDragState();
+      unsubscribeExternalDrop();
+    };
+  }, [processDroppedPdf]);
 
   const selectedPaperId =
     workspaceState?.selectedPaperId ?? paperTargets[0]?.id ?? "";

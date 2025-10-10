@@ -7,6 +7,7 @@ using Microsoft.Web.WebView2.Core;
 using PdfDroplet.Interop;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace PdfDroplet
 {
@@ -24,6 +25,7 @@ namespace PdfDroplet
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
         private bool _webViewMessagingInitialized;
+        private bool _externalDragActive;
 
         public WorkspaceControl()
         {
@@ -32,6 +34,8 @@ namespace PdfDroplet
             _bridge = new WorkspaceUiBridge(this, _model, this);
 
             Padding = new Padding(0);
+
+            InitializeExternalDragDropHandling();
 
             InitializeWebView2Async();
         }
@@ -70,6 +74,8 @@ namespace PdfDroplet
                 }
 
                 ConfigurePreviewHostMapping();
+
+                _browser.CoreWebView2.NewWindowRequested += OnCoreNewWindowRequested;
 
                 // Configure PDF toolbar settings
                 _browser.CoreWebView2.Settings.HiddenPdfToolbarItems =
@@ -114,6 +120,14 @@ namespace PdfDroplet
             _webViewMessagingInitialized = true;
 
             _browser.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+            try
+            {
+                _browser.AllowExternalDrop = true;
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"[drop] Unable to enable AllowExternalDrop on WebView2: {error.Message}");
+            }
 
             _bridge.WorkspaceStateChanged += OnBridgeWorkspaceStateChanged;
             _bridge.LayoutChoicesChanged += OnBridgeLayoutChoicesChanged;
@@ -121,6 +135,44 @@ namespace PdfDroplet
             _bridge.GeneratedPdfReady += OnBridgeGeneratedPdfReady;
 
             PostEvent("bridgeReady", null);
+        }
+
+        private void InitializeExternalDragDropHandling()
+        {
+            try
+            {
+                AttachDragDropHandlers(this);
+
+                if (_browser != null)
+                {
+                    _browser.AllowExternalDrop = true;
+                    AttachDragDropHandlers(_browser);
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"[drop] Unable to initialize drag and drop: {error.Message}");
+            }
+        }
+
+        private void AttachDragDropHandlers(Control control)
+        {
+            if (control == null)
+            {
+                return;
+            }
+
+            control.AllowDrop = true;
+
+            control.DragEnter -= OnHostDragEnter;
+            control.DragOver -= OnHostDragOver;
+            control.DragLeave -= OnHostDragLeave;
+            control.DragDrop -= OnHostDragDrop;
+
+            control.DragEnter += OnHostDragEnter;
+            control.DragOver += OnHostDragOver;
+            control.DragLeave += OnHostDragLeave;
+            control.DragDrop += OnHostDragDrop;
         }
 
         private async Task LoadReactUiAsync()
@@ -268,6 +320,7 @@ namespace PdfDroplet
 
             try
             {
+                Console.WriteLine("[bridge] WebMessageReceived payload: " + e.WebMessageAsJson);
                 using (var document = JsonDocument.Parse(e.WebMessageAsJson))
                 {
                     var root = document.RootElement;
@@ -288,6 +341,7 @@ namespace PdfDroplet
                         throw new ArgumentException("Request missing method.");
 
                     var method = methodElement.GetString();
+                    Console.WriteLine($"[bridge] Received request '{method}' (id={requestId})");
 
                     JsonElement? paramsElement = null;
                     if (root.TryGetProperty("params", out var element))
@@ -301,6 +355,7 @@ namespace PdfDroplet
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[bridge] Error processing request {requestId}: {ex.Message}\n{ex}");
                 if (!string.IsNullOrWhiteSpace(requestId))
                 {
                     PostResponse(requestId, null, MapToRpcError(ex));
@@ -310,6 +365,7 @@ namespace PdfDroplet
 
         private async Task<object> ExecuteRequestAsync(string method, JsonElement? parameters)
         {
+            Console.WriteLine($"[bridge] ExecuteRequestAsync handling '{method}'");
             switch (method)
             {
                 case "requestState":
@@ -321,7 +377,14 @@ namespace PdfDroplet
                 case "pickPdf":
                     return await _bridge.PickPdfAsync().ConfigureAwait(true);
                 case "dropPdf":
-                    return await _bridge.DropPdfAsync(RequireString(parameters, "path")).ConfigureAwait(true);
+                    var dropPath = RequireString(parameters, "path");
+                    Console.WriteLine($"[bridge] dropPdf requested for path '{dropPath}' (exists={File.Exists(dropPath)})");
+                    var dropResult = await _bridge.DropPdfAsync(dropPath).ConfigureAwait(true);
+                    Console.WriteLine(
+                        "[bridge] dropPdf completed => HasIncomingPdf={0}, GeneratedPdfPath='{1}'",
+                        dropResult.HasIncomingPdf,
+                        dropResult.GeneratedPdfPath ?? string.Empty);
+                    return dropResult;
                 case "reloadPrevious":
                     return await _bridge.ReloadPreviousAsync().ConfigureAwait(true);
                 case "setLayout":
@@ -390,6 +453,344 @@ namespace PdfDroplet
 
             var json = JsonSerializer.Serialize(envelope, _bridgeSerializationOptions);
             _browser.CoreWebView2.PostWebMessageAsJson(json);
+        }
+
+        private void OnHostDragEnter(object sender, DragEventArgs e)
+        {
+            if (e == null)
+            {
+                return;
+            }
+
+            var effect = GetPreferredDragEffect(e);
+            e.Effect = effect;
+            UpdateExternalDragState(effect != DragDropEffects.None);
+
+            try
+            {
+                var formats = e.Data?.GetFormats() ?? Array.Empty<string>();
+                Console.WriteLine($"[drop][host] DragEnter allowed={e.AllowedEffect} -> effect={effect}; formats={string.Join(", ", formats)}");
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"[drop][host] DragEnter diagnostics failed: {error.Message}");
+            }
+        }
+
+        private void OnHostDragOver(object sender, DragEventArgs e)
+        {
+            if (e == null)
+            {
+                return;
+            }
+
+            var effect = GetPreferredDragEffect(e);
+            e.Effect = effect;
+            UpdateExternalDragState(effect != DragDropEffects.None);
+        }
+
+        private void OnHostDragLeave(object sender, EventArgs e)
+        {
+            UpdateExternalDragState(false);
+        }
+
+        private void OnHostDragDrop(object sender, DragEventArgs e)
+        {
+            UpdateExternalDragState(false);
+
+            var dataObject = e?.Data;
+            var formats = dataObject?.GetFormats() ?? Array.Empty<string>();
+
+            Console.WriteLine($"[drop][host] DragDrop received; effect={e?.Effect}; formats={string.Join(", ", formats)}");
+
+            if (!TryExtractDroppedFilePath(dataObject, out var path))
+            {
+                PostExternalDrop(null, formats);
+                return;
+            }
+
+            PostExternalDrop(path, formats);
+        }
+
+        private void UpdateExternalDragState(bool isActive)
+        {
+            if (_externalDragActive == isActive)
+            {
+                return;
+            }
+
+            _externalDragActive = isActive;
+            PostEvent("externalDragState", new { isActive });
+        }
+
+        private void PostExternalDrop(string path, string[] formats)
+        {
+            PostEvent("externalDrop", new { path, formats = formats ?? Array.Empty<string>() });
+        }
+
+        private void OnCoreNewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            if (e == null)
+            {
+                return;
+            }
+
+            var handled = false;
+
+            try
+            {
+                var uri = e.Uri;
+                if (!string.IsNullOrWhiteSpace(uri))
+                {
+                    if (TryNormalizeFromUri(uri, out var path) && !string.IsNullOrWhiteSpace(path))
+                    {
+                        Console.WriteLine($"[drop][newWindow] Intercepted CoreWebView2 new-window request for '{uri}' => '{path}'");
+                        UpdateExternalDragState(false);
+                        PostExternalDrop(path, new[] { "core-new-window", "uri" });
+                        handled = true;
+                    }
+                    else if (Uri.TryCreate(uri, UriKind.Absolute, out var parsed) && parsed.IsFile)
+                    {
+                        var normalized = NormalizeDroppedPath(parsed.LocalPath);
+                        if (!string.IsNullOrWhiteSpace(normalized))
+                        {
+                            Console.WriteLine($"[drop][newWindow] Intercepted CoreWebView2 new-window request for '{uri}' => '{normalized}'");
+                            UpdateExternalDragState(false);
+                            PostExternalDrop(normalized, new[] { "core-new-window", parsed.Scheme });
+                            handled = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"[drop][newWindow] Error while processing new window request: {error.Message}");
+            }
+
+            if (handled)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private static DragDropEffects GetPreferredDragEffect(DragEventArgs e)
+        {
+            if (e?.Data == null)
+            {
+                return DragDropEffects.None;
+            }
+
+            var dataObject = e.Data;
+            try
+            {
+                if (dataObject.GetDataPresent(DataFormats.FileDrop))
+                {
+                    return SelectEffect(e.AllowedEffect, DragDropEffects.Copy);
+                }
+
+                if (dataObject.GetDataPresent(DataFormats.Text) || dataObject.GetDataPresent(DataFormats.UnicodeText))
+                {
+                    return SelectEffect(e.AllowedEffect, DragDropEffects.Copy);
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"[drop] Error while evaluating drag formats: {error.Message}");
+            }
+
+            return DragDropEffects.None;
+        }
+
+        private static DragDropEffects SelectEffect(DragDropEffects allowed, DragDropEffects preferred)
+        {
+            if ((allowed & preferred) != 0)
+            {
+                return preferred;
+            }
+
+            if ((allowed & DragDropEffects.Copy) != 0)
+            {
+                return DragDropEffects.Copy;
+            }
+
+            if ((allowed & DragDropEffects.Move) != 0)
+            {
+                return DragDropEffects.Move;
+            }
+
+            if ((allowed & DragDropEffects.Link) != 0)
+            {
+                return DragDropEffects.Link;
+            }
+
+            return DragDropEffects.None;
+        }
+
+        private static bool TryExtractDroppedFilePath(IDataObject dataObject, out string normalizedPath)
+        {
+            normalizedPath = null;
+            if (dataObject == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                if (dataObject.GetDataPresent(DataFormats.FileDrop))
+                {
+                    if (dataObject.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
+                    {
+                        var candidate = NormalizeDroppedPath(files[0]);
+                        if (!string.IsNullOrWhiteSpace(candidate))
+                        {
+                            normalizedPath = candidate;
+                            return true;
+                        }
+                    }
+                }
+
+                if (TryNormalizeFromText(dataObject, DataFormats.Text, out normalizedPath))
+                {
+                    return true;
+                }
+
+                if (TryNormalizeFromText(dataObject, DataFormats.UnicodeText, out normalizedPath))
+                {
+                    return true;
+                }
+
+                if (dataObject.GetDataPresent("text/uri-list"))
+                {
+                    var uriListRaw = dataObject.GetData("text/uri-list") as string;
+                    if (TryNormalizeFromUriList(uriListRaw, out normalizedPath))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"[drop] Error reading drop payload: {error.Message}");
+            }
+
+            normalizedPath = null;
+            return false;
+        }
+
+        private static bool TryNormalizeFromText(IDataObject dataObject, string format, out string normalized)
+        {
+            normalized = null;
+            if (!dataObject.GetDataPresent(format))
+            {
+                return false;
+            }
+
+            var raw = dataObject.GetData(format) as string;
+            return TryNormalizeFromText(raw, out normalized);
+        }
+
+        private static bool TryNormalizeFromText(string value, out string normalized)
+        {
+            normalized = null;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            var trimmed = value.Trim();
+            if (string.IsNullOrWhiteSpace(trimmed))
+            {
+                return false;
+            }
+
+            if (TryNormalizeFromUri(trimmed, out normalized))
+            {
+                return true;
+            }
+
+            var candidate = NormalizeDroppedPath(trimmed);
+            if (!string.IsNullOrWhiteSpace(candidate))
+            {
+                normalized = candidate;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryNormalizeFromUri(string value, out string normalized)
+        {
+            normalized = null;
+            if (!Uri.TryCreate(value, UriKind.Absolute, out var uri))
+            {
+                return false;
+            }
+
+            if (!uri.IsFile)
+            {
+                return false;
+            }
+
+            normalized = NormalizeDroppedPath(uri.LocalPath);
+            return !string.IsNullOrWhiteSpace(normalized);
+        }
+
+        private static bool TryNormalizeFromUriList(string value, out string normalized)
+        {
+            normalized = null;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            var lines = value
+                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None)
+                .Select(line => line.Trim())
+                .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith("#"));
+
+            foreach (var line in lines)
+            {
+                if (TryNormalizeFromUri(line, out normalized))
+                {
+                    return true;
+                }
+
+                if (TryNormalizeFromText(line, out normalized))
+                {
+                    return true;
+                }
+            }
+
+            normalized = null;
+            return false;
+        }
+
+        private static string NormalizeDroppedPath(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            var trimmed = value.Trim().Trim('\"');
+            if (string.IsNullOrWhiteSpace(trimmed))
+            {
+                return null;
+            }
+
+            try
+            {
+                return Path.GetFullPath(trimmed);
+            }
+            catch
+            {
+                return trimmed;
+            }
+        }
+
+        private static bool IsPdfPath(string path)
+        {
+            return !string.IsNullOrWhiteSpace(path) && path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
         }
 
         private RpcError MapToRpcError(Exception exception)

@@ -30,9 +30,18 @@ const projectPath = path.resolve(repoRoot, "src/PdfDroplet.csproj");
 export async function launchPdfDroplet(): Promise<AppController> {
   const automationPort = await getAvailablePort();
 
+  await ensurePdfDropletNotRunning();
+
   const appProcess = spawn(
     "dotnet",
-    ["run", "--project", projectPath, "--configuration", "Debug"],
+    [
+      "run",
+      "--project",
+      projectPath,
+      "--configuration",
+      "Debug",
+      "--no-restore",
+    ],
     {
       env: {
         ...process.env,
@@ -76,6 +85,21 @@ export async function launchPdfDroplet(): Promise<AppController> {
   }
 }
 
+async function ensurePdfDropletNotRunning(): Promise<void> {
+  if (process.platform !== "win32") {
+    return;
+  }
+
+  await new Promise<void>((resolve) => {
+    const killer = spawn("taskkill", ["/f", "/im", "PdfDroplet.exe"], {
+      stdio: "ignore",
+    });
+
+    killer.once("exit", () => resolve());
+    killer.once("error", () => resolve());
+  });
+}
+
 async function getAvailablePort(): Promise<number> {
   return await new Promise<number>((resolve, reject) => {
     const server = createServer();
@@ -99,7 +123,10 @@ async function getAvailablePort(): Promise<number> {
   });
 }
 
-async function waitForWebView2(port: number, timeoutMs = 30_000): Promise<void> {
+async function waitForWebView2(
+  port: number,
+  timeoutMs = 30_000
+): Promise<void> {
   const deadline = Date.now() + timeoutMs;
 
   while (Date.now() < deadline) {
@@ -136,7 +163,9 @@ async function waitForWebView2(port: number, timeoutMs = 30_000): Promise<void> 
     }
   }
 
-  throw new Error(`Timed out waiting for WebView2 CDP endpoint on port ${port}`);
+  throw new Error(
+    `Timed out waiting for WebView2 CDP endpoint on port ${port}`
+  );
 }
 
 async function stopProcess(child: ChildProcess): Promise<void> {
@@ -214,8 +243,11 @@ async function ensureBridgeReady(page: Page): Promise<void> {
   await page.waitForFunction(
     () =>
       Boolean(
-        (window as unknown as { chrome?: { webview?: { postMessage?: unknown } } }).chrome
-          ?.webview?.postMessage
+        (
+          window as unknown as {
+            chrome?: { webview?: { postMessage?: unknown } };
+          }
+        ).chrome?.webview?.postMessage
       ),
     undefined,
     {
@@ -225,7 +257,11 @@ async function ensureBridgeReady(page: Page): Promise<void> {
 }
 
 function createBridgeInvoker(page: Page): BridgeInvoker {
-  return async <TResult>(method: string, parameters?: unknown, timeoutMs = 15_000) => {
+  return async <TResult>(
+    method: string,
+    parameters?: unknown,
+    timeoutMs = 15_000
+  ) => {
     const result = await page.evaluate(
       async (opts) => {
         const candidate = window as typeof window & {
@@ -251,14 +287,16 @@ function createBridgeInvoker(page: Page): BridgeInvoker {
           timeout: number
         ) =>
           new Promise<unknown>((resolve, reject) => {
-            const id = `playwright-${envelope.method}-${Date.now()}-${Math.random()
-              .toString(16)
-              .slice(2)}`;
+            const id = `playwright-${
+              envelope.method
+            }-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
             const timer = setTimeout(() => {
               cleanup();
               reject(
-                new Error(`Timed out waiting for response to ${envelope.method}`)
+                new Error(
+                  `Timed out waiting for response to ${envelope.method}`
+                )
               );
             }, timeout);
 
@@ -284,7 +322,9 @@ function createBridgeInvoker(page: Page): BridgeInvoker {
 
                 cleanup();
                 if (payload.error) {
-                  reject(new Error(payload.error?.message ?? "Bridge call failed"));
+                  reject(
+                    new Error(payload.error?.message ?? "Bridge call failed")
+                  );
                 } else {
                   resolve(payload.result);
                 }

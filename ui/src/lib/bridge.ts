@@ -81,6 +81,8 @@ class WebViewRuntimeBridge implements WorkspaceBridge {
     layoutsChanged: new Set(),
     generationStatus: new Set(),
     generatedPdfReady: new Set(),
+    externalDragState: new Set(),
+    externalDrop: new Set(),
   };
   private nextRequestId = 1;
 
@@ -270,6 +272,8 @@ class DevStubBridge implements WorkspaceBridge {
     layoutsChanged: new Set(),
     generationStatus: new Set(),
     generatedPdfReady: new Set(),
+    externalDragState: new Set(),
+    externalDrop: new Set(),
   };
 
   async requestState(): Promise<WorkspaceState> {

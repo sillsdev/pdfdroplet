@@ -29,7 +29,7 @@ export function PreviewPane({
   onDragLeave,
 }: PreviewPaneProps) {
   return (
-  <section className="relative flex flex-1 min-h-0 items-stretch overflow-hidden rounded-2xl bg-white shadow-panel">
+    <section className="relative flex flex-1 min-h-0 items-stretch overflow-hidden rounded-2xl bg-white shadow-panel">
       {hasIncomingPdf && previewSrc ? (
         <iframe
           title="Booklet preview"
@@ -44,6 +44,7 @@ export function PreviewPane({
               ? "border-droplet-accent bg-droplet-accent/10"
               : "border-slate-300 bg-white/90"
           } p-10 text-center`}
+          data-testid="drop-zone"
           onDragEnter={onDragEnter}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}

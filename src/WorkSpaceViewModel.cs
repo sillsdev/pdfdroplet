@@ -93,8 +93,10 @@ namespace PdfDroplet
 
         public void SetPath(string path)
         {
+            Console.WriteLine($"[viewmodel] SetPath invoked with '{path}' (exists={File.Exists(path)})");
             _incomingPath = path;
             _inputPdf = OpenDocumentForPdfSharp(_incomingPath);
+            Console.WriteLine("[viewmodel] Input PDF loaded successfully");
             SetLayoutMethod(new NullLayoutMethod());
         }
 
@@ -166,8 +168,10 @@ namespace PdfDroplet
 
         private void ContinueConversionAndNavigation()
         {
+            Console.WriteLine("[viewmodel] ContinueConversionAndNavigation starting");
             if (IsAlreadyOpenElsewhere(_incomingPath))
             {
+                Console.WriteLine("[viewmodel] Detected file already open elsewhere");
                 ErrorReport.NotifyUserOfProblem("That file appears to be open. First close it, then try again.");
                 return;
             }
@@ -176,6 +180,7 @@ namespace PdfDroplet
 
             try
             {
+                Console.WriteLine($"[viewmodel] Laying out PDF '{_incomingPath}' to '{outputPath}'");
                 SelectedMethod.Layout(
                     _inputPdf,
                     _incomingPath,
@@ -186,9 +191,11 @@ namespace PdfDroplet
 
                 _pathToCurrentlyDisplayedPdf = outputPath;
                 TrackGeneratedPreview(outputPath);
+                Console.WriteLine("[viewmodel] Layout completed successfully");
             }
             catch (Exception error)
             {
+                Console.WriteLine($"[viewmodel] Layout failed: {error.Message}\n{error}");
                 TryDeletePreview(outputPath);
                 ErrorReport.NotifyUserOfProblem(error, "PdfBooklet was unable to convert that file.");
             }

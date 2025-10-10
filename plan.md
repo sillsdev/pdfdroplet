@@ -57,9 +57,20 @@ PdfDroplet is currently a WinForms application whose main UX is implemented in `
 - [x] Add a Playwright end-to-end test that launches the bundled UI and verifies the primary screen (sidebar, controls, iframe) renders correctly using the real bridge.
   - ✅ Smoke test now boots the WinForms host, attaches to WebView2 over CDP, and exercises the JSON-RPC bridge (state/layout/paper queries).
   - ✅ React shell now renders inside WebView2; the Playwright smoke test asserts key UI elements alongside bridge calls.
+  - [ ] Complete full suite of playwright tests that check every function.
 - [ ] Remove obsolete WinForms controls/resources once the React UI is feature-complete
 
-## 🔌 Web ↔ C# Communication Strategy
+## � Progress & Next Steps
+
+- Removed the unused Playwright helper script at `ui/tools/check-preview.mjs`.
+- Pruned legacy/unused `PackageReference` entries from `src/PdfDroplet.csproj` (GtkSharp/Mono stack, DialogAdapters, Newtonsoft.Json, Spart, etc.) and verified with repeated `dotnet build` runs.
+- Current build status: succeeds with expected NU1701 warnings for `Analytics.NET`, `DesktopAnalytics`, and `Enchant.Net`, plus existing PdfSharp `CS0618` warnings. No new errors introduced.
+- Upcoming focus areas:
+  - Flesh out the broader Playwright regression suite that covers end-to-end flows beyond the current smoke test.
+  - Decide on a long-term plan for the NU1701 packages (upgrade, replacement, or suppression) and chip away at PdfSharp obsolete APIs.
+  - Finish decommissioning legacy WinForms controls/resources once React parity is complete.
+
+## �🔌 Web ↔ C# Communication Strategy
 
 We will rely on WebView2 web messages end-to-end:
 

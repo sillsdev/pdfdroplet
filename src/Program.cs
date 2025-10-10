@@ -33,12 +33,6 @@ namespace PdfDroplet
                 Settings.Default.Reporting = new ReportingSettings();
             SetupErrorHandling();
 
-            if (Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Adobe\Acrobat Reader") == null)
-            {
-                MessageBox.Show(
-                    "PdfDroplet requires that your computer be set up to show PDFs in Internet Explorer.  If you have problems, make sure Adobe Reader is installed; re-install it if necessary.");
-            }
-
 #if DEBUG
             using (new Analytics("mk41r4rtmyh0ejqtuwaf", new UserInfo(), true))
 #else
@@ -60,7 +54,7 @@ namespace PdfDroplet
             ErrorReport.EmailAddress = "spam@pdfdroplet.palaso.org".Replace("spam", "issues");
             ErrorReport.AddStandardProperties();
 
-			ExceptionHandler.Init(new SIL.Windows.Forms.Reporting.WinFormsExceptionHandler());
+            ExceptionHandler.Init(new SIL.Windows.Forms.Reporting.WinFormsExceptionHandler());
             ExceptionHandler.AddDelegate((w, e) => DesktopAnalytics.Analytics.ReportException(e.Exception));
         }
     }

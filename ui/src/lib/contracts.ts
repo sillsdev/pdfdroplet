@@ -56,13 +56,17 @@ export type WorkspaceEvents =
   | "stateChanged"
   | "layoutsChanged"
   | "generationStatus"
-  | "generatedPdfReady";
+  | "generatedPdfReady"
+  | "externalDragState"
+  | "externalDrop";
 
 export type EventPayloadMap = {
   stateChanged: WorkspaceState;
   layoutsChanged: LayoutMethodSummary[];
   generationStatus: GenerationStatus;
   generatedPdfReady: { path: string };
+  externalDragState: { isActive: boolean };
+  externalDrop: { path: string | null; formats: string[] };
 };
 
 export type RpcErrorPayload = {

@@ -123,9 +123,21 @@ namespace PdfDroplet.Interop
             if (string.IsNullOrWhiteSpace(path))
                 throw new ArgumentException("Path must be provided", nameof(path));
 
+            Console.WriteLine($"[bridge] WorkspaceUiBridge.DropPdfAsync invoked with path '{path}' (exists={File.Exists(path)})");
             return ExecuteWorkspaceActionAsync(() =>
             {
-                _viewModel.SetPath(path);
+                try
+                {
+                    Console.WriteLine("[bridge] Attempting to set path on view model");
+                    _viewModel.SetPath(path);
+                    Console.WriteLine("[bridge] View model accepted path");
+                }
+                catch (Exception error)
+                {
+                    Console.WriteLine($"[bridge] View model failed to load path: {error.Message}\n{error}");
+                    throw;
+                }
+
                 return NotifyStateChangedAsync();
             }, "Processing dropped PDF…");
         }
