@@ -29,6 +29,9 @@ namespace PdfDroplet
             _rightToLeft.Checked = Settings.Default.RightToLeft;
             _showCropMarks.Checked = Settings.Default.ShowCropMarks;
 
+            // Add 10px padding to left, right, and bottom
+            this.Padding = new Padding(10, 0, 10, 10);
+
             //important to do this after the above settings
             this._mirrorBox.CheckedChanged += new System.EventHandler(this.OnMirrorBox_CheckedChanged);
             this._rightToLeft.CheckedChanged += new System.EventHandler(this.OnRightToLeft_CheckedChanged);
