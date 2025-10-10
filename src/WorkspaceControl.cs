@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DesktopAnalytics;
 using Microsoft.Web.WebView2.Core;
+using PdfDroplet.Interop;
 using PdfDroplet.LayoutMethods;
 using PdfDroplet.Properties;
 using SIL.IO;
@@ -14,7 +15,8 @@ namespace PdfDroplet
 {
     public partial class WorkspaceControl : UserControl
     {
-        private WorkSpaceViewModel _model;
+    private WorkSpaceViewModel _model;
+    private readonly IWorkspaceUiBridge _bridge;
         private bool _alreadyLoaded;
         private Action _callWhenNavigated;
         private string _urlWeWereShowing;
@@ -23,6 +25,7 @@ namespace PdfDroplet
         {
             InitializeComponent();
             _model = new WorkSpaceViewModel(this);
+            _bridge = new WorkspaceUiBridge(this, _model, this);
             OnDragLeave(null, null);
             _overBrowserPanel.Bounds = _browser.Bounds;
             _mirrorBox.Checked = Settings.Default.Mirror;
@@ -39,6 +42,11 @@ namespace PdfDroplet
 
             // Initialize WebView2
             InitializeWebView2Async();
+        }
+
+        internal IWorkspaceUiBridge UiBridge
+        {
+            get { return _bridge; }
         }
 
         private async void InitializeWebView2Async()

@@ -42,7 +42,7 @@ PdfDroplet is currently a WinForms application whose main UX is implemented in `
 ## ✅ Task Checklist
 
 - [x] Audit existing WinForms/UI flows in `WorkspaceControl`, `WorkSpaceViewModel`, and associated layout classes; define the data/contracts the React app needs. (See `docs/ui-contracts.md`.)
-- [ ] Carve out a dedicated C# interop service (`IWorkspaceUiBridge`) that encapsulates file picking, layout selection, settings persistence, and booklet generation hooks.
+- [x] Carve out a dedicated C# interop service (`IWorkspaceUiBridge`) that encapsulates file picking, layout selection, settings persistence, and booklet generation hooks. (See `src/Interop/`.)
 - [ ] Scaffold the Vite + React + TypeScript + Tailwind project inside `ui/` and recreate the existing layout (sidebar choices, preview pane, footer controls).
 - [ ] Implement drag/drop and file selection through the interop service without mocks, wiring UI state to the C# view model.
 - [ ] Build a WebView2 messaging bridge using `window.chrome.webview.postMessage` and `CoreWebView2.WebMessageReceived`, wrapped in a minimal RPC layer with request IDs and typed payloads.
