@@ -41,11 +41,13 @@ PdfDroplet is currently a WinForms application whose main UX is implemented in `
 
 ## ✅ Task Checklist
 
+> **Workflow reminder:** Check these items off in this file as soon as you finish them, and create the corresponding git commit(s) before moving on to the next task.
+
 - [x] Audit existing WinForms/UI flows in `WorkspaceControl`, `WorkSpaceViewModel`, and associated layout classes; define the data/contracts the React app needs. (See `docs/ui-contracts.md`.)
 - [x] Carve out a dedicated C# interop service (`IWorkspaceUiBridge`) that encapsulates file picking, layout selection, settings persistence, and booklet generation hooks. (See `src/Interop/`.)
-- [ ] Scaffold the Vite + React + TypeScript + Tailwind project inside `ui/` and recreate the existing layout (sidebar choices, preview pane, footer controls).
-- [ ] Implement drag/drop and file selection through the interop service without mocks, wiring UI state to the C# view model.
-- [ ] Build a WebView2 messaging bridge using `window.chrome.webview.postMessage` and `CoreWebView2.WebMessageReceived`, wrapped in a minimal RPC layer with request IDs and typed payloads.
+- [x] Scaffold the Vite + React + TypeScript + Tailwind project inside `ui/` and recreate the existing layout (sidebar choices, preview pane, footer controls).
+- [x] Implement drag/drop and file selection through the interop service without mocks, wiring UI state to the C# view model.
+- [x] Build a WebView2 messaging bridge using `window.chrome.webview.postMessage` and `CoreWebView2.WebMessageReceived`, wrapped in a minimal RPC layer with request IDs and typed payloads.
 - [ ] Expose layout metadata, thumbnails, and persisted settings via the RPC bridge; ensure React components refresh when C# state changes.
 - [ ] Stream PDF generation progress through the bridge and update the React UI with status, errors, and success notifications.
 - [ ] Render the generated booklet PDF in an `<iframe>` and manage file lifecycle (refresh detection, cleanup of temporary files).

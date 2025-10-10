@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+
+body {
+  @apply min-h-screen bg-droplet-background text-droplet-primary antialiased;
+}
+
+#root {
+  @apply min-h-screen;
+}

@@ -10,6 +10,8 @@ using PdfDroplet.Interop;
 using PdfDroplet.LayoutMethods;
 using PdfDroplet.Properties;
 using SIL.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PdfDroplet
 {
@@ -17,9 +19,15 @@ namespace PdfDroplet
     {
     private WorkSpaceViewModel _model;
     private readonly IWorkspaceUiBridge _bridge;
+        private readonly JsonSerializerOptions _bridgeSerializationOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
         private bool _alreadyLoaded;
         private Action _callWhenNavigated;
         private string _urlWeWereShowing;
+        private bool _webViewMessagingInitialized;
 
         public WorkspaceControl()
         {
@@ -69,12 +77,212 @@ namespace PdfDroplet
                     | CoreWebView2PdfToolbarItems.SaveAs
                     | CoreWebView2PdfToolbarItems.FullScreen
                     | CoreWebView2PdfToolbarItems.MoreSettings; 
+
+                InitializeBridgeMessaging();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error initializing WebView2: {ex.Message}\n\nPlease ensure WebView2 Runtime is installed.",
                     "WebView2 Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void InitializeBridgeMessaging()
+        {
+            if (_webViewMessagingInitialized || _browser?.CoreWebView2 == null)
+            {
+                return;
+            }
+
+            _webViewMessagingInitialized = true;
+
+            _browser.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+
+            _bridge.WorkspaceStateChanged += OnBridgeWorkspaceStateChanged;
+            _bridge.LayoutChoicesChanged += OnBridgeLayoutChoicesChanged;
+            _bridge.GenerationStatusChanged += OnBridgeGenerationStatusChanged;
+            _bridge.GeneratedPdfReady += OnBridgeGeneratedPdfReady;
+
+            PostEvent("bridgeReady", null);
+        }
+
+        private async void OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
+        {
+            string requestId = null;
+
+            try
+            {
+                using (var document = JsonDocument.Parse(e.WebMessageAsJson))
+                {
+                    var root = document.RootElement;
+                    if (!root.TryGetProperty("type", out var typeElement))
+                        return;
+
+                    if (!string.Equals(typeElement.GetString(), "request", StringComparison.OrdinalIgnoreCase))
+                        return;
+
+                    if (!root.TryGetProperty("id", out var idElement))
+                        return;
+
+                    requestId = idElement.GetString();
+                    if (string.IsNullOrWhiteSpace(requestId))
+                        return;
+
+                    if (!root.TryGetProperty("method", out var methodElement))
+                        throw new ArgumentException("Request missing method.");
+
+                    var method = methodElement.GetString();
+
+                    JsonElement? paramsElement = null;
+                    if (root.TryGetProperty("params", out var element))
+                    {
+                        paramsElement = element;
+                    }
+
+                    var result = await ExecuteRequestAsync(method, paramsElement).ConfigureAwait(true);
+                    PostResponse(requestId, result, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!string.IsNullOrWhiteSpace(requestId))
+                {
+                    PostResponse(requestId, null, MapToRpcError(ex));
+                }
+            }
+        }
+
+        private async Task<object> ExecuteRequestAsync(string method, JsonElement? parameters)
+        {
+            switch (method)
+            {
+                case "requestState":
+                    return await _bridge.GetWorkspaceStateAsync().ConfigureAwait(true);
+                case "requestLayouts":
+                    return await _bridge.GetLayoutChoicesAsync().ConfigureAwait(true);
+                case "requestPaperTargets":
+                    return await _bridge.GetPaperTargetsAsync().ConfigureAwait(true);
+                case "pickPdf":
+                    return await _bridge.PickPdfAsync().ConfigureAwait(true);
+                case "dropPdf":
+                    return await _bridge.DropPdfAsync(RequireString(parameters, "path")).ConfigureAwait(true);
+                case "reloadPrevious":
+                    return await _bridge.ReloadPreviousAsync().ConfigureAwait(true);
+                case "setLayout":
+                    return await _bridge.SetLayoutAsync(RequireString(parameters, "layoutId")).ConfigureAwait(true);
+                case "setPaper":
+                    return await _bridge.SetPaperTargetAsync(RequireString(parameters, "paperId")).ConfigureAwait(true);
+                case "setMirror":
+                    return await _bridge.SetMirrorAsync(RequireBoolean(parameters, "enabled")).ConfigureAwait(true);
+                case "setRightToLeft":
+                    return await _bridge.SetRightToLeftAsync(RequireBoolean(parameters, "enabled")).ConfigureAwait(true);
+                case "setCropMarks":
+                    return await _bridge.SetCropMarksAsync(RequireBoolean(parameters, "enabled")).ConfigureAwait(true);
+                default:
+                    throw new NotSupportedException($"Unknown request method '{method}'.");
+            }
+        }
+
+        private static string RequireString(JsonElement? parameters, string propertyName)
+        {
+            if (parameters.HasValue && parameters.Value.TryGetProperty(propertyName, out var value) && value.ValueKind == JsonValueKind.String)
+            {
+                return value.GetString();
+            }
+
+            throw new ArgumentException($"Request parameter '{propertyName}' must be provided as a string.");
+        }
+
+        private static bool RequireBoolean(JsonElement? parameters, string propertyName)
+        {
+            if (parameters.HasValue && parameters.Value.TryGetProperty(propertyName, out var value) && value.ValueKind is JsonValueKind.True or JsonValueKind.False)
+            {
+                return value.GetBoolean();
+            }
+
+            throw new ArgumentException($"Request parameter '{propertyName}' must be provided as a boolean.");
+        }
+
+        private void PostResponse(string requestId, object result, RpcError error)
+        {
+            if (_browser?.CoreWebView2 == null || string.IsNullOrWhiteSpace(requestId))
+                return;
+
+            var envelope = new
+            {
+                type = "response",
+                id = requestId,
+                result = error == null ? result : null,
+                error
+            };
+
+            var json = JsonSerializer.Serialize(envelope, _bridgeSerializationOptions);
+            _browser.CoreWebView2.PostWebMessageAsJson(json);
+        }
+
+        private void PostEvent(string eventName, object payload)
+        {
+            if (_browser?.CoreWebView2 == null)
+                return;
+
+            var envelope = new
+            {
+                type = "event",
+                @event = eventName,
+                payload
+            };
+
+            var json = JsonSerializer.Serialize(envelope, _bridgeSerializationOptions);
+            _browser.CoreWebView2.PostWebMessageAsJson(json);
+        }
+
+        private RpcError MapToRpcError(Exception exception)
+        {
+            switch (exception)
+            {
+                case ArgumentException argumentException:
+                    return new RpcError("invalid-argument", argumentException.Message);
+                case OperationCanceledException canceledException:
+                    return new RpcError("cancelled", canceledException.Message);
+                case NotSupportedException notSupportedException:
+                    return new RpcError("not-implemented", notSupportedException.Message);
+                default:
+                    return new RpcError("operation-failed", exception.Message, exception.ToString());
+            }
+        }
+
+        private void OnBridgeWorkspaceStateChanged(object sender, WorkspaceStateChangedEventArgs e)
+        {
+            PostEvent("stateChanged", e.State);
+        }
+
+        private void OnBridgeLayoutChoicesChanged(object sender, LayoutChoicesChangedEventArgs e)
+        {
+            PostEvent("layoutsChanged", e.Layouts);
+        }
+
+        private void OnBridgeGenerationStatusChanged(object sender, GenerationStatusChangedEventArgs e)
+        {
+            PostEvent("generationStatus", e.Status);
+        }
+
+        private void OnBridgeGeneratedPdfReady(object sender, GeneratedPdfReadyEventArgs e)
+        {
+            PostEvent("generatedPdfReady", new { path = e.Path });
+        }
+
+        private sealed class RpcError
+        {
+            public RpcError(string code, string message, string details = null)
+            {
+                Code = code;
+                Message = message;
+                Details = details;
+            }
+
+            public string Code { get; }
+            public string Message { get; }
+            public string Details { get; }
         }
 
 

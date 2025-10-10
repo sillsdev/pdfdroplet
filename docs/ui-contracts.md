@@ -60,6 +60,18 @@ These shapes should be mirrored in TypeScript for a typed RPC boundary.
 | `requestLayouts` | none | Returns `LayoutMethodSummary[]`.
 | `requestPaperTargets` | none | Returns `PaperTargetInfo[]`.
 
+### Message Envelope
+
+All bridge traffic follows a simple JSON RPC-style envelope so both sides can coordinate requests, responses, and events:
+
+- **Request**: `{ "type": "request", "id": string, "method": string, "params"?: object }`
+- **Response**: `{ "type": "response", "id": string, "result"?: object, "error"?: { "code": string, "message": string, "details"?: string } }`
+- **Event**: `{ "type": "event", "event": string, "payload"?: object }`
+
+`id` values are unique per outstanding request. `method` names map to the command table (`pickPdf`, `requestState`, etc.). Errors surface with stable codes (`invalid-argument`, `operation-failed`, `not-implemented`) so the TypeScript client can branch accordingly. Events reuse the names in the table below (`stateChanged`, `layoutsChanged`, `generationStatus`, `generatedPdfReady`).
+
+Serialization uses camelCase via `System.Text.Json`. Binary blobs (layout thumbnails) continue to use base64 strings inside their payloads.
+
 ## Events (C# → JavaScript)
 
 | Event | Payload | Trigger |
