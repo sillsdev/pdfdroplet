@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using SIL.Reporting;
@@ -13,10 +14,12 @@ namespace PdfDroplet
 {
     class WorkSpaceViewModel
     {
-        private WorkspaceControl _view;
-        private string _incomingPath;
-        private XPdfForm _inputPdf;
-        private string _pathToCurrentlyDisplayedPdf;
+    private WorkspaceControl _view;
+    private string _incomingPath;
+    private XPdfForm _inputPdf;
+    private string _pathToCurrentlyDisplayedPdf;
+    private const int PreviewHistoryLimit = 2;
+    private readonly List<string> _generatedPreviewPaths = new List<string>();
 
 	    public WorkSpaceViewModel(WorkspaceControl workspaceControl)
         {
@@ -88,7 +91,7 @@ namespace PdfDroplet
         }
 
 
-        public void SetPath(string path)
+    public void SetPath(string path)
         {
             _incomingPath = path;
             _inputPdf = OpenDocumentForPdfSharp(_incomingPath);
@@ -115,15 +118,13 @@ namespace PdfDroplet
             SelectedMethod = method;
             if (HaveIncomingPdf)
             {
-                // Handle NullLayoutMethod the same as the others to allow testing crop marks.
-                _view.ClearThenContinue(ContinueConversionAndNavigation);
+                ContinueConversionAndNavigation();
             }
             if (!string.IsNullOrEmpty(_incomingPath) && Settings.Default.PreviousIncomingPath != _incomingPath)
             {
                 Settings.Default.PreviousIncomingPath = _incomingPath;
                 Settings.Default.Save();
             }
-            _view.UpdateDisplay();
         }
 
         public bool HaveIncomingPdf  
@@ -163,38 +164,34 @@ namespace PdfDroplet
 
 
 
-        /// <summary>
-        /// called after we've safely navigated the browser to about:blank
-        /// to avoid the situation where we try to over-write but can't
-        /// </summary>
         private void ContinueConversionAndNavigation()
         {
             if (IsAlreadyOpenElsewhere(_incomingPath))
             {
                 ErrorReport.NotifyUserOfProblem("That file appears to be open. First close it, then try again.");
+                return;
             }
 
-                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetTempPath(),
-                                                            Path.GetFileNameWithoutExtension(_incomingPath) +
-                                                            "-booklet.pdf");
-                //                _pathToCurrentlyDisplayedPdf = Path.Combine(Path.GetDirectoryName(_incomingPath), Path.GetFileNameWithoutExtension(_incomingPath) + "-booklet.pdf");
-            
-            if(!DeleteFileThatMayBeInUse(_pathToCurrentlyDisplayedPdf))
-                ErrorReport.NotifyUserOfProblem("For some reason that file is stuck... please try that again.");
-            
+            var outputPath = CreatePreviewOutputPath();
 
             try
             {
-				SelectedMethod.Layout(_inputPdf, _incomingPath, _pathToCurrentlyDisplayedPdf, PaperTarget, Settings.Default.RightToLeft, Settings.Default.ShowCropMarks);
-                     _view.Navigate(_pathToCurrentlyDisplayedPdf);      
+                SelectedMethod.Layout(
+                    _inputPdf,
+                    _incomingPath,
+                    outputPath,
+                    PaperTarget,
+                    Settings.Default.RightToLeft,
+                    Settings.Default.ShowCropMarks);
 
+                _pathToCurrentlyDisplayedPdf = outputPath;
+                TrackGeneratedPreview(outputPath);
             }
             catch (Exception error)
             {
+                TryDeletePreview(outputPath);
                 ErrorReport.NotifyUserOfProblem(error, "PdfBooklet was unable to convert that file.");
             }
-            _view.UpdateDisplay();
-         
         }
 
 
@@ -267,6 +264,93 @@ namespace PdfDroplet
             // step 5: we close the document
             document.Close();
             return outputPath;
+        }
+
+        internal static string GetPreviewDirectory()
+        {
+            var previewsDirectory = Path.Combine(Path.GetTempPath(), "PdfDroplet", "Previews");
+            Directory.CreateDirectory(previewsDirectory);
+            return previewsDirectory;
+        }
+
+        private string CreatePreviewOutputPath()
+        {
+            var baseName = SanitizeFileNameSegment(Path.GetFileNameWithoutExtension(_incomingPath));
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff", CultureInfo.InvariantCulture);
+            var previewsDirectory = GetPreviewDirectory();
+            return Path.Combine(previewsDirectory, $"{baseName}-{timestamp}-booklet.pdf");
+        }
+
+        private static string SanitizeFileNameSegment(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return "PdfDroplet";
+            }
+
+            var characters = value.Trim().ToCharArray();
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var hasAlphaNumeric = false;
+
+            for (int i = 0; i < characters.Length; i++)
+            {
+                var ch = characters[i];
+                if (Array.IndexOf(invalidChars, ch) >= 0)
+                {
+                    characters[i] = '_';
+                }
+                else if (!char.IsWhiteSpace(ch))
+                {
+                    hasAlphaNumeric = true;
+                }
+            }
+
+            var sanitized = new string(characters).Trim('_');
+            return string.IsNullOrEmpty(sanitized) || !hasAlphaNumeric ? "PdfDroplet" : sanitized;
+        }
+
+        private void TrackGeneratedPreview(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            _generatedPreviewPaths.Add(path);
+
+            while (_generatedPreviewPaths.Count > PreviewHistoryLimit)
+            {
+                var obsolete = _generatedPreviewPaths[0];
+                _generatedPreviewPaths.RemoveAt(0);
+                TryDeletePreview(obsolete);
+            }
+        }
+
+        private void TryDeletePreview(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            try
+            {
+                DeleteFileThatMayBeInUse(path);
+            }
+            catch
+            {
+                // Ignore cleanup failures; temp files will eventually be reclaimed.
+            }
+        }
+
+        public void DisposeGeneratedPreviews()
+        {
+            foreach (var path in _generatedPreviewPaths)
+            {
+                TryDeletePreview(path);
+            }
+
+            _generatedPreviewPaths.Clear();
         }
 
         public void Load()

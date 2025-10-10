@@ -26,6 +26,7 @@ namespace PdfDroplet.Interop
         private readonly FieldInfo _generatedPdfField;
         private readonly FieldInfo _paperWidthField;
         private readonly FieldInfo _paperHeightField;
+    private readonly string _previewRoot;
         private WorkspaceState _lastKnownState;
         private IReadOnlyList<LayoutMethodSummary> _lastKnownLayouts = Array.Empty<LayoutMethodSummary>();
 
@@ -50,6 +51,8 @@ namespace PdfDroplet.Interop
             _paperHeightField = typeof(PaperTarget)
                 .GetField("_height", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?? throw new InvalidOperationException("Unable to access _height field on PaperTarget.");
+
+            _previewRoot = Path.GetFullPath(WorkSpaceViewModel.GetPreviewDirectory());
         }
 
         public event EventHandler<WorkspaceStateChangedEventArgs> WorkspaceStateChanged;
@@ -203,6 +206,7 @@ namespace PdfDroplet.Interop
         {
             var incomingPath = _incomingPathField.GetValue(_viewModel) as string;
             var generatedPath = _generatedPdfField.GetValue(_viewModel) as string;
+            var generatedClientPath = MapPreviewPathToClientPath(generatedPath);
             var paperTarget = _viewModel.PaperTarget;
             var previousPath = Settings.Default.PreviousIncomingPath;
 
@@ -214,7 +218,7 @@ namespace PdfDroplet.Interop
                 Settings.Default.Mirror,
                 Settings.Default.RightToLeft,
                 Settings.Default.ShowCropMarks,
-                generatedPath ?? string.Empty,
+                generatedClientPath,
                 !string.IsNullOrEmpty(previousPath) && File.Exists(previousPath),
                 string.IsNullOrEmpty(previousPath) ? string.Empty : Path.GetFileName(previousPath));
         }
@@ -290,6 +294,38 @@ namespace PdfDroplet.Interop
             }
 
             GeneratedPdfReady?.Invoke(this, new GeneratedPdfReadyEventArgs(state.GeneratedPdfPath));
+        }
+
+        private string MapPreviewPathToClientPath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                var fullPath = Path.GetFullPath(path);
+
+                var relative = Path.GetRelativePath(_previewRoot, fullPath);
+                if (string.IsNullOrEmpty(relative) || relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal) || relative.Equals("..", StringComparison.Ordinal))
+                {
+                    return string.Empty;
+                }
+
+                var segments = relative
+                    .Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(Uri.EscapeDataString);
+                var joined = string.Join("/", segments);
+
+                return string.IsNullOrEmpty(joined)
+                    ? string.Empty
+                    : $"https://{WorkspaceControl.PreviewVirtualHostName}/{joined}";
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         private async Task<WorkspaceState> ExecuteWorkspaceActionAsync(Func<Task<WorkspaceState>> operation, string progressMessage)
