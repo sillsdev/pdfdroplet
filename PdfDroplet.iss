@@ -59,6 +59,9 @@ Source: "output\Release\win-x86\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; PDB files for debugging (optional but helpful)
 Source: "output\Release\win-x86\*.pdb"; DestDir: "{app}"; Flags: ignoreversion
 
+; React UI assets
+Source: "output\Release\win-x86\ui-dist\*"; DestDir: "{app}\ui-dist"; Flags: ignoreversion recursesubdirs createallsubdirs
+
 ; Localization folders
 Source: "output\Release\win-x86\cs\*"; DestDir: "{app}\cs"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "output\Release\win-x86\de\*"; DestDir: "{app}\de"; Flags: ignoreversion recursesubdirs createallsubdirs

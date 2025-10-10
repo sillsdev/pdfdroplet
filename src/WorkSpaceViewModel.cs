@@ -14,14 +14,14 @@ namespace PdfDroplet
 {
     class WorkSpaceViewModel
     {
-    private WorkspaceControl _view;
-    private string _incomingPath;
-    private XPdfForm _inputPdf;
-    private string _pathToCurrentlyDisplayedPdf;
-    private const int PreviewHistoryLimit = 2;
-    private readonly List<string> _generatedPreviewPaths = new List<string>();
+        private WorkspaceControl _view;
+        private string _incomingPath;
+        private XPdfForm _inputPdf;
+        private string _pathToCurrentlyDisplayedPdf;
+        private const int PreviewHistoryLimit = 2;
+        private readonly List<string> _generatedPreviewPaths = new List<string>();
 
-	    public WorkSpaceViewModel(WorkspaceControl workspaceControl)
+        public WorkSpaceViewModel(WorkspaceControl workspaceControl)
         {
             _view = workspaceControl;
             //default to whatever the printer's default is
@@ -48,25 +48,25 @@ namespace PdfDroplet
         public void SetRightToLeft(bool rightToLeft)
         {
             Settings.Default.RightToLeft = rightToLeft;
-            Settings.Default.Save();   
+            Settings.Default.Save();
             SetLayoutMethod(SelectedMethod);
         }
 
-		
-	    public void ShowCropMarks(bool showCropMarks)
-	    {
-			Settings.Default.ShowCropMarks = showCropMarks;
-			Settings.Default.Save();
 
-			SetLayoutMethod(SelectedMethod);//cause to re-do it with this setting
-	    }
+        public void ShowCropMarks(bool showCropMarks)
+        {
+            Settings.Default.ShowCropMarks = showCropMarks;
+            Settings.Default.Save();
+
+            SetLayoutMethod(SelectedMethod);//cause to re-do it with this setting
+        }
 
         public void SetMirror(bool doMirror)
         {
             Settings.Default.Mirror = doMirror;
             //Settings.Default.Save();
             SetLayoutMethod(SelectedMethod);
-            
+
             //not sure I want to save it with it on, just yet
             //Settings.Default.Mirror = false;
         }
@@ -78,8 +78,8 @@ namespace PdfDroplet
             yield return new CalendarLayouter();
             yield return new CutLandscapeLayout();
             yield return new SideFold4UpBookletLayouter();
-	        yield return new SideFold4UpSingleBookletLayouter();
-			yield return new Folded8Up8PageBookletLayouter();
+            yield return new SideFold4UpSingleBookletLayouter();
+            yield return new Folded8Up8PageBookletLayouter();
             yield return new Square6UpBookletLayouter();
         }
 
@@ -91,27 +91,27 @@ namespace PdfDroplet
         }
 
 
-    public void SetPath(string path)
+        public void SetPath(string path)
         {
             _incomingPath = path;
             _inputPdf = OpenDocumentForPdfSharp(_incomingPath);
             SetLayoutMethod(new NullLayoutMethod());
         }
-      
-//        public void Print()
-//        {
-//            try
-//            {
-//                PdfSharp.Pdf.PdfDocument x;
-//                PdfFilePrinter y = new PdfFilePrinter(_pathToCurrentlyDisplayedPdf);
-//                PdfFilePrinter.AdobeReaderPath = 
-//                y.Print();
-//            }
-//            catch(Exception e)
-//            {
-//                ErrorReport.NotifyUserOfProblem(e, "Could not print");
-//            }
-//        }
+
+        //        public void Print()
+        //        {
+        //            try
+        //            {
+        //                PdfSharp.Pdf.PdfDocument x;
+        //                PdfFilePrinter y = new PdfFilePrinter(_pathToCurrentlyDisplayedPdf);
+        //                PdfFilePrinter.AdobeReaderPath = 
+        //                y.Print();
+        //            }
+        //            catch(Exception e)
+        //            {
+        //                ErrorReport.NotifyUserOfProblem(e, "Could not print");
+        //            }
+        //        }
 
         public void SetLayoutMethod(LayoutMethod method)
         {
@@ -127,12 +127,12 @@ namespace PdfDroplet
             }
         }
 
-        public bool HaveIncomingPdf  
+        public bool HaveIncomingPdf
         {
             get { return !string.IsNullOrEmpty(_incomingPath) && File.Exists(_incomingPath); }
         }
 
-        public string PathToDisplayInBrowser {get; private set;}
+        public string PathToDisplayInBrowser { get; private set; }
         public PaperTarget PaperTarget { get; private set; }
         public void SetPaperTarget(PaperTarget target)
         {
@@ -148,17 +148,17 @@ namespace PdfDroplet
             get; private set;
         }
 
-        public IEnumerable<PaperTarget> PaperChoices    
+        public IEnumerable<PaperTarget> PaperChoices
         {
             get
             {
                 yield return new PaperTarget("A4", PageSize.A4);
-                yield return  new PaperTarget("A3", PageSize.A3);
-                yield return  new PaperTarget("Letter", PageSize.Letter);
-                yield return  new PaperTarget("Legal", PageSize.Legal);
-                yield return  new PaperTarget("Foolscap", PageSize.Foolscap);
-//                yield return new SameSizePaperTarget();
-//                yield return new DoublePaperTarget();
+                yield return new PaperTarget("A3", PageSize.A3);
+                yield return new PaperTarget("Letter", PageSize.Letter);
+                yield return new PaperTarget("Legal", PageSize.Legal);
+                yield return new PaperTarget("Foolscap", PageSize.Foolscap);
+                //                yield return new SameSizePaperTarget();
+                //                yield return new DoublePaperTarget();
             }
         }
 
@@ -355,8 +355,8 @@ namespace PdfDroplet
 
         public void Load()
         {
-           // PaperTarget = PaperChoices.First();
-         //  ReloadPrevious();
+            // PaperTarget = PaperChoices.First();
+            //  ReloadPrevious();
         }
 
         public void ReloadPrevious()

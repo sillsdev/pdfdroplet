@@ -389,7 +389,9 @@ startxref
 
               cleanup();
               if (payload.error) {
-                reject(new Error(payload.error?.message ?? "Bridge call failed"));
+                reject(
+                  new Error(payload.error?.message ?? "Bridge call failed")
+                );
               } else {
                 resolve(payload.result as TResult);
               }
@@ -415,10 +417,9 @@ startxref
     }, tempPdfPath);
 
     expect(previewUrl).toMatch(/^https:\/\/preview\.pdfdroplet\//);
-    await expect(page.locator('iframe[title="Booklet preview"]')).toHaveAttribute(
-      "src",
-      new RegExp("^https://preview\\.pdfdroplet/")
-    );
+    await expect(
+      page.locator('iframe[title="Booklet preview"]')
+    ).toHaveAttribute("src", new RegExp("^https://preview\\.pdfdroplet/"));
   } finally {
     await browser.close();
     await stopProcess(appProcess);

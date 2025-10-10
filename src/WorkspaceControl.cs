@@ -16,8 +16,8 @@ namespace PdfDroplet
         private readonly IWorkspaceUiBridge _bridge;
         private const string AutomationDebugPortEnvVar = "PDFDROPLET_AUTOMATION_PORT";
         private const string ReactDevServerEnvVar = "PDFDROPLET_UI_DEV_SERVER";
-    private const string ReactVirtualHostName = "app.pdfdroplet";
-    internal const string PreviewVirtualHostName = "preview.pdfdroplet";
+        private const string ReactVirtualHostName = "app.pdfdroplet";
+        internal const string PreviewVirtualHostName = "preview.pdfdroplet";
         private readonly JsonSerializerOptions _bridgeSerializationOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

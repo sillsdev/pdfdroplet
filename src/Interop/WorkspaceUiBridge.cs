@@ -26,7 +26,7 @@ namespace PdfDroplet.Interop
         private readonly FieldInfo _generatedPdfField;
         private readonly FieldInfo _paperWidthField;
         private readonly FieldInfo _paperHeightField;
-    private readonly string _previewRoot;
+        private readonly string _previewRoot;
         private WorkspaceState _lastKnownState;
         private IReadOnlyList<LayoutMethodSummary> _lastKnownLayouts = Array.Empty<LayoutMethodSummary>();
 
