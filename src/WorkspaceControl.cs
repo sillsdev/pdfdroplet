@@ -73,10 +73,7 @@ namespace PdfDroplet
 
                 // Configure PDF toolbar settings
                 _browser.CoreWebView2.Settings.HiddenPdfToolbarItems =
-                    CoreWebView2PdfToolbarItems.Print
-                    | CoreWebView2PdfToolbarItems.Rotate
-                    | CoreWebView2PdfToolbarItems.Save
-                    | CoreWebView2PdfToolbarItems.SaveAs
+                     CoreWebView2PdfToolbarItems.Rotate
                     | CoreWebView2PdfToolbarItems.FullScreen
                     | CoreWebView2PdfToolbarItems.MoreSettings;
 
