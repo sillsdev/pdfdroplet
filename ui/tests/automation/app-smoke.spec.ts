@@ -1,430 +1,153 @@
+import { expect, test } from "./fixtures";
 import {
-  chromium,
-  expect,
-  test,
-  type Browser,
-  type BrowserContext,
-  type Page,
-} from "@playwright/test";
-import { spawn } from "node:child_process";
-import { createServer } from "node:net";
-import { setTimeout as delay } from "node:timers/promises";
-import { request } from "node:http";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import fs from "node:fs/promises";
-import os from "node:os";
+  type LayoutMethodSummary,
+  type PaperTargetInfo,
+  type WorkspaceState,
+} from "../../src/lib/contracts";
+import { createSamplePdf } from "./support/pdf-utils";
 
-async function getAvailablePort(): Promise<number> {
-  return await new Promise<number>((resolve, reject) => {
-    const server = createServer();
-    server.on("error", reject);
-    server.listen(0, () => {
-      const address = server.address();
-      server.close((closeError) => {
-        if (closeError) {
-          reject(closeError);
-          return;
-        }
+test.describe.configure({ mode: "serial" });
 
-        if (!address || typeof address === "string") {
-          reject(new Error("Failed to obtain automation port"));
-          return;
-        }
-
-        resolve(address.port);
-      });
-    });
-  });
-}
-
-async function waitForWebView2(
-  port: number,
-  timeoutMs = 30_000
-): Promise<void> {
-  const deadline = Date.now() + timeoutMs;
-
-  while (Date.now() < deadline) {
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const req = request(
-          {
-            hostname: "127.0.0.1",
-            port,
-            path: "/json/version",
-            method: "GET",
-            timeout: 1_000,
-          },
-          (res) => {
-            res.resume();
-            if (
-              (res.statusCode ?? 500) >= 200 &&
-              (res.statusCode ?? 500) < 300
-            ) {
-              resolve();
-            } else {
-              reject(new Error(`Unexpected status code ${res.statusCode}`));
-            }
-          }
-        );
-
-        req.on("error", reject);
-        req.end();
-      });
-
-      return;
-    } catch {
-      await delay(500);
-    }
-  }
-
-  throw new Error(
-    `Timed out waiting for WebView2 CDP endpoint on port ${port}`
-  );
-}
-
-async function stopProcess(child: ReturnType<typeof spawn>): Promise<void> {
-  if (child.exitCode !== null) {
-    return;
-  }
-
-  await new Promise<void>((resolve) => {
-    child.once("exit", () => resolve());
-
-    const killTimer = setTimeout(() => {
-      if (child.exitCode !== null) {
-        resolve();
-        return;
-      }
-
-      if (process.platform === "win32" && child.pid) {
-        spawn("taskkill", ["/f", "/t", "/pid", child.pid.toString()]).once(
-          "exit",
-          () => resolve()
-        );
-      } else {
-        child.kill("SIGKILL");
-      }
-    }, 2_000);
-
-    if (!child.kill()) {
-      clearTimeout(killTimer);
-      resolve();
-    }
-  });
-}
-
-async function acquireAppContext(
-  browser: Browser,
-  timeoutMs = 30_000
-): Promise<BrowserContext> {
-  const deadline = Date.now() + timeoutMs;
-
-  while (Date.now() < deadline) {
-    const contexts = browser.contexts();
-    for (const context of contexts) {
-      if (context.pages().length > 0) {
-        return context;
-      }
-    }
-
-    await delay(250);
-  }
-
-  throw new Error("Timed out waiting for WebView context to become available.");
-}
-
-async function acquireAppPage(
-  context: BrowserContext,
-  timeoutMs = 30_000
-): Promise<Page> {
-  const deadline = Date.now() + timeoutMs;
-
-  while (Date.now() < deadline) {
-    const [candidate] = context.pages();
-
-    if (candidate) {
-      await candidate.waitForLoadState("domcontentloaded");
-      return candidate;
-    }
-
-    await delay(250);
-  }
-
-  throw new Error("Timed out waiting for WebView page to become available.");
-}
-
-test("PdfDroplet boots and exposes the WebView bridge", async () => {
-  test.setTimeout(90_000);
-
-  const automationPort = await getAvailablePort();
-  const currentDir = path.dirname(fileURLToPath(import.meta.url));
-  const projectPath = path.resolve(
-    currentDir,
-    "../../../src/PdfDroplet.csproj"
-  );
-  let tempPdfPath: string | null = null;
-
-  const appProcess = spawn(
-    "dotnet",
-    ["run", "--project", projectPath, "--configuration", "Debug"],
-    {
-      env: {
-        ...process.env,
-        PDFDROPLET_AUTOMATION_PORT: String(automationPort),
-      },
-      stdio: "inherit",
-    }
-  );
-
-  await waitForWebView2(automationPort);
-
-  const browser = await chromium.connectOverCDP(
-    `http://127.0.0.1:${automationPort}`
-  );
+test("renders the booklet preview after dropping a PDF", async ({ app }) => {
+  const { page, invoke } = app;
+  const pdf = await createSamplePdf("preview");
 
   try {
-    tempPdfPath = path.join(
-      os.tmpdir(),
-      `pdfdroplet-playwright-${Date.now()}.pdf`
+    await invoke<WorkspaceState>("dropPdf", { path: pdf.path });
+
+    const iframe = page.locator('iframe[title="Booklet preview"]');
+    await expect(iframe).toBeVisible({ timeout: 45_000 });
+    await expect(iframe).toHaveAttribute(
+      "src",
+      /https:\/\/preview\.pdfdroplet\//
     );
-    const pdfContent = `%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
-endobj
-4 0 obj
-<< /Length 55 >>
-stream
-BT
-/F1 24 Tf
-100 700 Td
-(Hello PdfDroplet) Tj
-ET
-endstream
-endobj
-5 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
-endobj
-xref
-0 6
-0000000000 65535 f 
-0000000010 00000 n 
-0000000061 00000 n 
-0000000116 00000 n 
-0000000273 00000 n 
-0000000369 00000 n 
-trailer
-<< /Root 1 0 R /Size 6 >>
-startxref
-433
-%%EOF
-`;
-    await fs.writeFile(tempPdfPath, pdfContent, "utf8");
 
-    const context = await acquireAppContext(browser);
-    const page = await acquireAppPage(context);
-
-    await expect(page.getByText("Printer Paper Size")).toBeVisible({
-      timeout: 45_000,
-    });
-    await expect(page.getByText("Drag a PDF document here")).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Choose a PDF to open" }).first()
-    ).toBeVisible();
-
-    const bridgeProbe = await page.evaluate(async () => {
-      const candidate = window as typeof window & {
-        chrome?: {
-          webview?: {
-            addEventListener: (type: string, listener: EventListener) => void;
-            removeEventListener: (
-              type: string,
-              listener: EventListener
-            ) => void;
-            postMessage: (message: unknown) => void;
-          };
-        };
-      };
-
-      const bridge = candidate.chrome?.webview;
-
-      if (!bridge || typeof bridge.postMessage !== "function") {
-        return { hasBridge: false };
-      }
-
-      const invoke = <TResult>(
-        method: string,
-        parameters?: unknown,
-        timeoutMs = 15_000
-      ) =>
-        new Promise<TResult>((resolve, reject) => {
-          const id = `playwright-${method}-${Date.now()}-${Math.random()
-            .toString(16)
-            .slice(2)}`;
-
-          const timer = setTimeout(() => {
-            cleanup();
-            reject(new Error(`Timed out waiting for response to ${method}`));
-          }, timeoutMs);
-
-          const cleanup = () => {
-            clearTimeout(timer);
-            bridge.removeEventListener("message", listener as EventListener);
-          };
-
-          const listener = (event: MessageEvent<string>) => {
-            try {
-              const payload =
-                typeof event.data === "string"
-                  ? JSON.parse(event.data)
-                  : event.data;
-              if (!payload || typeof payload !== "object") {
-                return;
-              }
-
-              if (payload.type !== "response" || payload.id !== id) {
-                return;
-              }
-
-              cleanup();
-              if (payload.error) {
-                reject(
-                  new Error(payload.error?.message ?? "Bridge call failed")
-                );
-              } else {
-                resolve(payload.result as TResult);
-              }
-            } catch {
-              // Ignore JSON parse errors and keep waiting.
-            }
-          };
-
-          bridge.addEventListener("message", listener as EventListener);
-          bridge.postMessage({
-            type: "request",
-            id,
-            method,
-            params: parameters,
-          });
-        });
-
-      const [state, layouts, paperTargets] = await Promise.all([
-        invoke<Record<string, unknown>>("requestState"),
-        invoke<Array<Record<string, unknown>>>("requestLayouts"),
-        invoke<Array<Record<string, unknown>>>("requestPaperTargets"),
-      ]);
-
-      return {
-        hasBridge: true,
-        state,
-        layoutCount: Array.isArray(layouts) ? layouts.length : 0,
-        paperTargetCount: Array.isArray(paperTargets) ? paperTargets.length : 0,
-      };
-    });
-
-    expect(bridgeProbe.hasBridge).toBe(true);
-    expect(typeof bridgeProbe.state).toBe("object");
-    expect(bridgeProbe.layoutCount).toBeGreaterThan(0);
-    expect(bridgeProbe.paperTargetCount).toBeGreaterThan(0);
-
-    const previewUrl = await page.evaluate(async (pdfPath) => {
-      const candidate = window as typeof window & {
-        chrome?: {
-          webview?: {
-            addEventListener: (type: string, listener: EventListener) => void;
-            removeEventListener: (
-              type: string,
-              listener: EventListener
-            ) => void;
-            postMessage: (message: unknown) => void;
-          };
-        };
-      };
-
-      const bridge = candidate.chrome?.webview;
-
-      if (!bridge || typeof bridge.postMessage !== "function") {
-        throw new Error("Bridge is not available");
-      }
-
-      const invoke = <TResult>(
-        method: string,
-        parameters?: unknown,
-        timeoutMs = 15_000
-      ) =>
-        new Promise<TResult>((resolve, reject) => {
-          const id = `playwright-${method}-${Date.now()}-${Math.random()
-            .toString(16)
-            .slice(2)}`;
-
-          const timer = setTimeout(() => {
-            cleanup();
-            reject(new Error(`Timed out waiting for response to ${method}`));
-          }, timeoutMs);
-
-          const cleanup = () => {
-            clearTimeout(timer);
-            bridge.removeEventListener("message", listener as EventListener);
-          };
-
-          const listener = (event: MessageEvent<string>) => {
-            try {
-              const payload =
-                typeof event.data === "string"
-                  ? JSON.parse(event.data)
-                  : event.data;
-              if (!payload || typeof payload !== "object") {
-                return;
-              }
-
-              if (payload.type !== "response" || payload.id !== id) {
-                return;
-              }
-
-              cleanup();
-              if (payload.error) {
-                reject(
-                  new Error(payload.error?.message ?? "Bridge call failed")
-                );
-              } else {
-                resolve(payload.result as TResult);
-              }
-            } catch {
-              // Ignore JSON parse errors and keep waiting.
-            }
-          };
-
-          bridge.addEventListener("message", listener as EventListener);
-          bridge.postMessage({
-            type: "request",
-            id,
-            method,
-            params: parameters,
-          });
-        });
-
-      const state = await invoke<{
-        generatedPdfPath?: string;
-      }>("dropPdf", { path: pdfPath });
-
-      return state?.generatedPdfPath ?? "";
-    }, tempPdfPath);
-
-    expect(previewUrl).toMatch(/^https:\/\/preview\.pdfdroplet\//);
-    await expect(
-      page.locator('iframe[title="Booklet preview"]')
-    ).toHaveAttribute("src", new RegExp("^https://preview\\.pdfdroplet/"));
+    const state = await invoke<WorkspaceState>("requestState");
+    expect(state.hasIncomingPdf).toBe(true);
+    expect(state.generatedPdfPath).toMatch(/^https:\/\/preview\.pdfdroplet\//);
   } finally {
-    await browser.close();
-    await stopProcess(appProcess);
-    if (tempPdfPath) {
-      await fs.unlink(tempPdfPath).catch(() => undefined);
-    }
+    await pdf.dispose();
+  }
+});
+
+test("allows selecting layouts and toggling settings", async ({ app }) => {
+  const { page, invoke } = app;
+  const pdf = await createSamplePdf("layout-toggle");
+
+  try {
+    const initialState = await invoke<WorkspaceState>("dropPdf", {
+      path: pdf.path,
+    });
+
+    const iframe = page.locator('iframe[title="Booklet preview"]');
+    await expect(iframe).toBeVisible({ timeout: 45_000 });
+    await expect(iframe).toHaveAttribute("src", /https:\/\/preview\.pdfdroplet\//);
+
+    const layouts = await invoke<LayoutMethodSummary[]>("requestLayouts");
+    const alternateLayout = layouts.find(
+      (layout: LayoutMethodSummary) =>
+        layout.isEnabled && layout.id !== initialState.selectedLayoutId
+    );
+
+    expect(alternateLayout).toBeDefined();
+
+    await page
+      .getByRole("button", {
+        name: new RegExp(alternateLayout!.displayName, "i"),
+      })
+      .click();
+
+    await expect.poll(async () => {
+      const state = await invoke<WorkspaceState>("requestState");
+      return state.selectedLayoutId;
+    }).toBe(alternateLayout!.id);
+  const rtlToggle = page.getByLabel("Right-to-Left Language");
+  await expect(rtlToggle).toBeEnabled();
+  await rtlToggle.setChecked(true);
+    await expect.poll(async () => {
+      const state = await invoke<WorkspaceState>("requestState");
+      return state.rightToLeft;
+    }).toBe(true);
+
+  const cropToggle = page.getByLabel("Crop Marks");
+  await expect(cropToggle).toBeEnabled();
+  await cropToggle.setChecked(true);
+    await expect.poll(async () => {
+      const state = await invoke<WorkspaceState>("requestState");
+      return state.showCropMarks;
+    }).toBe(true);
+  } finally {
+    await pdf.dispose();
+  }
+});
+
+test("updates paper selection and syncs workspace state", async ({ app }) => {
+  const { page, invoke } = app;
+  const pdf = await createSamplePdf("paper");
+
+  try {
+    await invoke<WorkspaceState>("dropPdf", { path: pdf.path });
+
+    const initialState = await invoke<WorkspaceState>("requestState");
+    const iframe = page.locator('iframe[title="Booklet preview"]');
+    await expect(iframe).toBeVisible({ timeout: 45_000 });
+    await expect(iframe).toHaveAttribute("src", /https:\/\/preview\.pdfdroplet\//);
+
+    const paperTargets = await invoke<PaperTargetInfo[]>("requestPaperTargets");
+    const alternatePaper = paperTargets.find(
+      (paper: PaperTargetInfo) => paper.id !== initialState.selectedPaperId
+    );
+
+    expect(alternatePaper).toBeDefined();
+
+    const paperSelect = page.locator("aside select").first();
+    await expect(paperSelect).toBeEnabled();
+    await paperSelect.selectOption(alternatePaper!.id);
+
+    await expect.poll(async () => {
+      const state = await invoke<WorkspaceState>("requestState");
+      return state.selectedPaperId;
+    }).toBe(alternatePaper!.id);
+  } finally {
+    await pdf.dispose();
+  }
+});
+
+test("reload previous reprocesses the booklet", async ({ app }) => {
+  const { page, invoke } = app;
+  const pdf = await createSamplePdf("reload");
+
+  try {
+    const stateAfterDrop = await invoke<WorkspaceState>("dropPdf", {
+      path: pdf.path,
+    });
+
+    expect(stateAfterDrop.canReloadPrevious).toBe(true);
+
+    const reloadButton = page.getByRole("button", { name: /Open Previous/ });
+    await expect(reloadButton).toBeVisible();
+
+    const initialGeneratedPath = stateAfterDrop.generatedPdfPath;
+
+    await reloadButton.click();
+
+    const loadingOverlay = page.getByText("Loading previous PDF…");
+    await loadingOverlay
+      .first()
+      .waitFor({ state: "visible", timeout: 10_000 })
+      .catch(() => undefined);
+
+    await expect.poll(async () => {
+      const state = await invoke<WorkspaceState>("requestState");
+      return state.generatedPdfPath;
+    }).not.toBe(initialGeneratedPath);
+
+    const refreshedState = await invoke<WorkspaceState>("requestState");
+    expect(refreshedState.hasIncomingPdf).toBe(true);
+    expect(refreshedState.generatedPdfPath).toMatch(
+      /^https:\/\/preview\.pdfdroplet\//
+    );
+  } finally {
+    await pdf.dispose();
   }
 });
