@@ -50,9 +50,13 @@ PdfDroplet is currently a WinForms application whose main UX is implemented in `
 - [x] Build a WebView2 messaging bridge using `window.chrome.webview.postMessage` and `CoreWebView2.WebMessageReceived`, wrapped in a minimal RPC layer with request IDs and typed payloads.
 - [x] Expose layout metadata, thumbnails, and persisted settings via the RPC bridge; ensure React components refresh when C# state changes.
 - [x] Stream PDF generation progress through the bridge and update the React UI with status, errors, and success notifications.
+- [x] Load the React SPA inside `WorkspaceControl` (dev server in Debug, bundled assets in Release) and ensure WebView2 becomes the primary content surface.
+- [ ] Replace the WinForms sidebar/footer controls with React equivalents, keeping only the minimal chrome required to host WebView2.
 - [ ] Render the generated booklet PDF in an `<iframe>` and manage file lifecycle (refresh detection, cleanup of temporary files).
 - [ ] Integrate the Vite production build into MSBuild, copy the bundle into app resources, and update `PdfDroplet.iss` packaging.
-- [ ] Add a Playwright end-to-end test that launches the bundled UI and verifies the primary screen (sidebar, controls, iframe) renders correctly using the real bridge.
+- [x] Add a Playwright end-to-end test that launches the bundled UI and verifies the primary screen (sidebar, controls, iframe) renders correctly using the real bridge.
+  - ✅ Smoke test now boots the WinForms host, attaches to WebView2 over CDP, and exercises the JSON-RPC bridge (state/layout/paper queries).
+  - ✅ React shell now renders inside WebView2; the Playwright smoke test asserts key UI elements alongside bridge calls.
 - [ ] Document developer workflows for dev server/hot reload, build, and debugging the interop layer.
 - [ ] Remove obsolete WinForms controls/resources once the React UI is feature-complete and update screenshots/documentation accordingly.
 

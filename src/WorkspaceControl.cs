@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,8 +18,11 @@ namespace PdfDroplet
 {
     public partial class WorkspaceControl : UserControl
     {
-    private WorkSpaceViewModel _model;
-    private readonly IWorkspaceUiBridge _bridge;
+        private WorkSpaceViewModel _model;
+        private readonly IWorkspaceUiBridge _bridge;
+        private const string AutomationDebugPortEnvVar = "PDFDROPLET_AUTOMATION_PORT";
+        private const string ReactDevServerEnvVar = "PDFDROPLET_UI_DEV_SERVER";
+        private const string ReactVirtualHostName = "app.pdfdroplet";
         private readonly JsonSerializerOptions _bridgeSerializationOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -66,25 +70,59 @@ namespace PdfDroplet
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "PdfDroplet", "WebView2");
 
-                var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
+                var automationPort = TryGetAutomationDebugPort();
+                CoreWebView2EnvironmentOptions environmentOptions = null;
+                if (automationPort.HasValue)
+                {
+                    environmentOptions = new CoreWebView2EnvironmentOptions
+                    {
+                        AdditionalBrowserArguments = $"--remote-debugging-port={automationPort.Value}"
+                    };
+                }
+
+                var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder, environmentOptions);
                 await _browser.EnsureCoreWebView2Async(environment);
+
+                if (automationPort.HasValue)
+                {
+                    _browser.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                    Console.WriteLine($"PDFDroplet automation: WebView2 remote debugging listening on port {automationPort.Value}");
+                }
 
                 // Configure PDF toolbar settings
                 _browser.CoreWebView2.Settings.HiddenPdfToolbarItems =
-                    CoreWebView2PdfToolbarItems.Print 
-                    | CoreWebView2PdfToolbarItems.Rotate 
-                    | CoreWebView2PdfToolbarItems.Save 
+                    CoreWebView2PdfToolbarItems.Print
+                    | CoreWebView2PdfToolbarItems.Rotate
+                    | CoreWebView2PdfToolbarItems.Save
                     | CoreWebView2PdfToolbarItems.SaveAs
                     | CoreWebView2PdfToolbarItems.FullScreen
-                    | CoreWebView2PdfToolbarItems.MoreSettings; 
+                    | CoreWebView2PdfToolbarItems.MoreSettings;
 
                 InitializeBridgeMessaging();
+                await LoadReactUiAsync().ConfigureAwait(true);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error initializing WebView2: {ex.Message}\n\nPlease ensure WebView2 Runtime is installed.",
                     "WebView2 Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private static int? TryGetAutomationDebugPort()
+        {
+            var rawValue = Environment.GetEnvironmentVariable(AutomationDebugPortEnvVar);
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                return null;
+            }
+
+            if (int.TryParse(rawValue, out var port) && port > 0 && port <= 65535)
+            {
+                return port;
+            }
+
+            Console.WriteLine($"Invalid {AutomationDebugPortEnvVar} value '{rawValue}'. Expected an integer between 1 and 65535.");
+            return null;
         }
 
         private void InitializeBridgeMessaging()
@@ -104,6 +142,123 @@ namespace PdfDroplet
             _bridge.GeneratedPdfReady += OnBridgeGeneratedPdfReady;
 
             PostEvent("bridgeReady", null);
+        }
+
+        private async Task LoadReactUiAsync()
+        {
+            var coreWebView2 = _browser?.CoreWebView2;
+            if (coreWebView2 == null)
+            {
+                return;
+            }
+
+            if (await TryNavigateToDevServerAsync(coreWebView2).ConfigureAwait(true))
+            {
+                return;
+            }
+
+            var distDirectory = TryResolveReactDistDirectory();
+            if (!string.IsNullOrEmpty(distDirectory) && Directory.Exists(distDirectory))
+            {
+                coreWebView2.SetVirtualHostNameToFolderMapping(
+                    ReactVirtualHostName,
+                    distDirectory,
+                    CoreWebView2HostResourceAccessKind.Allow);
+                coreWebView2.Navigate($"https://{ReactVirtualHostName}/index.html");
+                return;
+            }
+
+            var fallbackHtml = "<html><head><style>body{font-family:'Segoe UI',sans-serif;background:#f8fafc;color:#0f172a;margin:0;padding:2rem;}" +
+                               ".card{max-width:640px;margin:0 auto;background:#ffffff;border-radius:18px;box-shadow:0 15px 35px rgba(15,23,42,0.08);padding:2.5rem;}" +
+                               "h1{font-size:1.8rem;margin-bottom:1rem;}p{margin:0 0 0.75rem;}code{background:#e2e8f0;padding:0.15rem 0.35rem;border-radius:6px;font-size:0.95rem;}</style></head>" +
+                               "<body><div class='card'><h1>React UI not available</h1><p>PdfDroplet couldn’t find the React workspace bundle.</p>" +
+                               "<p>Start the dev server and set the <code>PDFDROPLET_UI_DEV_SERVER</code> environment variable, or build the frontend (npm install & npm run build) so that <code>ui/dist</code> exists next to the solution.</p>" +
+                               "</div></body></html>";
+
+            coreWebView2.NavigateToString(fallbackHtml);
+        }
+
+        private async Task<bool> TryNavigateToDevServerAsync(CoreWebView2 coreWebView2)
+        {
+            var devServerUrl = Environment.GetEnvironmentVariable(ReactDevServerEnvVar);
+
+#if DEBUG
+            devServerUrl ??= "http://localhost:5173";
+#endif
+
+            if (string.IsNullOrWhiteSpace(devServerUrl))
+            {
+                return false;
+            }
+
+            if (!Uri.TryCreate(devServerUrl, UriKind.Absolute, out var devServerUri))
+            {
+                return false;
+            }
+
+            try
+            {
+                using var httpClient = new HttpClient
+                {
+                    Timeout = TimeSpan.FromSeconds(2)
+                };
+
+                using var response = await httpClient.GetAsync(devServerUri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(true);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            coreWebView2.Navigate(devServerUri.ToString());
+            return true;
+        }
+
+        private static string TryResolveReactDistDirectory()
+        {
+            static bool HasIndexHtml(string directory)
+            {
+                if (string.IsNullOrWhiteSpace(directory))
+                {
+                    return false;
+                }
+
+                var candidate = Path.Combine(directory, "index.html");
+                return File.Exists(candidate);
+            }
+
+            var baseDirectory = AppContext.BaseDirectory;
+
+            var commonCandidates = new[]
+            {
+                Path.Combine(baseDirectory, "ui-dist"),
+                Path.Combine(baseDirectory, "ui", "dist"),
+                Path.Combine(baseDirectory, "dist"),
+            };
+
+            foreach (var candidate in commonCandidates)
+            {
+                if (HasIndexHtml(candidate))
+                {
+                    return Path.GetFullPath(candidate);
+                }
+            }
+
+            var current = new DirectoryInfo(baseDirectory);
+            for (var i = 0; i < 8 && current != null; i++, current = current.Parent)
+            {
+                var distInRepo = Path.Combine(current.FullName, "ui", "dist");
+                if (HasIndexHtml(distInRepo))
+                {
+                    return Path.GetFullPath(distInRepo);
+                }
+            }
+
+            return null;
         }
 
         private async void OnWebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
