@@ -1,6 +1,7 @@
 import type {
   EventPayloadMap,
   GenerationStatus,
+  GenerationState,
   LayoutMethodSummary,
   PaperTargetInfo,
   RpcErrorPayload,
@@ -247,46 +248,74 @@ class DevStubBridge implements WorkspaceBridge {
 
   async pickPdf(): Promise<WorkspaceState> {
     console.info('[dev-bridge] pickPdf invoked')
+    this.publishStatus('working', 'Opening PDF…')
+    this.publishStatus('success', 'Ready.')
     return this.state
   }
 
   async dropPdf(path: string): Promise<WorkspaceState> {
     console.info('[dev-bridge] dropPdf invoked with', path)
+    this.publishStatus('working', 'Processing dropped PDF…')
+    const simulatedOutput = `${path}.preview.pdf`
+    this.state = {
+      ...this.state,
+      hasIncomingPdf: true,
+      incomingPath: path,
+      generatedPdfPath: simulatedOutput,
+      canReloadPrevious: true,
+      previousIncomingFilename: path.split(/[\\/]/).pop() ?? '',
+    }
+    this.emit('stateChanged', this.state)
+    this.emit('layoutsChanged', stubLayouts)
+    this.publishStatus('success', 'Preview updated.')
+    this.emit('generatedPdfReady', { path: simulatedOutput })
     return this.state
   }
 
   async reloadPrevious(): Promise<WorkspaceState> {
     console.info('[dev-bridge] reloadPrevious invoked')
+    this.publishStatus('working', 'Loading previous PDF…')
+    this.publishStatus('success', 'Preview updated.')
     return this.state
   }
 
   async setLayout(layoutId: string): Promise<WorkspaceState> {
+    this.publishStatus('working', 'Updating layout…')
     this.state = { ...this.state, selectedLayoutId: layoutId }
     this.emit('stateChanged', this.state)
+    this.publishStatus('success', 'Preview updated.')
     return this.state
   }
 
   async setPaper(paperId: string): Promise<WorkspaceState> {
+    this.publishStatus('working', 'Switching paper size…')
     this.state = { ...this.state, selectedPaperId: paperId }
     this.emit('stateChanged', this.state)
+    this.publishStatus('success', 'Preview updated.')
     return this.state
   }
 
   async setMirror(enabled: boolean): Promise<WorkspaceState> {
+    this.publishStatus('working', enabled ? 'Mirroring pages…' : 'Updating booklet…')
     this.state = { ...this.state, mirror: enabled }
     this.emit('stateChanged', this.state)
+    this.publishStatus('success', 'Preview updated.')
     return this.state
   }
 
   async setRightToLeft(enabled: boolean): Promise<WorkspaceState> {
+    this.publishStatus('working', enabled ? 'Applying right-to-left layout…' : 'Updating text flow…')
     this.state = { ...this.state, rightToLeft: enabled }
     this.emit('stateChanged', this.state)
+    this.publishStatus('success', 'Preview updated.')
     return this.state
   }
 
   async setCropMarks(enabled: boolean): Promise<WorkspaceState> {
+    this.publishStatus('working', enabled ? 'Adding crop marks…' : 'Removing crop marks…')
     this.state = { ...this.state, showCropMarks: enabled }
     this.emit('stateChanged', this.state)
+    this.publishStatus('success', 'Preview updated.')
     return this.state
   }
 
@@ -301,6 +330,16 @@ class DevStubBridge implements WorkspaceBridge {
     for (const listener of bucket) {
       listener(payload)
     }
+  }
+
+  private publishStatus(state: GenerationState, message: string) {
+    const status: GenerationStatus = {
+      state,
+      message,
+      error: null,
+    }
+
+    this.emit('generationStatus', status)
   }
 }
 

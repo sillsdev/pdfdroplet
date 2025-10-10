@@ -23,9 +23,11 @@ namespace PdfDroplet.Interop
         private readonly WorkSpaceViewModel _viewModel;
         private readonly IWin32Window _ownerWindow;
         private readonly FieldInfo _incomingPathField;
-    private readonly FieldInfo _generatedPdfField;
-    private readonly FieldInfo _paperWidthField;
-    private readonly FieldInfo _paperHeightField;
+        private readonly FieldInfo _generatedPdfField;
+        private readonly FieldInfo _paperWidthField;
+        private readonly FieldInfo _paperHeightField;
+        private WorkspaceState _lastKnownState;
+        private IReadOnlyList<LayoutMethodSummary> _lastKnownLayouts = Array.Empty<LayoutMethodSummary>();
 
         public WorkspaceUiBridge(WorkspaceControl workspaceControl, WorkSpaceViewModel viewModel, IWin32Window ownerWindow)
         {
@@ -57,16 +59,16 @@ namespace PdfDroplet.Interop
 
         public Task<WorkspaceState> GetWorkspaceStateAsync(CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(BuildWorkspaceState());
+            var state = BuildWorkspaceState();
+            _lastKnownState = state;
+            EnsureLayoutsCached();
+            return Task.FromResult(state);
         }
 
         public Task<IReadOnlyList<LayoutMethodSummary>> GetLayoutChoicesAsync(CancellationToken cancellationToken = default)
         {
-            var layouts = _viewModel
-                .GetLayoutChoices()
-                .Select(CreateLayoutSummary)
-                .ToList()
-                .AsReadOnly();
+            var layouts = BuildLayoutSummaries();
+            _lastKnownLayouts = layouts;
 
             return Task.FromResult((IReadOnlyList<LayoutMethodSummary>)layouts);
         }
@@ -84,30 +86,33 @@ namespace PdfDroplet.Interop
 
         public async Task<WorkspaceState> PickPdfAsync(CancellationToken cancellationToken = default)
         {
-            using (var dialog = new OpenFileDialog())
+            return await ExecuteWorkspaceActionAsync(async () =>
             {
-                dialog.CheckPathExists = true;
-                dialog.CheckFileExists = true;
-                dialog.AddExtension = true;
-                dialog.Filter = "PDF|*.pdf";
-
-                if (!string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath)
-                    && Directory.Exists(Path.GetDirectoryName(Settings.Default.PreviousIncomingPath)))
+                using (var dialog = new OpenFileDialog())
                 {
-                    dialog.InitialDirectory = Path.GetDirectoryName(Settings.Default.PreviousIncomingPath);
-                }
-                else
-                {
-                    dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                }
+                    dialog.CheckPathExists = true;
+                    dialog.CheckFileExists = true;
+                    dialog.AddExtension = true;
+                    dialog.Filter = "PDF|*.pdf";
 
-                var dialogResult = dialog.ShowDialog(_ownerWindow);
-                if (dialogResult != DialogResult.OK)
-                    return await GetWorkspaceStateAsync(cancellationToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath)
+                        && Directory.Exists(Path.GetDirectoryName(Settings.Default.PreviousIncomingPath)))
+                    {
+                        dialog.InitialDirectory = Path.GetDirectoryName(Settings.Default.PreviousIncomingPath);
+                    }
+                    else
+                    {
+                        dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    }
 
-                _viewModel.SetPath(dialog.FileName);
-                return await NotifyStateChangedAsync().ConfigureAwait(false);
-            }
+                    var dialogResult = dialog.ShowDialog(_ownerWindow);
+                    if (dialogResult != DialogResult.OK)
+                        return await GetWorkspaceStateAsync(cancellationToken).ConfigureAwait(false);
+
+                    _viewModel.SetPath(dialog.FileName);
+                    return await NotifyStateChangedAsync().ConfigureAwait(false);
+                }
+            }, "Opening PDF…").ConfigureAwait(false);
         }
 
         public Task<WorkspaceState> DropPdfAsync(string path, CancellationToken cancellationToken = default)
@@ -115,18 +120,24 @@ namespace PdfDroplet.Interop
             if (string.IsNullOrWhiteSpace(path))
                 throw new ArgumentException("Path must be provided", nameof(path));
 
-            _viewModel.SetPath(path);
-            return NotifyStateChangedAsync();
+            return ExecuteWorkspaceActionAsync(() =>
+            {
+                _viewModel.SetPath(path);
+                return NotifyStateChangedAsync();
+            }, "Processing dropped PDF…");
         }
 
         public Task<WorkspaceState> ReloadPreviousAsync(CancellationToken cancellationToken = default)
         {
-            if (!string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath) && File.Exists(Settings.Default.PreviousIncomingPath))
+            return ExecuteWorkspaceActionAsync(() =>
             {
-                _viewModel.ReloadPrevious();
-            }
+                if (!string.IsNullOrEmpty(Settings.Default.PreviousIncomingPath) && File.Exists(Settings.Default.PreviousIncomingPath))
+                {
+                    _viewModel.ReloadPrevious();
+                }
 
-            return NotifyStateChangedAsync();
+                return NotifyStateChangedAsync();
+            }, "Loading previous PDF…");
         }
 
         public Task<WorkspaceState> SetLayoutAsync(string layoutId, CancellationToken cancellationToken = default)
@@ -138,8 +149,11 @@ namespace PdfDroplet.Interop
             if (layout == null)
                 throw new ArgumentException($"Unknown layout id '{layoutId}'", nameof(layoutId));
 
-            _viewModel.SetLayoutMethod(layout);
-            return NotifyStateChangedAsync();
+            return ExecuteWorkspaceActionAsync(() =>
+            {
+                _viewModel.SetLayoutMethod(layout);
+                return NotifyStateChangedAsync();
+            }, "Updating layout…");
         }
 
         public Task<WorkspaceState> SetPaperTargetAsync(string paperId, CancellationToken cancellationToken = default)
@@ -151,26 +165,38 @@ namespace PdfDroplet.Interop
             if (target == null)
                 throw new ArgumentException($"Unknown paper target '{paperId}'", nameof(paperId));
 
-            _viewModel.SetPaperTarget(target);
-            return NotifyStateChangedAsync();
+            return ExecuteWorkspaceActionAsync(() =>
+            {
+                _viewModel.SetPaperTarget(target);
+                return NotifyStateChangedAsync();
+            }, "Switching paper size…");
         }
 
         public Task<WorkspaceState> SetMirrorAsync(bool enabled, CancellationToken cancellationToken = default)
         {
-            _viewModel.SetMirror(enabled);
-            return NotifyStateChangedAsync();
+            return ExecuteWorkspaceActionAsync(() =>
+            {
+                _viewModel.SetMirror(enabled);
+                return NotifyStateChangedAsync();
+            }, enabled ? "Mirroring pages…" : "Updating booklet…");
         }
 
         public Task<WorkspaceState> SetRightToLeftAsync(bool enabled, CancellationToken cancellationToken = default)
         {
-            _viewModel.SetRightToLeft(enabled);
-            return NotifyStateChangedAsync();
+            return ExecuteWorkspaceActionAsync(() =>
+            {
+                _viewModel.SetRightToLeft(enabled);
+                return NotifyStateChangedAsync();
+            }, enabled ? "Applying right-to-left layout…" : "Updating text flow…");
         }
 
         public Task<WorkspaceState> SetCropMarksAsync(bool enabled, CancellationToken cancellationToken = default)
         {
-            _viewModel.ShowCropMarks(enabled);
-            return NotifyStateChangedAsync();
+            return ExecuteWorkspaceActionAsync(() =>
+            {
+                _viewModel.ShowCropMarks(enabled);
+                return NotifyStateChangedAsync();
+            }, enabled ? "Adding crop marks…" : "Removing crop marks…");
         }
 
         private WorkspaceState BuildWorkspaceState()
@@ -197,6 +223,9 @@ namespace PdfDroplet.Interop
         {
             var state = BuildWorkspaceState();
             WorkspaceStateChanged?.Invoke(this, new WorkspaceStateChangedEventArgs(state));
+            EnsureLayoutsCached();
+            EnsurePdfReadyEvent(state);
+            _lastKnownState = state;
             return Task.FromResult(state);
         }
 
@@ -235,6 +264,114 @@ namespace PdfDroplet.Interop
                 target.Name,
                 widthUnit.Point,
                 heightUnit.Point);
+        }
+
+        private void EnsureLayoutsCached()
+        {
+            var layouts = BuildLayoutSummaries();
+
+            if (!LayoutsEquivalent(_lastKnownLayouts, layouts))
+            {
+                _lastKnownLayouts = layouts;
+                LayoutChoicesChanged?.Invoke(this, new LayoutChoicesChangedEventArgs(layouts));
+            }
+        }
+
+        private void EnsurePdfReadyEvent(WorkspaceState state)
+        {
+            if (string.IsNullOrWhiteSpace(state.GeneratedPdfPath))
+            {
+                return;
+            }
+
+            if (_lastKnownState != null && string.Equals(_lastKnownState.GeneratedPdfPath, state.GeneratedPdfPath, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            GeneratedPdfReady?.Invoke(this, new GeneratedPdfReadyEventArgs(state.GeneratedPdfPath));
+        }
+
+        private async Task<WorkspaceState> ExecuteWorkspaceActionAsync(Func<Task<WorkspaceState>> operation, string progressMessage)
+        {
+            PublishGenerationStatus(GenerationState.Working, progressMessage);
+
+            try
+            {
+                var state = await operation().ConfigureAwait(false);
+
+                var successMessage = state.HasIncomingPdf
+                    ? "Preview updated."
+                    : "Ready.";
+
+                PublishGenerationStatus(GenerationState.Success, successMessage);
+                return state;
+            }
+            catch (Exception ex)
+            {
+                PublishGenerationStatus(GenerationState.Error, ex.Message, new GenerationError(ex.Message, ex.ToString()));
+                throw;
+            }
+        }
+
+        private IReadOnlyList<LayoutMethodSummary> BuildLayoutSummaries()
+        {
+            return _viewModel
+                .GetLayoutChoices()
+                .Select(CreateLayoutSummary)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        private static bool LayoutsEquivalent(IReadOnlyList<LayoutMethodSummary> previous, IReadOnlyList<LayoutMethodSummary> current)
+        {
+            if (ReferenceEquals(previous, current))
+            {
+                return true;
+            }
+
+            if (previous == null || current == null)
+            {
+                return false;
+            }
+
+            if (previous.Count != current.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < current.Count; i++)
+            {
+                var left = previous[i];
+                var right = current[i];
+
+                if (!string.Equals(left.Id, right.Id, StringComparison.Ordinal))
+                {
+                    return false;
+                }
+
+                if (!string.Equals(left.DisplayName, right.DisplayName, StringComparison.Ordinal))
+                {
+                    return false;
+                }
+
+                if (!string.Equals(left.ThumbnailBase64, right.ThumbnailBase64, StringComparison.Ordinal))
+                {
+                    return false;
+                }
+
+                if (left.IsEnabled != right.IsEnabled || left.IsOrientationSensitive != right.IsOrientationSensitive)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void PublishGenerationStatus(GenerationState state, string message, GenerationError error = null)
+        {
+            GenerationStatusChanged?.Invoke(this, new GenerationStatusChangedEventArgs(new GenerationStatus(state, message, error)));
         }
 
         private static Bitmap ResizeImageForBridge(Image originalImage)
