@@ -1,0 +1,137 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!--ApplicationManifest>app.manifest</ApplicationManifest-->
+    <ProjectGuid>{CEDC6DA9-B6A9-4B69-BEA5-6A3549F99393}</ProjectGuid>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <OutputPath>..\output\$(Configuration)\</OutputPath>
+    <Platform>x86</Platform>
+    <AssemblyTitle>PdfDroplet</AssemblyTitle>
+    <Company>SIL</Company>
+    <Product>PdfDroplet</Product>
+    <Copyright>© SIL International 2012-2024</Copyright>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <BuildDependsOn>$(BuildDependsOn);AfterBuildMigrated</BuildDependsOn>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <PostBuildEvent></PostBuildEvent>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugType>full</DebugType>
+    <CodeAnalysisLogFile>..\output\Debug\PdfDroplet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DebugType>pdbonly</DebugType>
+    <CodeAnalysisLogFile>..\output\Release\PdfDroplet.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Optimize>false</Optimize>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>PdfDroplet</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyName>PdfDroplet</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <UiProjectDir>$(MSBuildProjectDirectory)\..\browser</UiProjectDir>
+    <UiDistDir>$(UiProjectDir)\dist</UiDistDir>
+    <UiOutputDir>$(OutputPath)$(RuntimeIdentifier)\ui-dist</UiOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">
+    <UiOutputDir>$(OutputPath)ui-dist</UiOutputDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\browser\browser.proj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Analytics" Version="2.0.0" />
+    <PackageReference Include="DesktopAnalytics" Version="1.2.3" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
+    <PackageReference Include="PdfSharp" Version="6.2.1" />
+    <PackageReference Include="SIL.Core" Version="16.1.0-*" />
+    <PackageReference Include="SIL.Core.Desktop" Version="16.1.0-*" />
+    <PackageReference Include="SIL.Windows.Forms" Version="16.1.0-*" />
+    <PackageReference Include="SIL.WritingSystems" Version="16.1.0-*" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
+    <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp">
+      <HintPath>lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <Target Name="CopyFrontendToOutput" AfterTargets="Build"
+        Condition="Exists('$(UiDistDir)')">
+    <PropertyGroup>
+      <_UiOutputDirWithSlash>$(UiOutputDir)\</_UiOutputDirWithSlash>
+    </PropertyGroup>
+    <ItemGroup>
+      <FrontendDistFiles Include="$(UiDistDir)\**\*.*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(_UiOutputDirWithSlash)" Condition="Exists('$(_UiOutputDirWithSlash)')" />
+    <MakeDir Directories="$(_UiOutputDirWithSlash)" />
+    <Copy SourceFiles="@(FrontendDistFiles)"
+              DestinationFiles="@(FrontendDistFiles->'$(_UiOutputDirWithSlash)%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="IncludeFrontendAssets" AfterTargets="ComputeFilesToPublish"
+        Condition="Exists('$(UiDistDir)')">
+    <ItemGroup>
+      <FrontendPublishFiles Include="$(UiDistDir)\**\*.*" />
+      <ResolvedFileToPublish Include="@(FrontendPublishFiles)">
+        <RelativePath>ui-dist\%(FrontendPublishFiles.RecursiveDir)%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        <AssetKind>Content</AssetKind>
+        <AssetRole>Primary</AssetRole>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+  <Target Name="CleanFrontendOutput" BeforeTargets="Clean">
+    <RemoveDir Directories="$(UiOutputDir)" Condition="Exists('$(UiOutputDir)')" />
+  </Target>
+</Project>

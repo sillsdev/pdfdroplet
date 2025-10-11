@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.Build.NoTargets/3.7.0" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectGuid>{8F4B5E9A-C3D2-4F1E-B8A7-2E6D9C5F1A3B}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UiProjectDir>$(MSBuildProjectDirectory)</UiProjectDir>
+    <UiDistDir>$(UiProjectDir)\dist</UiDistDir>
+    <UiRestoreMarker>$(UiProjectDir)\node_modules\.msbuild-stamp</UiRestoreMarker>
+  </PropertyGroup>
+
+  <Target Name="CheckDevServer" BeforeTargets="Build">
+    <PropertyGroup>
+      <_DevServerRunning>false</_DevServerRunning>
+      <_DevServerUrl>http://localhost:5173</_DevServerUrl>
+    </PropertyGroup>
+    
+    <!-- Check if PDFDROPLET_UI_DEV_SERVER environment variable is set -->
+    <PropertyGroup Condition="'$(PDFDROPLET_UI_DEV_SERVER)' != ''">
+      <_DevServerUrl>$(PDFDROPLET_UI_DEV_SERVER)</_DevServerUrl>
+      <_DevServerRunning>true</_DevServerRunning>
+    </PropertyGroup>
+    
+    <!-- In Debug mode, check if dev server is running on default port -->
+    <Exec Command="curl -s -o nul -w &quot;%%{http_code}&quot; $(_DevServerUrl) 2>nul || echo 000" 
+          ConsoleToMSBuild="true" 
+          IgnoreExitCode="true"
+          Condition="'$(Configuration)' == 'Debug' And '$(OS)' == 'Windows_NT' And '$(PDFDROPLET_UI_DEV_SERVER)' == ''">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_HttpStatus" />
+    </Exec>
+    
+    <PropertyGroup Condition="'$(_HttpStatus)' == '200' Or '$(_HttpStatus)' == '304'">
+      <_DevServerRunning>true</_DevServerRunning>
+    </PropertyGroup>
+    
+    <Message Importance="High" Text="✓ Dev server detected at $(_DevServerUrl) - Hot reload enabled!" 
+             Condition="'$(_DevServerRunning)' == 'true'" />
+    <Message Importance="High" Text="Building frontend with Vite..." 
+             Condition="'$(_DevServerRunning)' != 'true'" />
+  </Target>
+
+  <Target Name="Restore" Inputs="$(UiProjectDir)\package-lock.json" Outputs="$(UiRestoreMarker)"
+        Condition="Exists('$(UiProjectDir)')">
+    <Message Importance="High" Text="Installing frontend dependencies..." />
+    <Exec Command="npm install" WorkingDirectory="$(UiProjectDir)" />
+    <Touch Files="$(UiRestoreMarker)" AlwaysCreate="true" />
+  </Target>
+
+  <ItemGroup Condition="Exists('$(UiProjectDir)')">
+    <FrontendSourceFiles Include="$(UiProjectDir)\src\**\*.*" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\public\**\*.*" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\package.json" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\package-lock.json" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\tsconfig.json" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\tsconfig.app.json" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\vite.config.ts" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\tailwind.config.js" />
+    <FrontendSourceFiles Include="$(UiProjectDir)\postcss.config.js" />
+  </ItemGroup>
+
+  <Target Name="Build" DependsOnTargets="Restore;CheckDevServer"
+        Inputs="@(FrontendSourceFiles)" Outputs="$(UiDistDir)\index.html" 
+        Condition="Exists('$(UiProjectDir)') And '$(_DevServerRunning)' != 'true'">
+    <Message Importance="High" Text="Building WebView frontend with Vite" />
+    <Exec Command="npm run build" WorkingDirectory="$(UiProjectDir)" />
+  </Target>
+
+  <Target Name="Clean">
+    <Message Importance="High" Text="Cleaning frontend build artifacts..." />
+    <RemoveDir Directories="$(UiDistDir)" Condition="Exists('$(UiDistDir)')" />
+    <Delete Files="$(UiRestoreMarker)" Condition="Exists('$(UiRestoreMarker)')" />
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+</Project>

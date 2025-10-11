@@ -16,10 +16,10 @@ jobs:
         permissions:
             contents: write
         env:
-            PROJECT_PATH: src/PdfDroplet.csproj
+            PROJECT_PATH: src/DotNet.csproj
             BUILD_CONFIGURATION: Release
             RUNTIME_IDENTIFIER: win-x86
-            PUBLISH_DIR: publish
+            PUBLISH_DIR: output/publish
             # SDK used to build; project target version remains defined in Directory.Build.props / csproj
             DOTNET_VERSION: "8.0.x"
         steps:
@@ -90,7 +90,7 @@ jobs:
                   if (-not (Test-Path $isccPath)) {
                     throw "Inno Setup compiler not found at $isccPath"
                   }
-                  & $isccPath "PdfDroplet.iss" "/DMyAppVersion=$version"
+                  & $isccPath "installer\PdfDroplet.iss" "/DMyAppVersion=$version"
 
             - name: Prepare installer asset
               id: installer
