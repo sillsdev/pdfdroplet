@@ -3,13 +3,14 @@ PdfDroplet is a simple little windows app which only does one thing: it takes yo
 # Application Requirements
 
 - Windows
+- [.NET SDK 8.0](https://dotnet.microsoft.com/download)
 - Microsoft Edge WebView2 Runtime (normally installed automatically with Edge; installers should ship it as well).
 
 # Development
 
 ## Prerequisites
 
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download) (Visual Studio 2022 17.8+ works out of the box)
+
 - [Node.js 18+](https://nodejs.org/) for the React/Vite frontend build
 
 ## Quick Start

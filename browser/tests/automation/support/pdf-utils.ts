@@ -1,44 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-
-const SAMPLE_PDF_TEMPLATE = `%PDF-1.4
-1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
-endobj
-2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
-endobj
-3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
-endobj
-4 0 obj
-<< /Length 55 >>
-stream
-BT
-/F1 24 Tf
-100 700 Td
-(Hello PdfDroplet) Tj
-ET
-endstream
-endobj
-5 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
-endobj
-xref
-0 6
-0000000000 65535 f 
-0000000010 00000 n 
-0000000061 00000 n 
-0000000116 00000 n 
-0000000273 00000 n 
-0000000369 00000 n 
-trailer
-<< /Root 1 0 R /Size 6 >>
-startxref
-433
-%%EOF
-`;
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 export type TempPdf = {
   path: string;
@@ -48,7 +11,22 @@ export type TempPdf = {
 export async function createSamplePdf(prefix: string): Promise<TempPdf> {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "pdfdroplet-ui-"));
   const filePath = path.join(tempDir, `${prefix}-${Date.now()}.pdf`);
-  await fs.writeFile(filePath, SAMPLE_PDF_TEMPLATE, "utf8");
+
+  // Create a proper PDF using pdf-lib that PdfSharp can read
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([612, 792]); // Letter size
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  page.drawText("Hello PdfDroplet", {
+    x: 100,
+    y: 700,
+    size: 24,
+    font: font,
+    color: rgb(0, 0, 0),
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  await fs.writeFile(filePath, pdfBytes);
 
   return {
     path: filePath,
