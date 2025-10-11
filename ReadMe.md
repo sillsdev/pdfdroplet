@@ -122,3 +122,10 @@ feedback=off
 - **Working on frontend?** Start `npm run dev` once, then press F5. Make frontend changes with instant hot reload.
 - **Switching between projects?** No need to restart the Vite dev server - it keeps running in the background.
 - **Production build?** Stop the Vite dev server and rebuild, or run `dotnet build` to get production-optimized assets.
+
+
+## License
+
+This project is licensed under the MIT License.
+
+Copyright © SIL Global 2012-2025
