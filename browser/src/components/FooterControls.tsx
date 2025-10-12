@@ -9,6 +9,8 @@ export type FooterControlsProps = {
   onToggleCropMarks: (enabled: boolean) => void;
   onReloadPrevious: () => void;
   onPickPdf: () => void;
+  onShowAbout: () => void;
+  onShowHelp: () => void;
 };
 
 export function FooterControls({
@@ -20,6 +22,8 @@ export function FooterControls({
   onToggleCropMarks,
   onReloadPrevious,
   onPickPdf,
+  onShowAbout,
+  onShowHelp,
 }: FooterControlsProps) {
   return (
     <footer className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-panel md:flex-row md:items-center md:justify-between">
@@ -77,9 +81,19 @@ export function FooterControls({
         </button>
         <button
           type="button"
-          className="text-slate-500 underline-offset-4 hover:text-droplet-accent hover:underline"
+          onClick={onShowHelp}
+          className="underline-offset-4 hover:text-droplet-accent hover:underline"
+          data-testid="help-button"
         >
           Help
+        </button>
+        <button
+          type="button"
+          onClick={onShowAbout}
+          className="underline-offset-4 hover:text-droplet-accent hover:underline"
+          data-testid="about-button"
+        >
+          About
         </button>
       </div>
     </footer>

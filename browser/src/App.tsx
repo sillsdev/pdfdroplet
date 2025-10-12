@@ -8,6 +8,8 @@ import {
 import { LayoutChooser } from "./components/LayoutChooser";
 import { FooterControls } from "./components/FooterControls";
 import { PreviewPane } from "./components/PreviewPane";
+import { AboutDialog } from "./components/AboutDialog";
+import { HelpDialog } from "./components/HelpDialog";
 import {
   bridge,
   type GenerationStatus,
@@ -46,6 +48,8 @@ function App() {
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
+  const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
+  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -273,6 +277,22 @@ function App() {
     [runCommand]
   );
 
+  const handleShowAbout = useCallback(() => {
+    setIsAboutDialogOpen(true);
+  }, []);
+
+  const handleCloseAbout = useCallback(() => {
+    setIsAboutDialogOpen(false);
+  }, []);
+
+  const handleShowHelp = useCallback(() => {
+    setIsHelpDialogOpen(true);
+  }, []);
+
+  const handleCloseHelp = useCallback(() => {
+    setIsHelpDialogOpen(false);
+  }, []);
+
   useEffect(() => {
     const unsubscribeDragState = bridge.on(
       "externalDragState",
@@ -363,8 +383,13 @@ function App() {
           onToggleCropMarks={handleToggleCropMarks}
           onReloadPrevious={handleReloadPrevious}
           onPickPdf={handlePickPdf}
+          onShowAbout={handleShowAbout}
+          onShowHelp={handleShowHelp}
         />
       </div>
+
+      <AboutDialog isOpen={isAboutDialogOpen} onClose={handleCloseAbout} />
+      <HelpDialog isOpen={isHelpDialogOpen} onClose={handleCloseHelp} />
     </div>
   );
 }

@@ -7,6 +7,7 @@ export default defineConfig({
     timeout: 5_000,
   },
   reporter: [["list"]],
+  workers: 1, // Disable parallel execution to avoid .NET app concurrency issues
   use: {
     actionTimeout: 0,
     trace: "retain-on-failure",
