@@ -37,13 +37,16 @@ The MSBuild project `browser/browser.proj` has smart detection:
 3. **If dev server found**: Skips build, prints "✓ Dev server detected - Hot reload enabled!"
 4. **If no dev server**: Runs `npm run build` to create static files
 
-### File Copying (DotNet.csproj)
+### File Copying & Cache Management (DotNet.csproj)
 
 After the frontend builds (or if using dev server), `dotnet/DotNet.csproj`:
 
 1. **CopyFrontendToOutput target**: Copies `browser/dist/` → `dotnet/bin/Debug/net8.0/ui-dist/`
-2. Runs after every .NET build
-3. Only copies if `browser/dist/` exists
+2. **ClearWebView2CacheInDebug target**: Automatically clears WebView2 cache in Debug mode
+3. Runs after every .NET build
+4. Only copies if `browser/dist/` exists
+
+**Note**: The WebView2 cache is automatically cleared in Debug builds to ensure you always see the latest UI changes. In Release builds, the cache is preserved for better performance.
 
 ### Runtime Loading (WorkspaceControl.cs)
 
@@ -85,6 +88,11 @@ npx playwright test --headed
 - **Missing ui-dist**: Run `npm run build` in browser/
 - **Check console output**: The app prints which mode it's using
 - **Verify .NET build**: Ensure `dotnet run` works from dotnet/ directory
+
+### Not seeing UI changes in Debug mode
+- **Cache is auto-cleared**: The build system automatically clears WebView2 cache in Debug builds
+- **If still having issues**: Check that the build actually ran and updated `output/Debug/ui-dist/`
+- **Dev server priority**: If a dev server is running on port 5173, it takes priority over built files
 
 ## Environment Variables
 

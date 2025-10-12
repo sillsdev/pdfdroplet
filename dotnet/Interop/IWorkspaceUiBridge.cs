@@ -15,6 +15,7 @@ namespace PdfDroplet.Interop
         Task<WorkspaceState> GetWorkspaceStateAsync(CancellationToken cancellationToken = default);
         Task<IReadOnlyList<LayoutMethodSummary>> GetLayoutChoicesAsync(CancellationToken cancellationToken = default);
         Task<IReadOnlyList<PaperTargetInfo>> GetPaperTargetsAsync(CancellationToken cancellationToken = default);
+        Task<RuntimeInfo> GetRuntimeInfoAsync(CancellationToken cancellationToken = default);
 
         Task<WorkspaceState> PickPdfAsync(CancellationToken cancellationToken = default);
         Task<WorkspaceState> DropPdfAsync(string path, CancellationToken cancellationToken = default);

@@ -29,6 +29,7 @@ namespace PdfDroplet.Interop
         private readonly string _previewRoot;
         private WorkspaceState _lastKnownState;
         private IReadOnlyList<LayoutMethodSummary> _lastKnownLayouts = Array.Empty<LayoutMethodSummary>();
+        private RuntimeInfo _runtimeInfo;
 
         public WorkspaceUiBridge(WorkspaceControl workspaceControl, WorkSpaceViewModel viewModel, IWin32Window ownerWindow)
         {
@@ -85,6 +86,25 @@ namespace PdfDroplet.Interop
                 .AsReadOnly();
 
             return Task.FromResult((IReadOnlyList<PaperTargetInfo>)targets);
+        }
+
+        public Task<RuntimeInfo> GetRuntimeInfoAsync(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(_runtimeInfo);
+        }
+
+        internal void SetRuntimeMode(RuntimeMode mode)
+        {
+            _runtimeInfo = new RuntimeInfo(mode, IsDebugMode());
+        }
+
+        private static bool IsDebugMode()
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
         }
 
         public async Task<WorkspaceState> PickPdfAsync(CancellationToken cancellationToken = default)

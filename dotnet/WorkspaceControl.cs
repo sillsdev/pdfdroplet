@@ -14,7 +14,7 @@ namespace PdfDroplet
     public partial class WorkspaceControl : UserControl
     {
         private WorkSpaceViewModel _model;
-        private readonly IWorkspaceUiBridge _bridge;
+        private readonly WorkspaceUiBridge _bridge;
         private const string AutomationDebugPortEnvVar = "PDFDROPLET_AUTOMATION_PORT";
         private const string ReactDevServerEnvVar = "PDFDROPLET_UI_DEV_SERVER";
         private const string ReactVirtualHostName = "app.pdfdroplet";
@@ -22,7 +22,8 @@ namespace PdfDroplet
         private readonly JsonSerializerOptions _bridgeSerializationOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
         private bool _webViewMessagingInitialized;
         private bool _externalDragActive;
@@ -185,6 +186,7 @@ namespace PdfDroplet
 
             if (await TryNavigateToDevServerAsync(coreWebView2).ConfigureAwait(true))
             {
+                _bridge.SetRuntimeMode(RuntimeMode.DevServer);
                 return;
             }
 
@@ -196,6 +198,7 @@ namespace PdfDroplet
                     distDirectory,
                     CoreWebView2HostResourceAccessKind.Allow);
                 coreWebView2.Navigate($"https://{ReactVirtualHostName}/index.html");
+                _bridge.SetRuntimeMode(RuntimeMode.Bundle);
                 return;
             }
 
@@ -376,6 +379,8 @@ namespace PdfDroplet
                     return await _bridge.GetLayoutChoicesAsync().ConfigureAwait(true);
                 case "requestPaperTargets":
                     return await _bridge.GetPaperTargetsAsync().ConfigureAwait(true);
+                case "getRuntimeInfo":
+                    return await _bridge.GetRuntimeInfoAsync().ConfigureAwait(true);
                 case "pickPdf":
                     return await _bridge.PickPdfAsync().ConfigureAwait(true);
                 case "dropPdf":

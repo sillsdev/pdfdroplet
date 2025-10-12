@@ -39,10 +39,18 @@ export type WorkspaceState = {
   previousIncomingFilename: string;
 };
 
+export type RuntimeMode = "bundle" | "devServer" | "stub";
+
+export type RuntimeInfo = {
+  mode: RuntimeMode;
+  isDevMode: boolean;
+};
+
 export type WorkspaceCommands =
   | "requestState"
   | "requestLayouts"
   | "requestPaperTargets"
+  | "getRuntimeInfo"
   | "pickPdf"
   | "dropPdf"
   | "reloadPrevious"

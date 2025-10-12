@@ -5,6 +5,8 @@ import type {
   LayoutMethodSummary,
   PaperTargetInfo,
   RpcErrorPayload,
+  RuntimeInfo,
+  RuntimeMode,
   WorkspaceCommands,
   WorkspaceEvents,
   WorkspaceState,
@@ -18,6 +20,7 @@ export interface WorkspaceBridge {
   requestState(): Promise<WorkspaceState>;
   requestLayouts(): Promise<LayoutMethodSummary[]>;
   requestPaperTargets(): Promise<PaperTargetInfo[]>;
+  getRuntimeInfo(): Promise<RuntimeInfo>;
   pickPdf(): Promise<WorkspaceState>;
   dropPdf(path: string): Promise<WorkspaceState>;
   reloadPrevious(): Promise<WorkspaceState>;
@@ -101,6 +104,10 @@ class WebViewRuntimeBridge implements WorkspaceBridge {
 
   requestPaperTargets(): Promise<PaperTargetInfo[]> {
     return this.invoke<PaperTargetInfo[]>("requestPaperTargets");
+  }
+
+  getRuntimeInfo(): Promise<RuntimeInfo> {
+    return this.invoke<RuntimeInfo>("getRuntimeInfo");
   }
 
   pickPdf(): Promise<WorkspaceState> {
@@ -288,37 +295,38 @@ class DevStubBridge implements WorkspaceBridge {
     return stubPaperTargets;
   }
 
+  async getRuntimeInfo(): Promise<RuntimeInfo> {
+    return {
+      mode: "stub",
+      isDevMode: true,
+    };
+  }
+
   async pickPdf(): Promise<WorkspaceState> {
-    console.info("[dev-bridge] pickPdf invoked");
-    this.publishStatus("working", "Opening PDF…");
-    this.publishStatus("success", "Ready.");
-    return this.state;
+    console.info("[dev-bridge] pickPdf invoked (no backend available)");
+    throw new BridgeError(
+      "NO_BACKEND",
+      "🔧 Developer Mode: PDF file picking requires the .NET backend. Run 'dotnet run' from the dotnet/ directory to test with the full application.",
+      "The stub bridge cannot open file dialogs. Use the full .NET application to test this feature."
+    );
   }
 
   async dropPdf(path: string): Promise<WorkspaceState> {
-    console.info("[dev-bridge] dropPdf invoked with", path);
-    this.publishStatus("working", "Processing dropped PDF…");
-    const simulatedOutput = `${path}.preview.pdf`;
-    this.state = {
-      ...this.state,
-      hasIncomingPdf: true,
-      incomingPath: path,
-      generatedPdfPath: simulatedOutput,
-      canReloadPrevious: true,
-      previousIncomingFilename: path.split(/[\\/]/).pop() ?? "",
-    };
-    this.emit("stateChanged", this.state);
-    this.emit("layoutsChanged", stubLayouts);
-    this.publishStatus("success", "Preview updated.");
-    this.emit("generatedPdfReady", { path: simulatedOutput });
-    return this.state;
+    console.info("[dev-bridge] dropPdf invoked with", path, "(no backend available)");
+    throw new BridgeError(
+      "NO_BACKEND",
+      "🔧 Developer Mode: PDF processing requires the .NET backend. Run 'dotnet run' from the dotnet/ directory to test with the full application.",
+      `The stub bridge cannot process PDF files. Attempted to process: ${path}`
+    );
   }
 
   async reloadPrevious(): Promise<WorkspaceState> {
-    console.info("[dev-bridge] reloadPrevious invoked");
-    this.publishStatus("working", "Loading previous PDF…");
-    this.publishStatus("success", "Preview updated.");
-    return this.state;
+    console.info("[dev-bridge] reloadPrevious invoked (no backend available)");
+    throw new BridgeError(
+      "NO_BACKEND",
+      "🔧 Developer Mode: Reloading previous PDF requires the .NET backend. Run 'dotnet run' from the dotnet/ directory to test with the full application.",
+      "The stub bridge has no previous PDF state to reload."
+    );
   }
 
   async setLayout(layoutId: string): Promise<WorkspaceState> {
@@ -420,4 +428,6 @@ export type {
   LayoutMethodSummary,
   PaperTargetInfo,
   GenerationStatus,
+  RuntimeInfo,
+  RuntimeMode,
 };

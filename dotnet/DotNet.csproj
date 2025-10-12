@@ -90,7 +90,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
-  <Target Name="CopyFrontendToOutput" AfterTargets="Build"
+  <Target Name="CopyFrontendToOutput" AfterTargets="BeforeBuild"
         Condition="Exists('$(UiDistDir)')">
     <PropertyGroup>
       <_UiOutputDirWithSlash>$(UiOutputDir)\</_UiOutputDirWithSlash>
@@ -102,7 +102,9 @@
     <MakeDir Directories="$(_UiOutputDirWithSlash)" />
     <Copy SourceFiles="@(FrontendDistFiles)"
               DestinationFiles="@(FrontendDistFiles->'$(_UiOutputDirWithSlash)%(RecursiveDir)%(Filename)%(Extension)')"
-              SkipUnchangedFiles="true" />
+              SkipUnchangedFiles="false"
+              ContinueOnError="true" />
+    <Message Importance="High" Text="✅ Copied fresh UI files to output directory" />
   </Target>
   <Target Name="IncludeFrontendAssets" AfterTargets="ComputeFilesToPublish"
         Condition="Exists('$(UiDistDir)')">
@@ -118,5 +120,17 @@
   </Target>
   <Target Name="CleanFrontendOutput" BeforeTargets="Clean">
     <RemoveDir Directories="$(UiOutputDir)" Condition="Exists('$(UiOutputDir)')" />
+  </Target>
+  <Target Name="ClearWebView2CacheInDebug" AfterTargets="CopyFrontendToOutput"
+        Condition="'$(Configuration)' == 'Debug'">
+    <PropertyGroup>
+      <WebView2CacheDir>$(OutputPath)$(AssemblyName).exe.WebView2</WebView2CacheDir>
+      <_CacheExists>false</_CacheExists>
+    </PropertyGroup>
+    <PropertyGroup Condition="Exists('$(WebView2CacheDir)')">
+      <_CacheExists>true</_CacheExists>
+    </PropertyGroup>
+    <Message Importance="High" Text="🗑️  Cleared WebView2 cache for fresh UI reload" Condition="'$(_CacheExists)' == 'true'" />
+    <RemoveDir Directories="$(WebView2CacheDir)" Condition="'$(_CacheExists)' == 'true'" />
   </Target>
 </Project>

@@ -26,7 +26,7 @@ export function FooterControls({
   onShowHelp,
 }: FooterControlsProps) {
   return (
-    <footer className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-panel md:flex-row md:items-center md:justify-between">
+    <footer className="flex flex-col gap-3 px-4 pb-0 md:flex-row md:justify-between">
       <div className="flex flex-wrap items-center gap-4 text-sm text-slate-700">
         <label className="inline-flex items-center gap-2">
           <input
@@ -36,7 +36,7 @@ export function FooterControls({
             disabled={controlsDisabled}
             onChange={(event) => onToggleRtl(event.target.checked)}
           />
-          <span>Right-to-Left Language</span>
+          <span className={controlsDisabled ? "text-slate-400" : ""}>Right-to-Left Language</span>
         </label>
         <label className="inline-flex items-center gap-2">
           <input
@@ -46,7 +46,7 @@ export function FooterControls({
             disabled={controlsDisabled}
             onChange={(event) => onToggleMirror(event.target.checked)}
           />
-          <span>Mirror</span>
+          <span className={controlsDisabled ? "text-slate-400" : ""}>Mirror</span>
         </label>
         <label className="inline-flex items-center gap-2">
           <input
@@ -56,7 +56,7 @@ export function FooterControls({
             disabled={controlsDisabled}
             onChange={(event) => onToggleCropMarks(event.target.checked)}
           />
-          <span>Crop Marks</span>
+          <span className={controlsDisabled ? "text-slate-400" : ""}>Crop Marks</span>
         </label>
         {workspaceState?.canReloadPrevious && (
           <button
@@ -70,19 +70,19 @@ export function FooterControls({
         )}
       </div>
 
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-2 text-sm">
         <button
           type="button"
           onClick={onPickPdf}
-          className="text-droplet-accent underline-offset-4 hover:underline disabled:text-slate-400"
+          className="rounded px-3 py-1.5 transition-colors hover:bg-slate-100 hover:text-droplet-accent"
           disabled={isBootstrapping}
         >
-          Choose a PDF to open
+          Open
         </button>
         <button
           type="button"
           onClick={onShowHelp}
-          className="underline-offset-4 hover:text-droplet-accent hover:underline"
+          className="rounded px-3 py-1.5 transition-colors hover:bg-slate-100 hover:text-droplet-accent"
           data-testid="help-button"
         >
           Help
@@ -90,7 +90,7 @@ export function FooterControls({
         <button
           type="button"
           onClick={onShowAbout}
-          className="underline-offset-4 hover:text-droplet-accent hover:underline"
+          className="rounded px-3 py-1.5 transition-colors hover:bg-slate-100 hover:text-droplet-accent"
           data-testid="about-button"
         >
           About

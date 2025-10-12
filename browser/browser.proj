@@ -60,7 +60,6 @@
   </ItemGroup>
 
   <Target Name="Build" DependsOnTargets="Restore;CheckDevServer"
-        Inputs="@(FrontendSourceFiles)" Outputs="$(UiDistDir)\index.html" 
         Condition="Exists('$(UiProjectDir)') And '$(_DevServerRunning)' != 'true'">
     <Message Importance="High" Text="Building WebView frontend with Vite" />
     <Exec Command="npm run build" WorkingDirectory="$(UiProjectDir)" />

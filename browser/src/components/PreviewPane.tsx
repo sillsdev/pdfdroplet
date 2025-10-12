@@ -55,8 +55,7 @@ export function PreviewPane({
               {primaryMessage}
             </p>
             <p className="text-sm text-slate-500">
-              Drop anywhere inside this window to get started or pick a PDF
-              manually.
+              To get started, drag a PDF file here or click this button:
             </p>
           </div>
           <button

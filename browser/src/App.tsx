@@ -10,11 +10,13 @@ import { FooterControls } from "./components/FooterControls";
 import { PreviewPane } from "./components/PreviewPane";
 import { AboutDialog } from "./components/AboutDialog";
 import { HelpDialog } from "./components/HelpDialog";
+import { DevModeIndicator } from "./components/DevModeIndicator";
 import {
   bridge,
   type GenerationStatus,
   type LayoutMethodSummary,
   type PaperTargetInfo,
+  type RuntimeInfo,
   type WorkspaceState,
 } from "./lib/bridge";
 import { extractDroppedPath } from "./lib/pathHandling";
@@ -47,19 +49,22 @@ function App() {
     useState<GenerationStatus | null>(null);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isErrorFading, setIsErrorFading] = useState(false);
   const [isDragActive, setIsDragActive] = useState(false);
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const [runtimeInfo, setRuntimeInfo] = useState<RuntimeInfo | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
     async function bootstrap() {
       try {
-        const [state, layoutSummaries, paperSummaries] = await Promise.all([
+        const [state, layoutSummaries, paperSummaries, runtime] = await Promise.all([
           bridge.requestState(),
           bridge.requestLayouts(),
           bridge.requestPaperTargets(),
+          bridge.getRuntimeInfo(),
         ]);
 
         if (!isMounted) {
@@ -69,6 +74,7 @@ function App() {
         setWorkspaceState(state);
         setLayouts(layoutSummaries);
         setPaperTargets(paperSummaries);
+        setRuntimeInfo(runtime);
       } catch (error) {
         console.error("Failed to bootstrap workspace bridge", error);
         if (error instanceof Error) {
@@ -180,15 +186,27 @@ function App() {
     [runCommand]
   );
 
-  const handlePickPdf = useCallback(
-    () => runCommand(() => bridge.pickPdf()),
-    [runCommand]
-  );
+  const handlePickPdf = useCallback(() => {
+    if (runtimeInfo?.mode === "stub") {
+      setErrorMessage(
+        "🔧 Developer Mode: The .NET backend is not running. PDF file picking requires the full application. " +
+        "To test with the full backend, run from Visual Studio or 'dotnet run' from the dotnet/ directory."
+      );
+      return;
+    }
+    return runCommand(() => bridge.pickPdf());
+  }, [runCommand, runtimeInfo]);
 
-  const handleReloadPrevious = useCallback(
-    () => runCommand(() => bridge.reloadPrevious()),
-    [runCommand]
-  );
+  const handleReloadPrevious = useCallback(() => {
+    if (runtimeInfo?.mode === "stub") {
+      setErrorMessage(
+        "🔧 Developer Mode: The .NET backend is not running. Reloading previous PDF requires the full application. " +
+        "To test with the full backend, run from Visual Studio or 'dotnet run' from the dotnet/ directory."
+      );
+      return;
+    }
+    return runCommand(() => bridge.reloadPrevious());
+  }, [runCommand, runtimeInfo]);
 
 
 
@@ -294,6 +312,28 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!errorMessage) {
+      setIsErrorFading(false);
+      return;
+    }
+
+    setIsErrorFading(false);
+    const fadeTimer = setTimeout(() => {
+      setIsErrorFading(true);
+    }, 2000);
+
+    const clearTimer = setTimeout(() => {
+      setErrorMessage(null);
+      setIsErrorFading(false);
+    }, 2500);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(clearTimer);
+    };
+  }, [errorMessage]);
+
+  useEffect(() => {
     const unsubscribeDragState = bridge.on(
       "externalDragState",
       ({ isActive }) => {
@@ -343,6 +383,7 @@ function App() {
 
   return (
     <div className="flex h-screen w-full gap-6 overflow-hidden bg-droplet-background p-6 text-droplet-primary">
+      <DevModeIndicator />
       <LayoutChooser
         paperTargets={paperTargets}
         selectedPaperId={selectedPaperId}
@@ -369,7 +410,11 @@ function App() {
         />
 
         {errorMessage && (
-          <div className="flex-none rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
+          <div
+            className={`flex-none rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700 transition-opacity duration-500 ${
+              isErrorFading ? "opacity-0" : "opacity-100"
+            }`}
+          >
             {errorMessage}
           </div>
         )}

@@ -34,14 +34,14 @@ export function Modal({ isOpen, onClose, children, title }: ModalProps) {
       data-testid="modal-backdrop"
     >
       <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-auto rounded-2xl bg-white shadow-2xl"
+        className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? "modal-title" : undefined}
       >
         {title && (
-          <div className="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
+          <div className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
             <h2 id="modal-title" className="text-xl font-semibold text-slate-900">
               {title}
             </h2>
@@ -65,7 +65,7 @@ export function Modal({ isOpen, onClose, children, title }: ModalProps) {
             </button>
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className="overflow-auto p-6">{children}</div>
       </div>
     </div>
   );

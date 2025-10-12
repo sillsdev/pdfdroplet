@@ -3,6 +3,18 @@ using System.Collections.Generic;
 
 namespace PdfDroplet.Interop
 {
+    internal enum RuntimeMode
+    {
+        Bundle,
+        DevServer,
+        Stub
+    }
+
+    internal record RuntimeInfo(
+        RuntimeMode Mode,
+        bool IsDevMode
+    );
+
     internal record LayoutMethodSummary(
         string Id,
         string DisplayName,
