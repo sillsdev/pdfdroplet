@@ -58,9 +58,12 @@ export function HelpDialog({ isOpen, onClose }: HelpDialogProps) {
                 img: ({ ...props }) => (
                   <img
                     {...props}
-                    className="float-left mr-6 mb-4 w-[150px] h-auto"
+                    className="float-left mr-6 mb-4 w-[75px] h-auto"
                     loading="lazy"
                   />
+                ),
+                h1: ({ ...props }) => (
+                  <h2 {...props} className="clear-left mb-4 text-xl font-bold" />
                 ),
                 h2: ({ ...props }) => (
                   <h3 {...props} className="clear-left mt-6 text-lg font-semibold" />
