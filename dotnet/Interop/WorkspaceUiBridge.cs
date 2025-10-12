@@ -159,7 +159,7 @@ namespace PdfDroplet.Interop
         {
             var layout = _viewModel
                 .GetLayoutChoices()
-                .FirstOrDefault(l => string.Equals(l.GetType().FullName, layoutId, StringComparison.Ordinal));
+                .FirstOrDefault(l => string.Equals(l.Id, layoutId, StringComparison.Ordinal));
 
             if (layout == null)
                 throw new ArgumentException($"Unknown layout id '{layoutId}'", nameof(layoutId));
@@ -225,7 +225,7 @@ namespace PdfDroplet.Interop
             return new WorkspaceState(
                 _viewModel.HaveIncomingPdf,
                 incomingPath ?? string.Empty,
-                _viewModel.SelectedMethod == null ? string.Empty : _viewModel.SelectedMethod.GetType().FullName,
+                _viewModel.SelectedMethod == null ? string.Empty : _viewModel.SelectedMethod.Id,
                 paperTarget == null ? string.Empty : paperTarget.Name,
                 Settings.Default.Mirror,
                 Settings.Default.RightToLeft,
@@ -247,8 +247,8 @@ namespace PdfDroplet.Interop
 
         private LayoutMethodSummary CreateLayoutSummary(LayoutMethod method)
         {
-            var id = method.GetType().FullName;
-            var displayName = method.ToString();
+            var id = method.Id;
+            var displayName = method.EnglishLabel;
             var isEnabled = _viewModel.HaveIncomingPdf && method.GetIsEnabled(_viewModel.InputPdf);
             var isOrientationSensitive = method.ImageIsSensitiveToOrientation;
             var imageOrientation = LayoutMethod.IsLandscape(_viewModel.InputPdf);

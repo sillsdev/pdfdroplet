@@ -83,7 +83,7 @@
     <PackageReference Include="DesktopAnalytics" Version="1.2.3" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2792.45" />
     <PackageReference Include="PdfSharp" Version="6.2.1" />
-    <PackageReference Include="sillsdev.dotImpose" Version="2.6.13" />
+    <PackageReference Include="sillsdev.dotImpose" Version="2.6.1" />
     <PackageReference Include="SIL.Core" Version="16.1.0-*" />
     <PackageReference Include="SIL.Core.Desktop" Version="16.1.0-*" />
     <PackageReference Include="SIL.Windows.Forms" Version="16.1.0-*" />
