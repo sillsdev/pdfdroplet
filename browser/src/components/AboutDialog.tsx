@@ -25,7 +25,7 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
       fetchVersion();
     }
   }, [isOpen]);
-  
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="About PDF Droplet">
       <div className="flex flex-col items-center gap-6 text-center">
@@ -35,28 +35,23 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
           className="h-32 w-auto object-contain"
           data-testid="sil-logo"
         />
-        
+
+        <a
+          href="https://software.sil.org/pdfdroplet/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-droplet-accent hover:underline"
+          data-testid="pdfdroplet-link"
+        >
+          software.sil.org/pdfdroplet
+        </a>
         {version && (
           <p className="text-sm text-slate-600" data-testid="version">
             Version {version}
           </p>
         )}
-        
-        <a
-              href="https://software.sil.org/pdfdroplet/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-droplet-accent hover:underline"
-              data-testid="pdfdroplet-link"
-            >
-              software.sil.org/pdfdroplet
-            </a>
-          
         <div className="mt-4 space-y-1 text-sm text-slate-600">
           <p>Copyright © 2012-2025 SIL Global</p>
-          <p className="text-xs text-slate-500">
-            Licensed under the MIT License
-          </p>
         </div>
         <button
           type="button"
