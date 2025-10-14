@@ -114,6 +114,10 @@ jobs:
         working-directory: browser
         run: npm ci
 
+      - name: Build frontend
+        working-directory: browser
+        run: npm run build
+
       - name: Restore dependencies
         run: dotnet restore $env:PROJECT_PATH --runtime $env:RUNTIME_IDENTIFIER
 
