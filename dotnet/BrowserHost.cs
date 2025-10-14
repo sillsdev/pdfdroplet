@@ -92,6 +92,14 @@ namespace PdfDroplet
                     Console.WriteLine($"PDFDroplet automation: WebView2 remote debugging listening on port {automationPort.Value}");
                 }
 
+#if DEBUG
+                // Enable context menus in debug builds for development
+                _browser.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
+#else
+                // Disable context menus in release builds for end users
+                _browser.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+#endif
+
                 ConfigurePreviewHostMapping();
 
                 _browser.CoreWebView2.NewWindowRequested += OnCoreNewWindowRequested;
