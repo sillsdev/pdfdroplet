@@ -14,14 +14,14 @@ namespace PdfDroplet
 {
     class WorkSpaceViewModel
     {
-        private WorkspaceControl _view;
+        private BrowserHost _view;
         private string _incomingPath;
         private XPdfForm _inputPdf;
         private string _pathToCurrentlyDisplayedPdf;
         private const int PreviewHistoryLimit = 2;
         private readonly List<string> _generatedPreviewPaths = new List<string>();
 
-        public WorkSpaceViewModel(WorkspaceControl workspaceControl)
+        public WorkSpaceViewModel(BrowserHost workspaceControl)
         {
             _view = workspaceControl;
             //default to whatever the printer's default is

@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Modal } from "./Modal";
+import { bridge } from "../lib/bridge";
 
 export type AboutDialogProps = {
   isOpen: boolean;
@@ -6,6 +8,23 @@ export type AboutDialogProps = {
 };
 
 export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
+  const [version, setVersion] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchVersion() {
+      try {
+        const runtimeInfo = await bridge.getRuntimeInfo();
+        setVersion(runtimeInfo.version);
+      } catch (error) {
+        console.error("Failed to fetch version:", error);
+        setVersion("Unknown");
+      }
+    }
+
+    if (isOpen) {
+      fetchVersion();
+    }
+  }, [isOpen]);
   
   return (
     <Modal isOpen={isOpen} onClose={onClose} >
@@ -17,9 +36,16 @@ export function AboutDialog({ isOpen, onClose }: AboutDialogProps) {
           data-testid="sil-logo"
         />
         
+        <div className="flex flex-col gap-1">
           <h3 className="text-2xl font-bold text-droplet-primary">
             PDF Droplet
           </h3>
+          {version && (
+            <p className="text-sm text-slate-600" data-testid="version">
+              Version {version}
+            </p>
+          )}
+        </div>
         
                 
             <a

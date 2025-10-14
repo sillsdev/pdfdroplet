@@ -1,6 +1,6 @@
 ﻿namespace PdfDroplet
 {
-	partial class WorkspaceControl
+	partial class BrowserHost
 	{
 		/// <summary> 
 		/// Required designer variable.

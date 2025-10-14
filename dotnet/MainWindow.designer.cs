@@ -31,7 +31,7 @@ namespace PdfDroplet
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.workspaceControl1 = new PdfDroplet.WorkspaceControl();
+            this.workspaceControl1 = new PdfDroplet.BrowserHost();
             this.SuspendLayout();
             // 
             // workspaceControl1
@@ -58,6 +58,6 @@ namespace PdfDroplet
         #endregion
 
         private System.Windows.Forms.Timer timer1;
-        private WorkspaceControl workspaceControl1;
+        private BrowserHost workspaceControl1;
     }
 }

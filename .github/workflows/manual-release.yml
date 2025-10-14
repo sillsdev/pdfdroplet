@@ -16,7 +16,7 @@ jobs:
         permissions:
             contents: write
         env:
-            PROJECT_PATH: src/DotNet.csproj
+            PROJECT_PATH: dotnet/DotNet.csproj
             BUILD_CONFIGURATION: Release
             RUNTIME_IDENTIFIER: win-x86
             PUBLISH_DIR: output/publish
@@ -46,13 +46,26 @@ jobs:
                   }
                   "value=$version" >> $env:GITHUB_OUTPUT
 
+            - name: Create full version with build number
+              id: full_version
+              shell: pwsh
+              run: |
+                  $baseVersion = '${{ steps.version.outputs.value }}'
+                  $buildNumber = $env:GITHUB_RUN_NUMBER
+                  if ([string]::IsNullOrWhiteSpace($baseVersion)) {
+                    throw 'Base version not provided'
+                  }
+                  $fullVersion = "$baseVersion.$buildNumber"
+                  "value=$fullVersion" >> $env:GITHUB_OUTPUT
+                  Write-Host "Full version: $fullVersion"
+
             - name: Normalize installer version
               id: installer_version
               shell: pwsh
               run: |
-                  $raw = '${{ steps.version.outputs.value }}'
+                  $raw = '${{ steps.full_version.outputs.value }}'
                   if ([string]::IsNullOrWhiteSpace($raw)) {
-                    throw 'Version step did not provide a value.'
+                    throw 'Full version not provided.'
                   }
                   $segments = $raw.Split('.')
                   while ($segments.Count -lt 3) {
@@ -64,14 +77,26 @@ jobs:
                   $normalized = [string]::Join('.', $segments)
                   "value=$normalized" >> $env:GITHUB_OUTPUT
 
+            - name: Create version.json
+              shell: pwsh
+              run: |
+                  $fullVersion = '${{ steps.full_version.outputs.value }}'
+                  $versionJson = @{
+                    version = $fullVersion
+                    buildNumber = $env:GITHUB_RUN_NUMBER
+                    buildDate = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+                  } | ConvertTo-Json
+                  $versionJson | Out-File -FilePath 'browser/assets/version.json' -Encoding UTF8
+                  Write-Host "Created version.json with version $fullVersion"
+
             - name: Restore dependencies
               run: dotnet restore $env:PROJECT_PATH --runtime $env:RUNTIME_IDENTIFIER
 
             - name: Build
-              run: dotnet build $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER /p:Platform=x86
+              run: dotnet build $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER /p:Platform=x86 /p:Version=${{ steps.full_version.outputs.value }}
 
             - name: Publish
-              run: dotnet publish $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER --output output/Release/win-x86 /p:Platform=x86 /p:PublishSingleFile=false
+              run: dotnet publish $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER --output output/Release/win-x86 /p:Platform=x86 /p:PublishSingleFile=false /p:Version=${{ steps.full_version.outputs.value }}
 
             - name: Install Inno Setup
               shell: pwsh
@@ -100,15 +125,14 @@ jobs:
                   if ([string]::IsNullOrWhiteSpace($version)) {
                     throw 'Installer version output missing.'
                   }
-                  $source = Join-Path $env:GITHUB_WORKSPACE 'output\Installer\PdfDropletInstaller.exe'
-                  if (-not (Test-Path $source)) {
-                    throw "Expected installer at $source"
+                  $installerFilename = "PdfDropletInstaller-$version.exe"
+                  $installerPath = Join-Path $env:GITHUB_WORKSPACE "output\Installer\$installerFilename"
+                  if (-not (Test-Path $installerPath)) {
+                    throw "Expected installer at $installerPath"
                   }
                   $artifactName = "PdfDropletInstaller-$version"
-                  $destination = Join-Path (Split-Path $source -Parent) ("$artifactName.exe")
-                  Copy-Item $source $destination -Force
                   "artifact_name=$artifactName" >> $env:GITHUB_OUTPUT
-                  "installer_path=$destination" >> $env:GITHUB_OUTPUT
+                  "installer_path=$installerPath" >> $env:GITHUB_OUTPUT
 
             - name: Upload build artifact
               uses: actions/upload-artifact@v4
@@ -120,9 +144,9 @@ jobs:
               id: release
               shell: pwsh
               run: |
-                  $version = '${{ steps.version.outputs.value }}'
+                  $version = '${{ steps.full_version.outputs.value }}'
                   if ([string]::IsNullOrWhiteSpace($version)) {
-                    throw 'Version step did not provide a value.'
+                    throw 'Full version not provided.'
                   }
                   $tag = "v$version"
                   $name = "PdfDroplet $version"

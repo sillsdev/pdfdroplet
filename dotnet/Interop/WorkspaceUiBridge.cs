@@ -19,7 +19,7 @@ namespace PdfDroplet.Interop
         private const int ThumbnailMaxHeight = 80;
         private const int ThumbnailMaxWidth = 70;
 
-        private readonly WorkspaceControl _workspaceControl;
+        private readonly BrowserHost _workspaceControl;
         private readonly WorkSpaceViewModel _viewModel;
         private readonly IWin32Window _ownerWindow;
         private readonly FieldInfo _incomingPathField;
@@ -31,7 +31,7 @@ namespace PdfDroplet.Interop
         private IReadOnlyList<LayoutMethodSummary> _lastKnownLayouts = Array.Empty<LayoutMethodSummary>();
         private RuntimeInfo _runtimeInfo;
 
-        public WorkspaceUiBridge(WorkspaceControl workspaceControl, WorkSpaceViewModel viewModel, IWin32Window ownerWindow)
+        public WorkspaceUiBridge(BrowserHost workspaceControl, WorkSpaceViewModel viewModel, IWin32Window ownerWindow)
         {
             _workspaceControl = workspaceControl ?? throw new ArgumentNullException(nameof(workspaceControl));
             _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
@@ -95,7 +95,8 @@ namespace PdfDroplet.Interop
 
         internal void SetRuntimeMode(RuntimeMode mode)
         {
-            _runtimeInfo = new RuntimeInfo(mode, IsDebugMode());
+            var version = GetApplicationVersion();
+            _runtimeInfo = new RuntimeInfo(mode, IsDebugMode(), version);
         }
 
         private static bool IsDebugMode()
@@ -105,6 +106,13 @@ namespace PdfDroplet.Interop
 #else
             return false;
 #endif
+        }
+
+        private static string GetApplicationVersion()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var version = assembly.GetName().Version;
+            return version?.ToString() ?? "0.0.0.0";
         }
 
         public async Task<WorkspaceState> PickPdfAsync(CancellationToken cancellationToken = default)
@@ -346,7 +354,7 @@ namespace PdfDroplet.Interop
 
                 return string.IsNullOrEmpty(joined)
                     ? string.Empty
-                    : $"https://{WorkspaceControl.PreviewVirtualHostName}/{joined}";
+                    : $"https://{BrowserHost.PreviewVirtualHostName}/{joined}";
             }
             catch
             {

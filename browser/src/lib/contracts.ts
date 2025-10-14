@@ -44,6 +44,7 @@ export type RuntimeMode = "bundle" | "devServer" | "stub";
 export type RuntimeInfo = {
   mode: RuntimeMode;
   isDevMode: boolean;
+  version: string;
 };
 
 export type WorkspaceCommands =

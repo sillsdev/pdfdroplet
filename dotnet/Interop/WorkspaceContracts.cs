@@ -12,7 +12,8 @@ namespace PdfDroplet.Interop
 
     internal record RuntimeInfo(
         RuntimeMode Mode,
-        bool IsDevMode
+        bool IsDevMode,
+        string Version
     );
 
     internal record LayoutMethodSummary(

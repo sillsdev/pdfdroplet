@@ -299,6 +299,7 @@ class DevStubBridge implements WorkspaceBridge {
     return {
       mode: "stub",
       isDevMode: true,
+      version: "0.0.0-dev",
     };
   }
 

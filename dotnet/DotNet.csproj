@@ -8,7 +8,7 @@
     <AssemblyTitle>PdfDroplet</AssemblyTitle>
     <Company>SIL</Company>
     <Product>PdfDroplet</Product>
-    <Copyright>© SIL International 2012-2024</Copyright>
+    <Copyright>© SIL International 2012-2025</Copyright>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <BuildDependsOn>$(BuildDependsOn);AfterBuildMigrated</BuildDependsOn>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -16,6 +16,9 @@
     <PostBuildEvent></PostBuildEvent>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />

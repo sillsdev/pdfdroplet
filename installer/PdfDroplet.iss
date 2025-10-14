@@ -27,7 +27,7 @@ AllowNoIcons=yes
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=..\output\installer
-OutputBaseFilename=PdfDropletInstaller
+OutputBaseFilename=PdfDropletInstaller-{#MyAppVersion}
 ; SetupIconFile=output\Release\win-x86\{#MyAppExeName}
 Compression=lzma
 SolidCompression=yes
@@ -58,7 +58,7 @@ Source: "..\output\Release\win-x86\*.dll"; DestDir: "{app}"; Flags: ignoreversio
 ; PDB files for debugging (optional but helpful)
 Source: "..\output\Release\win-x86\*.pdb"; DestDir: "{app}"; Flags: ignoreversion
 
-; React UI assets
+; React UI assets (including version.json)
 Source: "..\output\Release\win-x86\ui-dist\*"; DestDir: "{app}\ui-dist"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; Localization folders
