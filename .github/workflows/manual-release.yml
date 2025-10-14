@@ -1,166 +1,174 @@
 name: Manual Release Build
 
 on:
-    workflow_dispatch:
-        inputs:
-            prerelease:
-                description: "Mark the release as a pre-release."
-                required: false
-                type: boolean
-                default: false
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: "Mark the release as a pre-release."
+        required: false
+        type: boolean
+        default: false
 
 jobs:
-    build-and-release:
-        name: Build and publish installer
-        runs-on: windows-latest
-        permissions:
-            contents: write
-        env:
-            PROJECT_PATH: dotnet/DotNet.csproj
-            BUILD_CONFIGURATION: Release
-            RUNTIME_IDENTIFIER: win-x86
-            PUBLISH_DIR: output/publish
-            # SDK used to build; project target version remains defined in Directory.Build.props / csproj
-            DOTNET_VERSION: "8.0.x"
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+  build-and-release:
+    name: Build and publish installer
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    env:
+      PROJECT_PATH: dotnet/DotNet.csproj
+      BUILD_CONFIGURATION: Release
+      RUNTIME_IDENTIFIER: win-x86
+      PUBLISH_DIR: output/publish
+      # SDK used to build; project target version remains defined in Directory.Build.props / csproj
+      DOTNET_VERSION: "8.0.x"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
-              with:
-                  dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-            - name: Determine version
-              id: version
-              shell: pwsh
-              run: |
-                  $propsPath = Join-Path $env:GITHUB_WORKSPACE 'Directory.Build.props'
-                  if (-not (Test-Path $propsPath)) {
-                    throw "Directory.Build.props not found at $propsPath"
-                  }
-                  [xml]$props = Get-Content $propsPath
-                  $version = $props.Project.PropertyGroup.Version
-                  if ([string]::IsNullOrWhiteSpace($version)) {
-                    throw 'Version property not found in Directory.Build.props'
-                  }
-                  "value=$version" >> $env:GITHUB_OUTPUT
+      - name: Determine version
+        id: version
+        shell: pwsh
+        run: |
+          $propsPath = Join-Path $env:GITHUB_WORKSPACE 'Directory.Build.props'
+          if (-not (Test-Path $propsPath)) {
+            throw "Directory.Build.props not found at $propsPath"
+          }
+          [xml]$props = Get-Content $propsPath
+          $version = $props.Project.PropertyGroup.Version
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw 'Version property not found in Directory.Build.props'
+          }
+          "value=$version" >> $env:GITHUB_OUTPUT
 
-            - name: Create full version with build number
-              id: full_version
-              shell: pwsh
-              run: |
-                  $baseVersion = '${{ steps.version.outputs.value }}'
-                  $buildNumber = $env:GITHUB_RUN_NUMBER
-                  if ([string]::IsNullOrWhiteSpace($baseVersion)) {
-                    throw 'Base version not provided'
-                  }
-                  $fullVersion = "$baseVersion.$buildNumber"
-                  "value=$fullVersion" >> $env:GITHUB_OUTPUT
-                  Write-Host "Full version: $fullVersion"
+      - name: Create full version with build number
+        id: full_version
+        shell: pwsh
+        run: |
+          $baseVersion = '${{ steps.version.outputs.value }}'
+          $buildNumber = $env:GITHUB_RUN_NUMBER
+          if ([string]::IsNullOrWhiteSpace($baseVersion)) {
+            throw 'Base version not provided'
+          }
+          $fullVersion = "$baseVersion.$buildNumber"
+          "value=$fullVersion" >> $env:GITHUB_OUTPUT
+          Write-Host "Full version: $fullVersion"
 
-            - name: Normalize installer version
-              id: installer_version
-              shell: pwsh
-              run: |
-                  $raw = '${{ steps.full_version.outputs.value }}'
-                  if ([string]::IsNullOrWhiteSpace($raw)) {
-                    throw 'Full version not provided.'
-                  }
-                  $segments = $raw.Split('.')
-                  while ($segments.Count -lt 3) {
-                    $segments += '0'
-                  }
-                  if ($segments.Count -gt 3) {
-                    $segments = $segments[0..2]
-                  }
-                  $normalized = [string]::Join('.', $segments)
-                  "value=$normalized" >> $env:GITHUB_OUTPUT
+      - name: Normalize installer version
+        id: installer_version
+        shell: pwsh
+        run: |
+          $raw = '${{ steps.full_version.outputs.value }}'
+          if ([string]::IsNullOrWhiteSpace($raw)) {
+            throw 'Full version not provided.'
+          }
+          $segments = $raw.Split('.')
+          while ($segments.Count -lt 3) {
+            $segments += '0'
+          }
+          if ($segments.Count -gt 3) {
+            $segments = $segments[0..2]
+          }
+          $normalized = [string]::Join('.', $segments)
+          "value=$normalized" >> $env:GITHUB_OUTPUT
 
-            - name: Create version.json
-              shell: pwsh
-              run: |
-                  $fullVersion = '${{ steps.full_version.outputs.value }}'
-                  $versionJson = @{
-                    version = $fullVersion
-                    buildNumber = $env:GITHUB_RUN_NUMBER
-                    buildDate = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
-                  } | ConvertTo-Json
-                  $versionJson | Out-File -FilePath 'browser/assets/version.json' -Encoding UTF8
-                  Write-Host "Created version.json with version $fullVersion"
+      - name: Create version.json
+        shell: pwsh
+        run: |
+          $fullVersion = '${{ steps.full_version.outputs.value }}'
+          $versionJson = @{
+            version = $fullVersion
+            buildNumber = $env:GITHUB_RUN_NUMBER
+            buildDate = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+          } | ConvertTo-Json
+          $versionJson | Out-File -FilePath 'browser/assets/version.json' -Encoding UTF8
+          Write-Host "Created version.json with version $fullVersion"
 
-            - name: Restore dependencies
-              run: dotnet restore $env:PROJECT_PATH --runtime $env:RUNTIME_IDENTIFIER
+      - name: Restore dependencies
+        run: dotnet restore $env:PROJECT_PATH --runtime $env:RUNTIME_IDENTIFIER
 
-            - name: Build
-              run: dotnet build $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER /p:Platform=x86 /p:Version=${{ steps.full_version.outputs.value }}
+      - name: Build
+        run: dotnet build $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER /p:Platform=x86 /p:Version=${{ steps.full_version.outputs.value }}
 
-            - name: Publish
-              run: dotnet publish $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER --output output/Release/win-x86 /p:Platform=x86 /p:PublishSingleFile=false /p:Version=${{ steps.full_version.outputs.value }}
+      - name: Publish
+        run: dotnet publish $env:PROJECT_PATH --configuration $env:BUILD_CONFIGURATION --no-restore --runtime $env:RUNTIME_IDENTIFIER --output output/Release/win-x86 /p:Platform=x86 /p:PublishSingleFile=false /p:Version=${{ steps.full_version.outputs.value }}
 
-            - name: Install Inno Setup
-              shell: pwsh
-              run: |
-                  choco install innosetup --yes --no-progress
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup --yes --no-progress
 
-            - name: Build Inno Setup installer
-              shell: pwsh
-              run: |
-                  $version = '${{ steps.installer_version.outputs.value }}'
-                  if ([string]::IsNullOrWhiteSpace($version)) {
-                    throw 'Installer version output missing.'
-                  }
-                  $programFilesX86 = [System.Environment]::GetFolderPath('ProgramFilesX86')
-                  $isccPath = Join-Path $programFilesX86 'Inno Setup 6\ISCC.exe'
-                  if (-not (Test-Path $isccPath)) {
-                    throw "Inno Setup compiler not found at $isccPath"
-                  }
-                  & $isccPath "installer\PdfDroplet.iss" "/DMyAppVersion=$version"
+      - name: Build Inno Setup installer
+        shell: pwsh
+        run: |
+          $version = '${{ steps.installer_version.outputs.value }}'
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw 'Installer version output missing.'
+          }
+          $programFilesX86 = [System.Environment]::GetFolderPath('ProgramFilesX86')
+          $isccPath = Join-Path $programFilesX86 'Inno Setup 6\ISCC.exe'
+          if (-not (Test-Path $isccPath)) {
+            throw "Inno Setup compiler not found at $isccPath"
+          }
+          & $isccPath "installer\PdfDroplet.iss" "/DMyAppVersion=$version"
 
-            - name: Prepare installer asset
-              id: installer
-              shell: pwsh
-              run: |
-                  $version = '${{ steps.installer_version.outputs.value }}'
-                  if ([string]::IsNullOrWhiteSpace($version)) {
-                    throw 'Installer version output missing.'
-                  }
-                  $installerFilename = "PdfDropletInstaller-$version.exe"
-                  $installerPath = Join-Path $env:GITHUB_WORKSPACE "output\Installer\$installerFilename"
-                  if (-not (Test-Path $installerPath)) {
-                    throw "Expected installer at $installerPath"
-                  }
-                  $artifactName = "PdfDropletInstaller-$version"
-                  "artifact_name=$artifactName" >> $env:GITHUB_OUTPUT
-                  "installer_path=$installerPath" >> $env:GITHUB_OUTPUT
+      - name: Sign Installer
+        uses: sillsdev/codesign/trusted-signing-action@v3
+        if: startsWith(github.ref, 'refs/tags/v') && github.event_name != 'pull_request'
+        with:
+          credentials: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
+          files-folder: output/Installer
+          files-folder-filter: PdfDropletInstaller*.exe
 
-            - name: Upload build artifact
-              uses: actions/upload-artifact@v4
-              with:
-                  name: ${{ steps.installer.outputs.artifact_name }}
-                  path: ${{ steps.installer.outputs.installer_path }}
+      - name: Prepare installer asset
+        id: installer
+        shell: pwsh
+        run: |
+          $version = '${{ steps.installer_version.outputs.value }}'
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw 'Installer version output missing.'
+          }
+          $installerFilename = "PdfDropletInstaller-$version.exe"
+          $installerPath = Join-Path $env:GITHUB_WORKSPACE "output\Installer\$installerFilename"
+          if (-not (Test-Path $installerPath)) {
+            throw "Expected installer at $installerPath"
+          }
+          $artifactName = "PdfDropletInstaller-$version"
+          "artifact_name=$artifactName" >> $env:GITHUB_OUTPUT
+          "installer_path=$installerPath" >> $env:GITHUB_OUTPUT
 
-            - name: Resolve release metadata
-              id: release
-              shell: pwsh
-              run: |
-                  $version = '${{ steps.full_version.outputs.value }}'
-                  if ([string]::IsNullOrWhiteSpace($version)) {
-                    throw 'Full version not provided.'
-                  }
-                  $tag = "v$version"
-                  $name = "PdfDroplet $version"
-                  $notes = "Automated release generated from the Manual Release Build workflow, including the Windows installer built with Inno Setup."
-                  "tag_name=$tag" >> $env:GITHUB_OUTPUT
-                  "release_name=$name" >> $env:GITHUB_OUTPUT
-                  "body=$notes" >> $env:GITHUB_OUTPUT
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.installer.outputs.artifact_name }}
+          path: ${{ steps.installer.outputs.installer_path }}
 
-            - name: Create GitHub release
-              uses: softprops/action-gh-release@v2
-              with:
-                  tag_name: ${{ steps.release.outputs.tag_name }}
-                  name: ${{ steps.release.outputs.release_name }}
-                  body: ${{ steps.release.outputs.body }}
-                  draft: true
-                  prerelease: ${{ inputs.prerelease }}
-                  files: ${{ steps.installer.outputs.installer_path }}
+      - name: Resolve release metadata
+        id: release
+        shell: pwsh
+        run: |
+          $version = '${{ steps.full_version.outputs.value }}'
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw 'Full version not provided.'
+          }
+          $tag = "v$version"
+          $name = "PdfDroplet $version"
+          $notes = "Automated release generated from the Manual Release Build workflow, including the Windows installer built with Inno Setup."
+          "tag_name=$tag" >> $env:GITHUB_OUTPUT
+          "release_name=$name" >> $env:GITHUB_OUTPUT
+          "body=$notes" >> $env:GITHUB_OUTPUT
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release.outputs.tag_name }}
+          name: ${{ steps.release.outputs.release_name }}
+          body: ${{ steps.release.outputs.body }}
+          draft: true
+          prerelease: ${{ inputs.prerelease }}
+          files: ${{ steps.installer.outputs.installer_path }}
