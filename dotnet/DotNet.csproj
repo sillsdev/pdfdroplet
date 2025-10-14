@@ -93,7 +93,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
-  <Target Name="CopyFrontendToOutput" AfterTargets="BeforeBuild"
+  <Target Name="CopyFrontendToOutput" AfterTargets="Build"
         Condition="Exists('$(UiDistDir)')">
     <PropertyGroup>
       <_UiOutputDirWithSlash>$(UiOutputDir)\</_UiOutputDirWithSlash>
