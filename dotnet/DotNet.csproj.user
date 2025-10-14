@@ -5,9 +5,6 @@
     <Compile Update="BrowserHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="InstructionsDialogBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

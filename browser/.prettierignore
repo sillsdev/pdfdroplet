@@ -1,0 +1,19 @@
+# Build outputs
+dist
+bin
+obj
+output
+node_modules
+
+# Test results
+test-results
+playwright-report
+
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Generated files
+*.min.js
+*.min.css
