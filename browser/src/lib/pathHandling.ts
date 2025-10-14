@@ -53,7 +53,7 @@ export function extractDroppedPath(event: DragEvent<HTMLDivElement>) {
   console.groupCollapsed(
     `[drop] extractDroppedPath: types=${
       types.length > 0 ? types.join(", ") : "(none)"
-    }`
+    }`,
   );
 
   try {
@@ -97,7 +97,7 @@ export function extractDroppedPath(event: DragEvent<HTMLDivElement>) {
         });
       } else {
         console.debug(
-          "[drop] Primary File object did not expose a path property"
+          "[drop] Primary File object did not expose a path property",
         );
       }
     } else {
@@ -166,7 +166,7 @@ export function extractDroppedPath(event: DragEvent<HTMLDivElement>) {
       if (parsedPlain) {
         console.debug(
           "[drop] Resolved path from text/plain entry",
-          parsedPlain
+          parsedPlain,
         );
         resolvedPath = parsedPlain;
       }

@@ -36,7 +36,9 @@ export function FooterControls({
             disabled={controlsDisabled}
             onChange={(event) => onToggleRtl(event.target.checked)}
           />
-          <span className={controlsDisabled ? "text-slate-400" : ""}>Right-to-Left Language</span>
+          <span className={controlsDisabled ? "text-slate-400" : ""}>
+            Right-to-Left Language
+          </span>
         </label>
         <label className="inline-flex items-center gap-2">
           <input
@@ -46,7 +48,9 @@ export function FooterControls({
             disabled={controlsDisabled}
             onChange={(event) => onToggleMirror(event.target.checked)}
           />
-          <span className={controlsDisabled ? "text-slate-400" : ""}>Mirror</span>
+          <span className={controlsDisabled ? "text-slate-400" : ""}>
+            Mirror
+          </span>
         </label>
         <label className="inline-flex items-center gap-2">
           <input
@@ -56,7 +60,9 @@ export function FooterControls({
             disabled={controlsDisabled}
             onChange={(event) => onToggleCropMarks(event.target.checked)}
           />
-          <span className={controlsDisabled ? "text-slate-400" : ""}>Crop Marks</span>
+          <span className={controlsDisabled ? "text-slate-400" : ""}>
+            Crop Marks
+          </span>
         </label>
         {workspaceState?.canReloadPrevious && (
           <button

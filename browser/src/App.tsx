@@ -41,7 +41,7 @@ function toPreviewSrc(path: string | null | undefined) {
 
 function App() {
   const [workspaceState, setWorkspaceState] = useState<WorkspaceState | null>(
-    null
+    null,
   );
   const [layouts, setLayouts] = useState<LayoutMethodSummary[]>([]);
   const [paperTargets, setPaperTargets] = useState<PaperTargetInfo[]>([]);
@@ -60,12 +60,13 @@ function App() {
 
     async function bootstrap() {
       try {
-        const [state, layoutSummaries, paperSummaries, runtime] = await Promise.all([
-          bridge.requestState(),
-          bridge.requestLayouts(),
-          bridge.requestPaperTargets(),
-          bridge.getRuntimeInfo(),
-        ]);
+        const [state, layoutSummaries, paperSummaries, runtime] =
+          await Promise.all([
+            bridge.requestState(),
+            bridge.requestLayouts(),
+            bridge.requestPaperTargets(),
+            bridge.getRuntimeInfo(),
+          ]);
 
         if (!isMounted) {
           return;
@@ -102,7 +103,7 @@ function App() {
     });
     const unsubscribePdfReady = bridge.on("generatedPdfReady", ({ path }) => {
       setWorkspaceState((current) =>
-        current ? { ...current, generatedPdfPath: path } : current
+        current ? { ...current, generatedPdfPath: path } : current,
       );
     });
 
@@ -127,12 +128,12 @@ function App() {
           setErrorMessage(error.message);
         } else {
           setErrorMessage(
-            "An unexpected error occurred while processing the command."
+            "An unexpected error occurred while processing the command.",
           );
         }
       }
     },
-    []
+    [],
   );
 
   const processDroppedPdf = useCallback(
@@ -140,17 +141,17 @@ function App() {
       rawPath: string | null | undefined,
       context: { source: "dom" | "host"; formats?: string[] } = {
         source: "dom",
-      }
+      },
     ) => {
       const descriptor = context.source === "host" ? "[drop][host]" : "[drop]";
 
       if (!rawPath) {
         console.warn(
           `${descriptor} No usable path was resolved from the drop payload`,
-          context.formats ?? []
+          context.formats ?? [],
         );
         setErrorMessage(
-          "We couldn't read the dropped file path. Try dropping a PDF from File Explorer or use the Choose button."
+          "We couldn't read the dropped file path. Try dropping a PDF from File Explorer or use the Choose button.",
         );
         return;
       }
@@ -159,7 +160,7 @@ function App() {
       if (!normalized) {
         console.warn(`${descriptor} Dropped path contained only whitespace.`);
         setErrorMessage(
-          "We couldn't read the dropped file path. Try dropping a PDF from File Explorer or use the Choose button."
+          "We couldn't read the dropped file path. Try dropping a PDF from File Explorer or use the Choose button.",
         );
         return;
       }
@@ -170,7 +171,7 @@ function App() {
           {
             path: normalized,
             formats: context.formats,
-          }
+          },
         );
         setErrorMessage("That file must have a .pdf extension.");
         return;
@@ -183,14 +184,14 @@ function App() {
       setErrorMessage(null);
       void runCommand(() => bridge.dropPdf(normalized));
     },
-    [runCommand]
+    [runCommand],
   );
 
   const handlePickPdf = useCallback(() => {
     if (runtimeInfo?.mode === "stub") {
       setErrorMessage(
         "🔧 Developer Mode: The .NET backend is not running. PDF file picking requires the full application. " +
-        "To test with the full backend, run from Visual Studio or 'dotnet run' from the dotnet/ directory."
+          "To test with the full backend, run from Visual Studio or 'dotnet run' from the dotnet/ directory.",
       );
       return;
     }
@@ -201,14 +202,12 @@ function App() {
     if (runtimeInfo?.mode === "stub") {
       setErrorMessage(
         "🔧 Developer Mode: The .NET backend is not running. Reloading previous PDF requires the full application. " +
-        "To test with the full backend, run from Visual Studio or 'dotnet run' from the dotnet/ directory."
+          "To test with the full backend, run from Visual Studio or 'dotnet run' from the dotnet/ directory.",
       );
       return;
     }
     return runCommand(() => bridge.reloadPrevious());
   }, [runCommand, runtimeInfo]);
-
-
 
   const handleDrop = useCallback(
     (event: DragEvent<HTMLDivElement>) => {
@@ -221,7 +220,7 @@ function App() {
       console.groupCollapsed(
         `[drop] handleDrop captured: types=${
           types.length > 0 ? types.join(", ") : "(none)"
-        }`
+        }`,
       );
 
       try {
@@ -252,7 +251,7 @@ function App() {
         console.groupEnd();
       }
     },
-    [processDroppedPdf]
+    [processDroppedPdf],
   );
 
   const handleDragEnter = useCallback((event: DragEvent<HTMLDivElement>) => {
@@ -272,27 +271,27 @@ function App() {
 
   const handleSelectLayout = useCallback(
     (layoutId: string) => runCommand(() => bridge.setLayout(layoutId)),
-    [runCommand]
+    [runCommand],
   );
 
   const handleSelectPaper = useCallback(
     (paperId: string) => runCommand(() => bridge.setPaper(paperId)),
-    [runCommand]
+    [runCommand],
   );
 
   const handleToggleMirror = useCallback(
     (enabled: boolean) => runCommand(() => bridge.setMirror(enabled)),
-    [runCommand]
+    [runCommand],
   );
 
   const handleToggleRtl = useCallback(
     (enabled: boolean) => runCommand(() => bridge.setRightToLeft(enabled)),
-    [runCommand]
+    [runCommand],
   );
 
   const handleToggleCropMarks = useCallback(
     (enabled: boolean) => runCommand(() => bridge.setCropMarks(enabled)),
-    [runCommand]
+    [runCommand],
   );
 
   const handleShowAbout = useCallback(() => {
@@ -338,19 +337,19 @@ function App() {
       "externalDragState",
       ({ isActive }) => {
         setIsDragActive(isActive);
-      }
+      },
     );
 
     const unsubscribeExternalDrop = bridge.on(
       "externalDrop",
       ({ path, formats }) => {
         console.groupCollapsed(
-          `[drop][host] externalDrop received: path=${path ?? "(none)"}`
+          `[drop][host] externalDrop received: path=${path ?? "(none)"}`,
         );
         console.info("[drop][host] available formats", formats);
         console.groupEnd();
         processDroppedPdf(path, { source: "host", formats });
-      }
+      },
     );
 
     return () => {

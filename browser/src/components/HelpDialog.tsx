@@ -29,7 +29,9 @@ export function HelpDialog({ isOpen, onClose }: HelpDialogProps) {
         setHelpContent(markdown);
       } catch (err) {
         console.error("Error loading help content:", err);
-        setError(err instanceof Error ? err.message : "Failed to load help content");
+        setError(
+          err instanceof Error ? err.message : "Failed to load help content",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -63,10 +65,16 @@ export function HelpDialog({ isOpen, onClose }: HelpDialogProps) {
                   />
                 ),
                 h1: ({ ...props }) => (
-                  <h2 {...props} className="clear-left mb-4 text-xl font-bold" />
+                  <h2
+                    {...props}
+                    className="clear-left mb-4 text-xl font-bold"
+                  />
                 ),
                 h2: ({ ...props }) => (
-                  <h3 {...props} className="clear-left mt-6 text-lg font-semibold" />
+                  <h3
+                    {...props}
+                    className="clear-left mt-6 text-lg font-semibold"
+                  />
                 ),
               }}
             >

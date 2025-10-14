@@ -42,7 +42,10 @@ export function Modal({ isOpen, onClose, children, title }: ModalProps) {
       >
         {title && (
           <div className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4">
-            <h2 id="modal-title" className="text-xl font-semibold text-slate-900">
+            <h2
+              id="modal-title"
+              className="text-xl font-semibold text-slate-900"
+            >
               {title}
             </h2>
             <button

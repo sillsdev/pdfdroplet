@@ -13,7 +13,7 @@ import type {
 } from "./contracts";
 
 export type Listener<Event extends WorkspaceEvents> = (
-  payload: EventPayloadMap[Event]
+  payload: EventPayloadMap[Event],
 ) => void;
 
 export interface WorkspaceBridge {
@@ -31,7 +31,7 @@ export interface WorkspaceBridge {
   setCropMarks(enabled: boolean): Promise<WorkspaceState>;
   on<Event extends WorkspaceEvents>(
     event: Event,
-    listener: Listener<Event>
+    listener: Listener<Event>,
   ): () => void;
 }
 
@@ -48,11 +48,11 @@ interface WebViewHost {
   postMessage(message: unknown): void;
   addEventListener(
     type: "message",
-    listener: (event: MessageEvent) => void
+    listener: (event: MessageEvent) => void,
   ): void;
   removeEventListener(
     type: "message",
-    listener: (event: MessageEvent) => void
+    listener: (event: MessageEvent) => void,
   ): void;
 }
 
@@ -144,7 +144,7 @@ class WebViewRuntimeBridge implements WorkspaceBridge {
 
   on<Event extends WorkspaceEvents>(
     event: Event,
-    listener: Listener<Event>
+    listener: Listener<Event>,
   ): () => void {
     const bucket = this.listeners[event] as Set<Listener<Event>>;
     bucket.add(listener);
@@ -153,7 +153,7 @@ class WebViewRuntimeBridge implements WorkspaceBridge {
 
   private invoke<Result>(
     method: WorkspaceCommands,
-    params?: Record<string, unknown>
+    params?: Record<string, unknown>,
   ): Promise<Result> {
     const id = (this.nextRequestId++).toString();
     const envelope = {
@@ -188,8 +188,8 @@ class WebViewRuntimeBridge implements WorkspaceBridge {
           new BridgeError(
             errorPayload.code,
             errorPayload.message,
-            errorPayload.details
-          )
+            errorPayload.details,
+          ),
         );
       } else {
         pending.resolve(data.result as unknown);
@@ -308,16 +308,20 @@ class DevStubBridge implements WorkspaceBridge {
     throw new BridgeError(
       "NO_BACKEND",
       "🔧 Developer Mode: PDF file picking requires the .NET backend. Run 'dotnet run' from the dotnet/ directory to test with the full application.",
-      "The stub bridge cannot open file dialogs. Use the full .NET application to test this feature."
+      "The stub bridge cannot open file dialogs. Use the full .NET application to test this feature.",
     );
   }
 
   async dropPdf(path: string): Promise<WorkspaceState> {
-    console.info("[dev-bridge] dropPdf invoked with", path, "(no backend available)");
+    console.info(
+      "[dev-bridge] dropPdf invoked with",
+      path,
+      "(no backend available)",
+    );
     throw new BridgeError(
       "NO_BACKEND",
       "🔧 Developer Mode: PDF processing requires the .NET backend. Run 'dotnet run' from the dotnet/ directory to test with the full application.",
-      `The stub bridge cannot process PDF files. Attempted to process: ${path}`
+      `The stub bridge cannot process PDF files. Attempted to process: ${path}`,
     );
   }
 
@@ -326,7 +330,7 @@ class DevStubBridge implements WorkspaceBridge {
     throw new BridgeError(
       "NO_BACKEND",
       "🔧 Developer Mode: Reloading previous PDF requires the .NET backend. Run 'dotnet run' from the dotnet/ directory to test with the full application.",
-      "The stub bridge has no previous PDF state to reload."
+      "The stub bridge has no previous PDF state to reload.",
     );
   }
 
@@ -349,7 +353,7 @@ class DevStubBridge implements WorkspaceBridge {
   async setMirror(enabled: boolean): Promise<WorkspaceState> {
     this.publishStatus(
       "working",
-      enabled ? "Mirroring pages…" : "Updating booklet…"
+      enabled ? "Mirroring pages…" : "Updating booklet…",
     );
     this.state = { ...this.state, mirror: enabled };
     this.emit("stateChanged", this.state);
@@ -360,7 +364,7 @@ class DevStubBridge implements WorkspaceBridge {
   async setRightToLeft(enabled: boolean): Promise<WorkspaceState> {
     this.publishStatus(
       "working",
-      enabled ? "Applying right-to-left layout…" : "Updating text flow…"
+      enabled ? "Applying right-to-left layout…" : "Updating text flow…",
     );
     this.state = { ...this.state, rightToLeft: enabled };
     this.emit("stateChanged", this.state);
@@ -371,7 +375,7 @@ class DevStubBridge implements WorkspaceBridge {
   async setCropMarks(enabled: boolean): Promise<WorkspaceState> {
     this.publishStatus(
       "working",
-      enabled ? "Adding crop marks…" : "Removing crop marks…"
+      enabled ? "Adding crop marks…" : "Removing crop marks…",
     );
     this.state = { ...this.state, showCropMarks: enabled };
     this.emit("stateChanged", this.state);
@@ -381,7 +385,7 @@ class DevStubBridge implements WorkspaceBridge {
 
   on<Event extends WorkspaceEvents>(
     event: Event,
-    listener: Listener<Event>
+    listener: Listener<Event>,
   ): () => void {
     const bucket = this.listeners[event] as Set<Listener<Event>>;
     bucket.add(listener);
@@ -390,7 +394,7 @@ class DevStubBridge implements WorkspaceBridge {
 
   private emit<Event extends WorkspaceEvents>(
     event: Event,
-    payload: EventPayloadMap[Event]
+    payload: EventPayloadMap[Event],
   ) {
     const bucket = this.listeners[event] as Set<Listener<Event>>;
     for (const listener of bucket) {
