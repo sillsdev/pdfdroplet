@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PdfDroplet.Interop
+namespace PdfDroplet.Api
 {
-    internal interface IWorkspaceUiBridge
+    internal interface IApi
     {
         event EventHandler<WorkspaceStateChangedEventArgs> WorkspaceStateChanged;
         event EventHandler<LayoutChoicesChangedEventArgs> LayoutChoicesChanged;

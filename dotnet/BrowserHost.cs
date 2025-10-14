@@ -4,17 +4,17 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
-using PdfDroplet.Interop;
+using PdfDroplet.Api;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Linq;
 
 namespace PdfDroplet
 {
-    public partial class WorkspaceControl : UserControl
+    public partial class BrowserHost : UserControl
     {
-        private WorkSpaceViewModel _model;
-        private readonly WorkspaceUiBridge _bridge;
+        private DocumentViewModel _model;
+        private readonly API _bridge;
         private const string AutomationDebugPortEnvVar = "PDFDROPLET_AUTOMATION_PORT";
         private const string ReactDevServerEnvVar = "PDFDROPLET_UI_DEV_SERVER";
         private const string ReactVirtualHostName = "app.pdfdroplet";
@@ -28,11 +28,11 @@ namespace PdfDroplet
         private bool _webViewMessagingInitialized;
         private bool _externalDragActive;
 
-        public WorkspaceControl()
+        public BrowserHost()
         {
             InitializeComponent();
-            _model = new WorkSpaceViewModel(this);
-            _bridge = new WorkspaceUiBridge(this, _model, this);
+            _model = new DocumentViewModel();
+            _bridge = new API(this, _model, this);
 
             Padding = new Padding(0);
 
@@ -41,7 +41,7 @@ namespace PdfDroplet
             InitializeWebView2Async();
         }
 
-        internal IWorkspaceUiBridge UiBridge
+        internal IApi UiBridge
         {
             get { return _bridge; }
         }
@@ -222,7 +222,7 @@ namespace PdfDroplet
 
             try
             {
-                var previewDirectory = WorkSpaceViewModel.GetPreviewDirectory();
+                var previewDirectory = DocumentViewModel.GetPreviewDirectory();
                 coreWebView2.SetVirtualHostNameToFolderMapping(
                     PreviewVirtualHostName,
                     previewDirectory,

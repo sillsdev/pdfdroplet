@@ -12,15 +12,15 @@ using DotImpose.LayoutMethods;
 using PdfDroplet.Properties;
 using PdfSharp.Drawing;
 
-namespace PdfDroplet.Interop
+namespace PdfDroplet.Api
 {
-    internal class WorkspaceUiBridge : IWorkspaceUiBridge
+    internal class API : IApi
     {
         private const int ThumbnailMaxHeight = 80;
         private const int ThumbnailMaxWidth = 70;
 
         private readonly BrowserHost _workspaceControl;
-        private readonly WorkSpaceViewModel _viewModel;
+        private readonly DocumentViewModel _viewModel;
         private readonly IWin32Window _ownerWindow;
         private readonly FieldInfo _incomingPathField;
         private readonly FieldInfo _generatedPdfField;
@@ -31,19 +31,19 @@ namespace PdfDroplet.Interop
         private IReadOnlyList<LayoutMethodSummary> _lastKnownLayouts = Array.Empty<LayoutMethodSummary>();
         private RuntimeInfo _runtimeInfo;
 
-        public WorkspaceUiBridge(BrowserHost workspaceControl, WorkSpaceViewModel viewModel, IWin32Window ownerWindow)
+        public API(BrowserHost workspaceControl, DocumentViewModel viewModel, IWin32Window ownerWindow)
         {
             _workspaceControl = workspaceControl ?? throw new ArgumentNullException(nameof(workspaceControl));
             _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             _ownerWindow = ownerWindow ?? throw new ArgumentNullException(nameof(ownerWindow));
 
-            _incomingPathField = typeof(WorkSpaceViewModel)
+            _incomingPathField = typeof(DocumentViewModel)
                 .GetField("_incomingPath", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?? throw new InvalidOperationException("Unable to access _incomingPath field on WorkSpaceViewModel.");
+                ?? throw new InvalidOperationException("Unable to access _incomingPath field on DocumentViewModel.");
 
-            _generatedPdfField = typeof(WorkSpaceViewModel)
+            _generatedPdfField = typeof(DocumentViewModel)
                 .GetField("_pathToCurrentlyDisplayedPdf", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?? throw new InvalidOperationException("Unable to access _pathToCurrentlyDisplayedPdf field on WorkSpaceViewModel.");
+                ?? throw new InvalidOperationException("Unable to access _pathToCurrentlyDisplayedPdf field on DocumentViewModel.");
 
             _paperWidthField = typeof(PaperTarget)
                 .GetField("_width", BindingFlags.NonPublic | BindingFlags.Instance)
@@ -53,7 +53,7 @@ namespace PdfDroplet.Interop
                 .GetField("_height", BindingFlags.NonPublic | BindingFlags.Instance)
                 ?? throw new InvalidOperationException("Unable to access _height field on PaperTarget.");
 
-            _previewRoot = Path.GetFullPath(WorkSpaceViewModel.GetPreviewDirectory());
+            _previewRoot = Path.GetFullPath(DocumentViewModel.GetPreviewDirectory());
         }
 
         public event EventHandler<WorkspaceStateChangedEventArgs> WorkspaceStateChanged;

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PdfDroplet.Interop
+namespace PdfDroplet.Api
 {
     internal enum RuntimeMode
     {

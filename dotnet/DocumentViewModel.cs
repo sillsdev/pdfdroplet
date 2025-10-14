@@ -12,18 +12,20 @@ using PdfSharp.Drawing;
 
 namespace PdfDroplet
 {
-    class WorkSpaceViewModel
+    /// <summary>
+    /// This is the state of the program.
+    /// </summary>
+    class DocumentViewModel
     {
-        private BrowserHost _view;
+        
         private string _incomingPath;
         private XPdfForm _inputPdf;
         private string _pathToCurrentlyDisplayedPdf;
         private const int PreviewHistoryLimit = 2;
         private readonly List<string> _generatedPreviewPaths = new List<string>();
 
-        public WorkSpaceViewModel(BrowserHost workspaceControl)
+        public DocumentViewModel()
         {
-            _view = workspaceControl;
             //default to whatever the printer's default is
             PrinterSettings printer = new System.Drawing.Printing.PrinterSettings();
             PaperTarget = MapPrinterPaperSizeToTarget(printer.DefaultPageSettings.PaperSize);
@@ -120,21 +122,6 @@ namespace PdfDroplet
             Console.WriteLine("[viewmodel] Input PDF loaded successfully");
             SetLayoutMethod(new NullLayoutMethod());
         }
-
-        //        public void Print()
-        //        {
-        //            try
-        //            {
-        //                PdfSharp.Pdf.PdfDocument x;
-        //                PdfFilePrinter y = new PdfFilePrinter(_pathToCurrentlyDisplayedPdf);
-        //                PdfFilePrinter.AdobeReaderPath = 
-        //                y.Print();
-        //            }
-        //            catch(Exception e)
-        //            {
-        //                ErrorReport.NotifyUserOfProblem(e, "Could not print");
-        //            }
-        //        }
 
         public void SetLayoutMethod(LayoutMethod method)
         {
