@@ -127,13 +127,22 @@
   <Target Name="ClearWebView2CacheInDebug" AfterTargets="CopyFrontendToOutput"
         Condition="'$(Configuration)' == 'Debug'">
     <PropertyGroup>
+      <!-- Clear both the output directory cache AND the AppData cache -->
       <WebView2CacheDir>$(OutputPath)$(AssemblyName).exe.WebView2</WebView2CacheDir>
-      <_CacheExists>false</_CacheExists>
+      <WebView2AppDataCacheDir>$(LOCALAPPDATA)\PdfDroplet\WebView2</WebView2AppDataCacheDir>
+      <_OutputCacheExists>false</_OutputCacheExists>
+      <_AppDataCacheExists>false</_AppDataCacheExists>
     </PropertyGroup>
     <PropertyGroup Condition="Exists('$(WebView2CacheDir)')">
-      <_CacheExists>true</_CacheExists>
+      <_OutputCacheExists>true</_OutputCacheExists>
     </PropertyGroup>
-    <Message Importance="High" Text="🗑️  Cleared WebView2 cache for fresh UI reload" Condition="'$(_CacheExists)' == 'true'" />
-    <RemoveDir Directories="$(WebView2CacheDir)" Condition="'$(_CacheExists)' == 'true'" />
+    <PropertyGroup Condition="Exists('$(WebView2AppDataCacheDir)')">
+      <_AppDataCacheExists>true</_AppDataCacheExists>
+    </PropertyGroup>
+    <Message Importance="High" Text="🗑️  Attempting to clear WebView2 cache for fresh UI reload..." />
+    <!-- Use ContinueOnError to prevent build failure if cache is locked by running app -->
+    <RemoveDir Directories="$(WebView2CacheDir)" Condition="'$(_OutputCacheExists)' == 'true'" ContinueOnError="true" />
+    <RemoveDir Directories="$(WebView2AppDataCacheDir)" Condition="'$(_AppDataCacheExists)' == 'true'" ContinueOnError="true" />
+    <Message Importance="High" Text="💡 Note: If app is running, close it and rebuild to clear cache. HTTP cache is disabled in Debug builds via browser flags." />
   </Target>
 </Project>

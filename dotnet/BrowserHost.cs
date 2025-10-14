@@ -55,15 +55,33 @@ namespace PdfDroplet
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "PdfDroplet", "WebView2");
 
+#if DEBUG
+                // In Debug mode, completely clear the cache to ensure fresh content
+                ClearWebView2Cache(userDataFolder);
+#endif
+
                 var automationPort = TryGetAutomationDebugPort();
-                CoreWebView2EnvironmentOptions environmentOptions = null;
+                
+                // Build browser arguments
+                var browserArgs = new System.Collections.Generic.List<string>();
+                
                 if (automationPort.HasValue)
                 {
-                    environmentOptions = new CoreWebView2EnvironmentOptions
-                    {
-                        AdditionalBrowserArguments = $"--remote-debugging-port={automationPort.Value}"
-                    };
+                    browserArgs.Add($"--remote-debugging-port={automationPort.Value}");
                 }
+                
+
+                // disable HTTP cache to ensure fresh content on every load
+                browserArgs.Add("--disable-http-cache");
+                browserArgs.Add("--disk-cache-size=0");
+            
+
+                CoreWebView2EnvironmentOptions environmentOptions = browserArgs.Count > 0 
+                    ? new CoreWebView2EnvironmentOptions
+                    {
+                        AdditionalBrowserArguments = string.Join(" ", browserArgs)
+                    }
+                    : null;
 
                 var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder, environmentOptions);
                 await _browser.EnsureCoreWebView2Async(environment);
@@ -193,11 +211,25 @@ namespace PdfDroplet
             var distDirectory = TryResolveReactDistDirectory();
             if (!string.IsNullOrEmpty(distDirectory) && Directory.Exists(distDirectory))
             {
+                // Disable caching in Debug mode to ensure latest built files are always loaded
+#if DEBUG
+                coreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
+                // Note: WebView2 doesn't have a direct API to disable HTTP cache,
+                // but we can force cache bypass by adding cache-control headers via navigation
+                Console.WriteLine("🔄 Debug mode: WebView2 cache will be bypassed for static files");
+#endif
                 coreWebView2.SetVirtualHostNameToFolderMapping(
                     ReactVirtualHostName,
                     distDirectory,
                     CoreWebView2HostResourceAccessKind.Allow);
+                
+#if DEBUG
+                // Force cache refresh by navigating with cache-busting parameter
+                var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                coreWebView2.Navigate($"https://{ReactVirtualHostName}/index.html?_cb={timestamp}");
+#else
                 coreWebView2.Navigate($"https://{ReactVirtualHostName}/index.html");
+#endif
                 _bridge.SetRuntimeMode(RuntimeMode.Bundle);
                 return;
             }
@@ -852,6 +884,31 @@ namespace PdfDroplet
         private void DisposeWorkspaceResources()
         {
             _model?.DisposeGeneratedPreviews();
+        }
+
+        private static void ClearWebView2Cache(string userDataFolder)
+        {
+            try
+            {
+                if (Directory.Exists(userDataFolder))
+                {
+                    Console.WriteLine($"🗑️  Clearing WebView2 cache at {userDataFolder}");
+                    
+                    // Try to delete the entire cache directory
+                    // This will fail if another instance is running, which is fine
+                    Directory.Delete(userDataFolder, recursive: true);
+                    Console.WriteLine("✅ WebView2 cache cleared successfully");
+                }
+            }
+            catch (IOException ex)
+            {
+                // Expected if another instance is running
+                Console.WriteLine($"⚠️  Could not clear WebView2 cache (may be in use by another instance): {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️  Error clearing WebView2 cache: {ex.Message}");
+            }
         }
 
 

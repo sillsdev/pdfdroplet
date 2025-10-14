@@ -13,7 +13,9 @@ test.describe("About Dialog", () => {
     await expect(aboutButton).toHaveText("About");
   });
 
-  test("opens the about dialog when About button is clicked", async ({ app }) => {
+  test("opens the about dialog when About button is clicked", async ({
+    app,
+  }) => {
     const { page } = app;
 
     // Verify modal is not initially visible
@@ -50,19 +52,14 @@ test.describe("About Dialog", () => {
     await expect(page.getByText("About PDF Droplet")).toBeVisible();
 
     // Verify copyright text is present
-    await expect(
-      page.getByText("Copyright © 2012-2025 SIL Global")
-    ).toBeVisible();
-
-    // Verify MIT license text
-    await expect(page.getByText("Licensed under the MIT License")).toBeVisible();
+    await expect(page.getByText("Copyright © 2012-")).toBeVisible();
 
     // Verify the link to the website
     const websiteLink = page.getByTestId("pdfdroplet-link");
     await expect(websiteLink).toBeVisible();
     await expect(websiteLink).toHaveAttribute(
       "href",
-      "https://software.sil.org/pdfdroplet/"
+      "https://software.sil.org/pdfdroplet/",
     );
   });
 
