@@ -79,9 +79,9 @@ Source: "..\output\Release\win-x86\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: 
 ; Runtime dependencies
 Source: "..\output\Release\win-x86\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
 
-; Documentation and license files
-Source: "..\browser\assets\instructions.htm"; DestDir: "{app}"; Flags: ignoreversion
+; Documentation and asset files
 Source: "..\browser\assets\*.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\browser\assets\help\*"; DestDir: "{app}\help"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\browser\assets\images\*"; DestDir: "{app}\images"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
