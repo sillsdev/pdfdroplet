@@ -80,10 +80,8 @@ Source: "..\output\Release\win-x86\zh-Hant\*"; DestDir: "{app}\zh-Hant"; Flags: 
 Source: "..\output\Release\win-x86\runtimes\*"; DestDir: "{app}\runtimes"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; Documentation and license files
-Source: "..\browser\assets\about.htm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\browser\assets\instructions.htm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\browser\assets\*.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\browser\assets\AGPL License.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\browser\assets\images\*"; DestDir: "{app}\images"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
