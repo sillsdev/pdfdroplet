@@ -20,7 +20,7 @@ export function FooterControls({
   onToggleRtl,
   onToggleMirror,
   onToggleCropMarks,
-  onReloadPrevious,
+  // onReloadPrevious,
   onPickPdf,
   onShowAbout,
   onShowHelp,
@@ -64,7 +64,7 @@ export function FooterControls({
             Crop Marks
           </span>
         </label>
-        {workspaceState?.canReloadPrevious && (
+        {/* {workspaceState?.canReloadPrevious && (
           <button
             type="button"
             onClick={onReloadPrevious}
@@ -73,14 +73,14 @@ export function FooterControls({
           >
             Open Previous ({workspaceState.previousIncomingFilename})
           </button>
-        )}
+        )} */}
       </div>
 
       <div className="flex items-center gap-2 text-sm">
         <button
           type="button"
           onClick={onPickPdf}
-          className="rounded px-3 py-1.5 transition-colors hover:bg-slate-100 hover:text-droplet-accent"
+          className="hidden rounded px-3 py-1.5 transition-colors hover:bg-slate-100 hover:text-droplet-accent"
           disabled={isBootstrapping}
         >
           Open
