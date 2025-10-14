@@ -23,12 +23,14 @@ namespace PdfDroplet
         private string _pathToCurrentlyDisplayedPdf;
         private const int PreviewHistoryLimit = 2;
         private readonly List<string> _generatedPreviewPaths = new List<string>();
+        private static readonly IReadOnlyList<PaperTemplate> s_paperTemplates = CreatePaperTemplates();
 
         public DocumentViewModel()
         {
             //default to whatever the printer's default is
             PrinterSettings printer = new System.Drawing.Printing.PrinterSettings();
-            PaperTarget = MapPrinterPaperSizeToTarget(printer.DefaultPageSettings.PaperSize);
+            PaperTarget = MapPrinterPaperSizeToTarget(printer.DefaultPageSettings.PaperSize)
+                           ?? (s_paperTemplates.Count > 0 ? s_paperTemplates[0].Target : null);
         }
 
         private PaperTarget MapPrinterPaperSizeToTarget(System.Drawing.Printing.PaperSize printerPaperSize)
@@ -36,20 +38,24 @@ namespace PdfDroplet
             // Map the printer's paper size name to a PdfSharp PageSize
             var paperName = printerPaperSize.PaperName;
             
-            // Try to match common paper size names (case-insensitive)
-            if (paperName.IndexOf("A4", StringComparison.OrdinalIgnoreCase) >= 0)
-                return new PaperTarget("A4", PageSize.A4);
-            if (paperName.IndexOf("A3", StringComparison.OrdinalIgnoreCase) >= 0)
-                return new PaperTarget("A3", PageSize.A3);
-            if (paperName.IndexOf("Letter", StringComparison.OrdinalIgnoreCase) >= 0)
-                return new PaperTarget("Letter", PageSize.Letter);
-            if (paperName.IndexOf("Legal", StringComparison.OrdinalIgnoreCase) >= 0)
-                return new PaperTarget("Legal", PageSize.Legal);
-            if (paperName.IndexOf("Foolscap", StringComparison.OrdinalIgnoreCase) >= 0)
-                return new PaperTarget("Foolscap", PageSize.Foolscap);
-            
+            foreach (var template in s_paperTemplates)
+            {
+                if (paperName.IndexOf(template.Target.Name, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return template.Target;
+                }
+            }
+
             // Default to A4 if we can't match the printer's paper size
-            return new PaperTarget("A4", PageSize.A4);
+            foreach (var template in s_paperTemplates)
+            {
+                if (string.Equals(template.Target.Name, "A4", StringComparison.OrdinalIgnoreCase))
+                {
+                    return template.Target;
+                }
+            }
+
+            return s_paperTemplates.Count > 0 ? s_paperTemplates[0].Target : null;
         }
 
         public bool IsAlreadyOpenElsewhere(string path)
@@ -108,6 +114,10 @@ namespace PdfDroplet
 
         internal XPdfForm InputPdf => _inputPdf;
 
+        internal string IncomingPath => _incomingPath ?? string.Empty;
+
+        internal string CurrentPreviewPath => _pathToCurrentlyDisplayedPdf ?? string.Empty;
+
         public bool ShowBrowser
         {
             get { return !string.IsNullOrEmpty(_incomingPath) && File.Exists(_incomingPath); }
@@ -146,9 +156,16 @@ namespace PdfDroplet
         public PaperTarget PaperTarget { get; private set; }
         public void SetPaperTarget(PaperTarget target)
         {
-            if (PaperTarget.Name != target.Name)
+            if (target == null)
             {
-                PaperTarget = target;
+                return;
+            }
+
+            var resolvedTarget = ResolvePaperTarget(target) ?? target;
+
+            if (PaperTarget == null || !string.Equals(PaperTarget.Name, resolvedTarget.Name, StringComparison.Ordinal))
+            {
+                PaperTarget = resolvedTarget;
                 SetLayoutMethod(SelectedMethod);
             }
         }
@@ -162,14 +179,22 @@ namespace PdfDroplet
         {
             get
             {
-                yield return new PaperTarget("A4", PageSize.A4);
-                yield return new PaperTarget("A3", PageSize.A3);
-                yield return new PaperTarget("Letter", PageSize.Letter);
-                yield return new PaperTarget("Legal", PageSize.Legal);
-                yield return new PaperTarget("Foolscap", PageSize.Foolscap);
-                //                yield return new SameSizePaperTarget();
-                //                yield return new DoublePaperTarget();
+                foreach (var template in s_paperTemplates)
+                {
+                    yield return template.Target;
+                }
             }
+        }
+
+        internal (double WidthPoints, double HeightPoints) GetPaperTargetDimensions(PaperTarget target)
+        {
+            var template = FindTemplate(target);
+            if (template != null)
+            {
+                return (template.Size.Width, template.Size.Height);
+            }
+
+            return (0d, 0d);
         }
 
 
@@ -354,5 +379,62 @@ namespace PdfDroplet
             return true;
         }
 
+        private sealed class PaperTemplate
+        {
+            public PaperTemplate(PaperTarget target, XSize size)
+            {
+                Target = target;
+                Size = size;
+            }
+
+            public PaperTarget Target { get; }
+
+            public XSize Size { get; }
+        }
+
+        private static IReadOnlyList<PaperTemplate> CreatePaperTemplates()
+        {
+            var templates = new List<PaperTemplate>
+            {
+                CreatePaperTemplate("A4", PageSize.A4),
+                CreatePaperTemplate("A3", PageSize.A3),
+                CreatePaperTemplate("Letter", PageSize.Letter),
+                CreatePaperTemplate("Legal", PageSize.Legal),
+                CreatePaperTemplate("Foolscap", PageSize.Foolscap)
+            };
+
+            return templates.AsReadOnly();
+        }
+
+        private static PaperTemplate FindTemplate(PaperTarget target)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+
+            foreach (var template in s_paperTemplates)
+            {
+                if (ReferenceEquals(template.Target, target) || string.Equals(template.Target.Name, target.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return template;
+                }
+            }
+
+            return null;
+        }
+
+        private static PaperTarget ResolvePaperTarget(PaperTarget candidate)
+        {
+            var template = FindTemplate(candidate);
+            return template?.Target;
+        }
+
+        private static PaperTemplate CreatePaperTemplate(string name, PageSize pageSize)
+        {
+            var target = new PaperTarget(name, pageSize);
+            var size = PageSizeConverter.ToSize(pageSize);
+            return new PaperTemplate(target, new XSize(size.Width, size.Height));
+        }
     }
 }

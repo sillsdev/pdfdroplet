@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,10 +21,6 @@ namespace PdfDroplet.Api
         private readonly BrowserHost _workspaceControl;
         private readonly DocumentViewModel _viewModel;
         private readonly IWin32Window _ownerWindow;
-        private readonly FieldInfo _incomingPathField;
-        private readonly FieldInfo _generatedPdfField;
-        private readonly FieldInfo _paperWidthField;
-        private readonly FieldInfo _paperHeightField;
         private readonly string _previewRoot;
         private WorkspaceState _lastKnownState;
         private IReadOnlyList<LayoutMethodSummary> _lastKnownLayouts = Array.Empty<LayoutMethodSummary>();
@@ -36,22 +31,6 @@ namespace PdfDroplet.Api
             _workspaceControl = workspaceControl ?? throw new ArgumentNullException(nameof(workspaceControl));
             _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             _ownerWindow = ownerWindow ?? throw new ArgumentNullException(nameof(ownerWindow));
-
-            _incomingPathField = typeof(DocumentViewModel)
-                .GetField("_incomingPath", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?? throw new InvalidOperationException("Unable to access _incomingPath field on DocumentViewModel.");
-
-            _generatedPdfField = typeof(DocumentViewModel)
-                .GetField("_pathToCurrentlyDisplayedPdf", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?? throw new InvalidOperationException("Unable to access _pathToCurrentlyDisplayedPdf field on DocumentViewModel.");
-
-            _paperWidthField = typeof(PaperTarget)
-                .GetField("_width", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?? throw new InvalidOperationException("Unable to access _width field on PaperTarget.");
-
-            _paperHeightField = typeof(PaperTarget)
-                .GetField("_height", BindingFlags.NonPublic | BindingFlags.Instance)
-                ?? throw new InvalidOperationException("Unable to access _height field on PaperTarget.");
 
             _previewRoot = Path.GetFullPath(DocumentViewModel.GetPreviewDirectory());
         }
@@ -110,9 +89,8 @@ namespace PdfDroplet.Api
 
         private static string GetApplicationVersion()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var version = assembly.GetName().Version;
-            return version?.ToString() ?? "0.0.0.0";
+            var versionString = Application.ProductVersion;
+            return string.IsNullOrWhiteSpace(versionString) ? "0.0.0.0" : versionString;
         }
 
         public async Task<WorkspaceState> PickPdfAsync(CancellationToken cancellationToken = default)
@@ -244,15 +222,15 @@ namespace PdfDroplet.Api
 
         private WorkspaceState BuildWorkspaceState()
         {
-            var incomingPath = _incomingPathField.GetValue(_viewModel) as string;
-            var generatedPath = _generatedPdfField.GetValue(_viewModel) as string;
+            var incomingPath = _viewModel.IncomingPath;
+            var generatedPath = _viewModel.CurrentPreviewPath;
             var generatedClientPath = MapPreviewPathToClientPath(generatedPath);
             var paperTarget = _viewModel.PaperTarget;
             var previousPath = Settings.Default.PreviousIncomingPath;
 
             return new WorkspaceState(
                 _viewModel.HaveIncomingPdf,
-                incomingPath ?? string.Empty,
+                incomingPath,
                 _viewModel.SelectedMethod == null ? string.Empty : _viewModel.SelectedMethod.Id,
                 paperTarget == null ? string.Empty : paperTarget.Name,
                 Settings.Default.Mirror,
@@ -294,14 +272,15 @@ namespace PdfDroplet.Api
 
         private PaperTargetInfo CreatePaperTargetInfo(PaperTarget target)
         {
-            var widthUnit = (XUnit)_paperWidthField.GetValue(target);
-            var heightUnit = (XUnit)_paperHeightField.GetValue(target);
+            var dimensions = _viewModel.GetPaperTargetDimensions(target);
+            var widthUnit = dimensions.WidthPoints;
+            var heightUnit = dimensions.HeightPoints;
 
             return new PaperTargetInfo(
                 target.Name,
                 target.Name,
-                widthUnit.Point,
-                heightUnit.Point);
+                widthUnit,
+                heightUnit);
         }
 
         private void EnsureLayoutsCached()
