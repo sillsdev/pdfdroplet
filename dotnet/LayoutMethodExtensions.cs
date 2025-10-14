@@ -22,23 +22,23 @@ namespace PdfDroplet
             switch (layoutId)
             {
                 case "original":
-                    return isLandscape ? "originalLandscape.png" : "originalPortrait.png";
+                    return isLandscape ? "originalLandscape.svg" : "originalPortrait.svg";
                 case "sideFoldBooklet":
-                    return "sideFoldBooklet.png";
+                    return "sideFoldBooklet.svg";
                 case "calendar":
-                    return "calendar.png";
+                    return "calendar.svg";
                 case "cutBooklet":
-                    return "cutBooklet.png";
+                    return "cutBooklet.svg";
                 case "sideFoldCut4UpBooklet":
-                    return "sideFoldCut4UpBooklet.png";
+                    return "sideFoldCut4UpBooklet.svg";
                 case "sideFoldCut4UpSingleBooklet":
-                    return "sideFoldCut4UpSingleBooklet.png";
+                    return "sideFoldCut4UpSingleBooklet.svg";
                 case "folded8Up8PageBooklet":
-                    return "folded8Up8PageBooklet.png";
+                    return "folded8Up8PageBooklet.svg";
                 case "square6UpBooklet":
-                    return "square6UpBooklet.png";
+                    return "square6UpBooklet.svg";
                 default:
-                    return "originalPortrait.png"; // fallback
+                    return "error"; // fallback
             }
         }
     }

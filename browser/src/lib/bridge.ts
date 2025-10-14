@@ -219,22 +219,15 @@ const stubLayouts: LayoutMethodSummary[] = [
   {
     id: "side-fold",
     displayName: "Side-Fold Booklet",
-    thumbnailImage: "sideFoldBooklet.png",
+    thumbnailImage: "sideFoldBooklet.svg",
     isEnabled: true,
     isOrientationSensitive: true,
   },
   {
     id: "calendar",
     displayName: "Calendar Style",
-    thumbnailImage: "calendar.png",
+    thumbnailImage: "calendar.svg",
     isEnabled: true,
-    isOrientationSensitive: false,
-  },
-  {
-    id: "cut-stack",
-    displayName: "Cut & Stack",
-    thumbnailImage: "cutLandscape.png",
-    isEnabled: false,
     isOrientationSensitive: false,
   },
 ];
