@@ -62,7 +62,8 @@
   <Target Name="Build" DependsOnTargets="Restore;CheckDevServer"
         Condition="Exists('$(UiProjectDir)') And '$(_DevServerRunning)' != 'true'">
     <Message Importance="High" Text="Building WebView frontend with Vite" />
-    <Exec Command="npm run build" WorkingDirectory="$(UiProjectDir)" />
+    <Exec Command="npm run build" WorkingDirectory="$(UiProjectDir)" IgnoreExitCode="false" />
+    <Error Condition="!Exists('$(UiDistDir)\index.html')" Text="Frontend build failed - dist/index.html not found after npm run build" />
   </Target>
 
   <Target Name="Clean">
