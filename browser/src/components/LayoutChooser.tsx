@@ -40,7 +40,7 @@ export function LayoutChooser({
   return (
     <aside className="flex h-full w-60 flex-none flex-col overflow-hidden rounded-2xl bg-white p-4 shadow-panel">
       <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Printer Paper Size
+        Printer Paper Size Foo
       </label>
       <select
         className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm focus:border-droplet-accent focus:outline-none focus:ring-2 focus:ring-droplet-accent/20"
