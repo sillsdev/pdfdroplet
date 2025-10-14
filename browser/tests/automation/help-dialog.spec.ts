@@ -1,6 +1,9 @@
-import { expect, test } from "./fixtures";
+import { expect, test, resetAppState } from "./fixtures";
 
 test.describe("Help Dialog", () => {
+  test.beforeEach(async ({ app }) => {
+    await resetAppState(app);
+  });
   test("shows Help button in footer", async ({ app }) => {
     const { page } = app;
 

@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { expect, test, resetAppState } from "./fixtures";
 import {
   type LayoutMethodSummary,
   type PaperTargetInfo,
@@ -8,6 +8,10 @@ import { createSamplePdf } from "./support/pdf-utils";
 import { pathToFileURL } from "node:url";
 
 test.describe.configure({ mode: "serial" });
+
+test.beforeEach(async ({ app }) => {
+  await resetAppState(app);
+});
 
 test("accepts a drag-and-drop PDF from the UI", async ({ app }) => {
   const { page, invoke } = app;

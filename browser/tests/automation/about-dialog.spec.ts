@@ -1,6 +1,9 @@
-import { expect, test } from "./fixtures";
+import { expect, test, resetAppState } from "./fixtures";
 
 test.describe("About Dialog", () => {
+  test.beforeEach(async ({ app }) => {
+    await resetAppState(app);
+  });
   test("shows About button in footer", async ({ app }) => {
     const { page } = app;
 
@@ -47,9 +50,8 @@ test.describe("About Dialog", () => {
     await expect(page.getByText("About PDF Droplet")).toBeVisible();
 
     // Verify copyright text is present
-    const currentYear = new Date().getFullYear();
     await expect(
-      page.getByText(`Copyright © ${currentYear} SIL Global`)
+      page.getByText("Copyright © 2012-2025 SIL Global")
     ).toBeVisible();
 
     // Verify MIT license text

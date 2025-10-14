@@ -1,8 +1,11 @@
-import { expect, test } from "./fixtures";
+import { expect, test, resetAppState } from "./fixtures";
 import type { LayoutMethodSummary } from "../../src/lib/contracts";
 import { createSamplePdf } from "./support/pdf-utils";
 
 test.describe("Layout Images", () => {
+  test.beforeEach(async ({ app }) => {
+    await resetAppState(app);
+  });
   test("should load all layout thumbnail images without broken links", async ({
     app,
   }) => {
