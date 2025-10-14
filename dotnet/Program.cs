@@ -36,7 +36,7 @@ namespace PdfDroplet
 #if DEBUG
             using (new Analytics("mk41r4rtmyh0ejqtuwaf", new UserInfo(), true))
 #else
-            string feedbackSetting = System.Environment.GetEnvironmentVariable("FEEDBACK");
+            string feedbackSetting = System.Environment.GetEnvironmentVariable("SIL_FEEDBACK");
 		        
 			//default is to allow tracking
 			var allowTracking = string.IsNullOrEmpty(feedbackSetting) || feedbackSetting.ToLower() == "yes" || feedbackSetting.ToLower() == "true";

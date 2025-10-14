@@ -10,7 +10,6 @@ PdfDroplet is a simple little windows app which only does one thing: it takes yo
 
 ## Prerequisites
 
-
 - [Node.js 18+](https://nodejs.org/) for the React/Vite frontend build
 
 ## Quick Start
@@ -23,6 +22,7 @@ If you're only working on the .NET backend code:
 2. Press F5 to build and run
 
 The solution will automatically:
+
 - Install npm dependencies (first time)
 - Build the frontend with Vite
 - Launch the application
@@ -32,18 +32,21 @@ The solution will automatically:
 If you're working on the frontend (React/TypeScript):
 
 1. **Start the Vite dev server** (one-time per session):
+
    ```bash
    cd browser
    npm install    # First time only
    npm run dev
    ```
-   This starts a development server at `http://localhost:5173` with hot module replacement (HMR).
 
-2. **Run the application** from Visual Studio (F5)
+   This starts a development server at `http://localhost:5173` with hot module replacement (HMR). You'll get UI in your browser that is just faking the back end.
+
+2. Optionally **Run the application** from Visual Studio (F5)
 
 3. **Make changes** to your React/TypeScript code - they will appear instantly without rebuilding!
 
 The application automatically detects when the Vite dev server is running and uses it instead of the built files. You'll see this message in the console:
+
 ```
 ✓ Connected to Vite dev server at http://localhost:5173 - Hot reload enabled!
 ```
@@ -58,6 +61,7 @@ The solution contains two projects:
 - **`browser`** (`browser/browser.proj`) - The React/Vite frontend build system
 
 The `dotnet` project depends on `browser`, which handles:
+
 - Installing npm dependencies
 - Detecting if Vite dev server is running
 - Building the frontend with Vite (when dev server is not running)
@@ -83,46 +87,15 @@ All frontend npm scripts live in the `browser/` workspace. Run them from that di
 ```bash
 cd browser
 npm run test:e2e    # End-to-end tests with Playwright
-npm run build       # Production build
-npm run preview     # Preview production build
 ```
-
-## Advanced Configuration
-
-### Custom Dev Server URL
-
-To use a different dev server URL (e.g., if port 5173 is in use):
-
-1. Start Vite on a different port:
-   ```bash
-   npm run dev -- --port 5174
-   ```
-
-2. Set the environment variable:
-   ```
-   PDFDROPLET_UI_DEV_SERVER=http://localhost:5174
-   ```
-
-### Debugging the WebView and Bridge
-
-Set the environment variable `PDFDROPLET_AUTOMATION_PORT=9222` (or another free port) before launching PdfDroplet to enable WebView2 remote debugging. You can then:
-- Attach Playwright for automated testing
-- Navigate to `edge://inspect` in Edge to debug the live UI
 
 ### Disable Analytics
 
-We don't want developer and tester runs (and crashes) polluting our statistics. Set the environment variable:
+We don't want developer and tester runs (and crashes) polluting our statistics. For debug builds, the program will not send analytics. But if you are testing a release version, please first set this environment variable:
+
 ```
-feedback=off
+SIL_FEEDBACK=off
 ```
-
-## Tips
-
-- **Working on backend only?** Just press F5. The frontend will build once and you're good to go.
-- **Working on frontend?** Start `npm run dev` once, then press F5. Make frontend changes with instant hot reload.
-- **Switching between projects?** No need to restart the Vite dev server - it keeps running in the background.
-- **Production build?** Stop the Vite dev server and rebuild, or run `dotnet build` to get production-optimized assets.
-
 
 ## License
 
