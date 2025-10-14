@@ -150,9 +150,11 @@ jobs:
         uses: sillsdev/codesign/trusted-signing-action@v3
         if: github.event_name != 'pull_request'
         with:
-          credentials: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
+          credentials: ${{ secrets.TRUSTED_SIGNING_CREDENTIALS }}
           files-folder: output/Installer
           files-folder-filter: PdfDropletInstaller*.exe
+          description: "PdfDroplet Installer"
+          description-url: "https://software.sil.org/pdfdroplet"
 
       - name: Prepare installer asset
         id: installer
