@@ -148,7 +148,7 @@ jobs:
 
       - name: Sign Installer
         uses: sillsdev/codesign/trusted-signing-action@v3
-        if: startsWith(github.ref, 'refs/tags/v') && github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request'
         with:
           credentials: ${{ secrets.CODESIGN_LSDEVSECTIGOEV }}
           files-folder: output/Installer
