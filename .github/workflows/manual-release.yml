@@ -37,8 +37,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-          cache: true
-          cache-dependency-path: '**/packages.lock.json'
 
       - name: Determine version
         id: version
@@ -97,6 +95,14 @@ jobs:
           } | ConvertTo-Json
           $versionJson | Out-File -FilePath 'browser/assets/version.json' -Encoding UTF8
           Write-Host "Created version.json with version $fullVersion"
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
       - name: Restore dependencies
         run: dotnet restore $env:PROJECT_PATH --runtime $env:RUNTIME_IDENTIFIER
