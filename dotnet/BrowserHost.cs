@@ -61,22 +61,22 @@ namespace PdfDroplet
 #endif
 
                 var automationPort = TryGetAutomationDebugPort();
-                
+
                 // Build browser arguments
                 var browserArgs = new System.Collections.Generic.List<string>();
-                
+
                 if (automationPort.HasValue)
                 {
                     browserArgs.Add($"--remote-debugging-port={automationPort.Value}");
                 }
-                
+
 
                 // disable HTTP cache to ensure fresh content on every load
                 browserArgs.Add("--disable-http-cache");
                 browserArgs.Add("--disk-cache-size=0");
-            
 
-                CoreWebView2EnvironmentOptions environmentOptions = browserArgs.Count > 0 
+
+                CoreWebView2EnvironmentOptions environmentOptions = browserArgs.Count > 0
                     ? new CoreWebView2EnvironmentOptions
                     {
                         AdditionalBrowserArguments = string.Join(" ", browserArgs)
@@ -168,12 +168,13 @@ namespace PdfDroplet
         {
             try
             {
+                // Attach drag handlers to the form to handle all drops
                 AttachDragDropHandlers(this);
 
+                // Disable WebView2's built-in drop handling so the form can handle all drops
                 if (_browser != null)
                 {
                     _browser.AllowExternalDrop = false;
-                    AttachDragDropHandlers(_browser);
                 }
             }
             catch (Exception error)
@@ -230,7 +231,7 @@ namespace PdfDroplet
                     ReactVirtualHostName,
                     distDirectory,
                     CoreWebView2HostResourceAccessKind.Allow);
-                
+
 #if DEBUG
                 // Force cache refresh by navigating with cache-busting parameter
                 var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -304,7 +305,7 @@ namespace PdfDroplet
                 {
                     return false;
                 }
-                
+
                 Console.WriteLine($"✓ Connected to Vite dev server at {devServerUri} - Hot reload enabled!");
             }
             catch
@@ -903,7 +904,7 @@ namespace PdfDroplet
                 if (Directory.Exists(userDataFolder))
                 {
                     Console.WriteLine($"🗑️  Clearing WebView2 cache at {userDataFolder}");
-                    
+
                     // Try to delete the entire cache directory
                     // This will fail if another instance is running, which is fine
                     Directory.Delete(userDataFolder, recursive: true);

@@ -29,7 +29,7 @@ export function PreviewPane({
       {hasIncomingPdf && previewSrc ? (
         <iframe
           title="Booklet preview"
-          src={previewSrc}
+          src={`${previewSrc}#toolbar=0`}
           className="h-full w-full border-0 bg-slate-100"
           allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
         />

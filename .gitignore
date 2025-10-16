@@ -15,3 +15,5 @@ node_modules/
 artifacts/
 
 browser/test-results/
+todo.md
+plan.md

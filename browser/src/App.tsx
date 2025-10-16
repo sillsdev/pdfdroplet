@@ -235,7 +235,7 @@ function App() {
       );
       return;
     }
-    
+
     try {
       const result = await bridge.saveBooklet();
       if (result.success) {
