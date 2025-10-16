@@ -108,10 +108,10 @@ export function FooterControls({
         <button
           type="button"
           onClick={onPickPdf}
-          className="hidden rounded px-3 py-1.5 transition-colors hover:bg-slate-100 hover:text-droplet-accent"
+          className="rounded px-3 py-1.5 transition-colors hover:bg-slate-100 hover:text-droplet-accent"
           disabled={isBootstrapping}
         >
-          Open
+          Open...
         </button>
         <button
           type="button"

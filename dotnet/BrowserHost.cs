@@ -111,7 +111,8 @@ namespace PdfDroplet
                 _browser.CoreWebView2.Settings.HiddenPdfToolbarItems =
                      CoreWebView2PdfToolbarItems.Rotate
                     | CoreWebView2PdfToolbarItems.FullScreen
-                    | CoreWebView2PdfToolbarItems.MoreSettings;
+                    | CoreWebView2PdfToolbarItems.MoreSettings
+                    | CoreWebView2PdfToolbarItems.Save;
 
                 InitializeBridgeMessaging();
                 await LoadReactUiAsync().ConfigureAwait(true);
