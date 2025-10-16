@@ -36,6 +36,9 @@ namespace PdfDroplet
 
             Padding = new Padding(0);
 
+            // Enable drag and drop on this control
+            this.AllowDrop = true;
+
             InitializeExternalDragDropHandling();
 
             InitializeWebView2Async();
@@ -147,13 +150,17 @@ namespace PdfDroplet
             _webViewMessagingInitialized = true;
 
             _browser.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+            
+            // Disable WebView2's built-in external drop handling
+            // The BrowserHost control will handle all drag-drop events instead
             try
             {
                 _browser.AllowExternalDrop = false;
+                Console.WriteLine("[drop] WebView2.AllowExternalDrop set to false - BrowserHost will handle drops");
             }
             catch (Exception error)
             {
-                Console.WriteLine($"[drop] Unable to enable AllowExternalDrop on WebView2: {error.Message}");
+                Console.WriteLine($"[drop] Unable to set AllowExternalDrop on WebView2: {error.Message}");
             }
 
             _bridge.WorkspaceStateChanged += OnBridgeWorkspaceStateChanged;
@@ -168,14 +175,10 @@ namespace PdfDroplet
         {
             try
             {
-                // Attach drag handlers to the form to handle all drops
+                // Attach drag handlers only to this UserControl (not to WebView2)
                 AttachDragDropHandlers(this);
 
-                // Disable WebView2's built-in drop handling so the form can handle all drops
-                if (_browser != null)
-                {
-                    _browser.AllowExternalDrop = false;
-                }
+                Console.WriteLine("[drop] Drag and drop handlers initialized on BrowserHost control");
             }
             catch (Exception error)
             {

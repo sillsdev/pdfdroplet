@@ -58,7 +58,10 @@ export function PreviewPane({
             type="button"
             disabled={isBootstrapping}
             onClick={onPickPdf}
-            className="rounded-lg bg-droplet-accent px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-droplet-accent/90 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="rounded-lg px-5 py-2 text-sm font-semibold text-white shadow-sm transition disabled:cursor-not-allowed disabled:bg-slate-300"
+            style={{ backgroundColor: isBootstrapping ? undefined : '#2342DA' }}
+            onMouseEnter={(e) => !isBootstrapping && (e.currentTarget.style.backgroundColor = '#1c35ae')}
+            onMouseLeave={(e) => !isBootstrapping && (e.currentTarget.style.backgroundColor = '#2342DA')}
           >
             Choose a PDF to open
           </button>
