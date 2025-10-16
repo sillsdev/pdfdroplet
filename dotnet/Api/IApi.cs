@@ -27,5 +27,7 @@ namespace PdfDroplet.Api
         Task<WorkspaceState> SetMirrorAsync(bool enabled, CancellationToken cancellationToken = default);
         Task<WorkspaceState> SetRightToLeftAsync(bool enabled, CancellationToken cancellationToken = default);
         Task<WorkspaceState> SetCropMarksAsync(bool enabled, CancellationToken cancellationToken = default);
+
+        Task<SaveResult> SaveBookletAsync(CancellationToken cancellationToken = default);
     }
 }

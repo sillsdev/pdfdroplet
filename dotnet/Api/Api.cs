@@ -220,6 +220,65 @@ namespace PdfDroplet.Api
             }, enabled ? "Adding crop marks…" : "Removing crop marks…");
         }
 
+        public async Task<SaveResult> SaveBookletAsync(CancellationToken cancellationToken = default)
+        {
+            // Check if we have a generated PDF to save
+            var currentPreviewPath = _viewModel.CurrentPreviewPath;
+            if (string.IsNullOrEmpty(currentPreviewPath) || !File.Exists(currentPreviewPath))
+            {
+                return new SaveResult(false, string.Empty);
+            }
+
+            using (var dialog = new SaveFileDialog())
+            {
+                dialog.Filter = "PDF|*.pdf";
+                dialog.AddExtension = true;
+                dialog.OverwritePrompt = true;
+
+                // Default to source file's directory
+                if (!string.IsNullOrEmpty(_viewModel.IncomingPath) && File.Exists(_viewModel.IncomingPath))
+                {
+                    var sourceDir = Path.GetDirectoryName(_viewModel.IncomingPath);
+                    if (!string.IsNullOrEmpty(sourceDir) && Directory.Exists(sourceDir))
+                    {
+                        dialog.InitialDirectory = sourceDir;
+                    }
+
+                    // Suggest clean filename without timestamp
+                    var baseName = Path.GetFileNameWithoutExtension(_viewModel.IncomingPath);
+                    dialog.FileName = $"{baseName}-booklet.pdf";
+                }
+                else
+                {
+                    dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    dialog.FileName = "booklet.pdf";
+                }
+
+                var dialogResult = dialog.ShowDialog(_ownerWindow);
+                if (dialogResult != DialogResult.OK)
+                {
+                    return new SaveResult(false, string.Empty);
+                }
+
+                try
+                {
+                    File.Copy(currentPreviewPath, dialog.FileName, overwrite: true);
+                    return new SaveResult(true, dialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[api] Failed to save booklet: {ex.Message}");
+                    MessageBox.Show(
+                        _ownerWindow,
+                        $"Failed to save booklet:\n{ex.Message}",
+                        "Save Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return new SaveResult(false, string.Empty);
+                }
+            }
+        }
+
         private WorkspaceState BuildWorkspaceState()
         {
             var incomingPath = _viewModel.IncomingPath;

@@ -444,6 +444,8 @@ namespace PdfDroplet
                     return await _bridge.SetRightToLeftAsync(RequireBoolean(parameters, "enabled")).ConfigureAwait(true);
                 case "setCropMarks":
                     return await _bridge.SetCropMarksAsync(RequireBoolean(parameters, "enabled")).ConfigureAwait(true);
+                case "saveBooklet":
+                    return await _bridge.SaveBookletAsync().ConfigureAwait(true);
                 default:
                     throw new NotSupportedException($"Unknown request method '{method}'.");
             }

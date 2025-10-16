@@ -60,6 +60,11 @@ namespace PdfDroplet.Api
         string PreviousIncomingFilename
     );
 
+    internal record SaveResult(
+        bool Success,
+        string SavedPath
+    );
+
     internal class WorkspaceStateChangedEventArgs : EventArgs
     {
         public WorkspaceStateChangedEventArgs(WorkspaceState state)
