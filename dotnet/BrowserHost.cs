@@ -149,7 +149,7 @@ namespace PdfDroplet
             _browser.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
             try
             {
-                _browser.AllowExternalDrop = true;
+                _browser.AllowExternalDrop = false;
             }
             catch (Exception error)
             {
@@ -172,7 +172,7 @@ namespace PdfDroplet
 
                 if (_browser != null)
                 {
-                    _browser.AllowExternalDrop = true;
+                    _browser.AllowExternalDrop = false;
                     AttachDragDropHandlers(_browser);
                 }
             }
