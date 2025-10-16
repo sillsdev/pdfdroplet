@@ -27,6 +27,10 @@ export function FooterControls({
   onShowAbout,
   onShowHelp,
 }: FooterControlsProps) {
+  // Disable Save Booklet button when "Original" layout is selected
+  const isOriginalLayout = workspaceState?.selectedLayoutId === "original";
+  const saveDisabled = controlsDisabled || isBootstrapping || isOriginalLayout;
+
   return (
     <footer className="flex flex-col gap-3 px-4 pb-0 md:flex-row md:justify-between">
       <div className="flex flex-wrap items-center gap-4 text-sm text-slate-700">
@@ -83,7 +87,7 @@ export function FooterControls({
           type="button"
           onClick={onSaveBooklet}
           className="rounded bg-droplet-accent px-4 py-1.5 font-semibold text-white transition-colors hover:bg-droplet-accent/90 disabled:bg-slate-300 disabled:text-slate-500"
-          disabled={controlsDisabled || isBootstrapping}
+          disabled={saveDisabled}
           data-testid="save-button"
         >
           Save Booklet...
