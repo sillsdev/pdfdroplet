@@ -13,3 +13,5 @@ _Resharper*
 output/
 node_modules/
 artifacts/
+
+browser/test-results/

@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type DragEvent,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { LayoutChooser } from "./components/LayoutChooser";
 import { FooterControls } from "./components/FooterControls";
 import { PreviewPane } from "./components/PreviewPane";
@@ -19,7 +13,6 @@ import {
   type RuntimeInfo,
   type WorkspaceState,
 } from "./lib/bridge";
-import { extractDroppedPath } from "./lib/pathHandling";
 
 function toPreviewSrc(path: string | null | undefined) {
   if (!path) {
@@ -209,66 +202,6 @@ function App() {
     return runCommand(() => bridge.reloadPrevious());
   }, [runCommand, runtimeInfo]);
 
-  const handleDrop = useCallback(
-    (event: DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setIsDragActive(false);
-
-      const dataTransfer = event.dataTransfer;
-      const types = Array.from(dataTransfer?.types ?? []);
-
-      console.groupCollapsed(
-        `[drop] handleDrop captured: types=${
-          types.length > 0 ? types.join(", ") : "(none)"
-        }`,
-      );
-
-      try {
-        if (dataTransfer) {
-          const files = dataTransfer.files;
-          if (files && files.length > 0) {
-            const summaries = Array.from(files).map((file) => ({
-              name: file.name,
-              size: file.size,
-              type: file.type,
-            }));
-            console.info("[drop] handleDrop files metadata", summaries);
-          } else {
-            console.info("[drop] handleDrop received no File entries");
-          }
-
-          console.info("[drop] handleDrop dropEffect/effectAllowed", {
-            dropEffect: dataTransfer.dropEffect,
-            effectAllowed: dataTransfer.effectAllowed,
-          });
-        }
-
-        const path = extractDroppedPath(event);
-        console.info("[drop] handleDrop extracted path", path);
-
-        processDroppedPdf(path, { source: "dom", formats: types });
-      } finally {
-        console.groupEnd();
-      }
-    },
-    [processDroppedPdf],
-  );
-
-  const handleDragEnter = useCallback((event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragActive(true);
-  }, []);
-
-  const handleDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "copy";
-  }, []);
-
-  const handleDragLeave = useCallback((event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsDragActive(false);
-  }, []);
-
   const handleSelectLayout = useCallback(
     (layoutId: string) => runCommand(() => bridge.setLayout(layoutId)),
     [runCommand],
@@ -402,10 +335,6 @@ function App() {
           isDragActive={isDragActive}
           isBootstrapping={isBootstrapping}
           onPickPdf={handlePickPdf}
-          onDrop={handleDrop}
-          onDragEnter={handleDragEnter}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
         />
 
         {errorMessage && (

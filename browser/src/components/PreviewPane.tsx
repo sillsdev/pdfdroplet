@@ -1,5 +1,9 @@
-import type { DragEvent } from "react";
+//import type { DragEvent } from "react";
 import type { GenerationStatus } from "../lib/bridge";
+
+// Note: we are currently not handling drag and drop events here.
+// By letting the host application handle dropping, we can actually get
+// the path to the file which is more useful than just the bytes.
 
 export type PreviewPaneProps = {
   hasIncomingPdf: boolean;
@@ -9,10 +13,6 @@ export type PreviewPaneProps = {
   isDragActive: boolean;
   isBootstrapping: boolean;
   onPickPdf: () => void;
-  onDrop: (event: DragEvent<HTMLDivElement>) => void;
-  onDragEnter: (event: DragEvent<HTMLDivElement>) => void;
-  onDragOver: (event: DragEvent<HTMLDivElement>) => void;
-  onDragLeave: (event: DragEvent<HTMLDivElement>) => void;
 };
 
 export function PreviewPane({
@@ -23,10 +23,6 @@ export function PreviewPane({
   isDragActive,
   isBootstrapping,
   onPickPdf,
-  onDrop,
-  onDragEnter,
-  onDragOver,
-  onDragLeave,
 }: PreviewPaneProps) {
   return (
     <section className="relative flex flex-1 min-h-0 items-stretch overflow-hidden rounded-2xl bg-white shadow-panel">
@@ -45,10 +41,10 @@ export function PreviewPane({
               : "border-slate-300 bg-white/90"
           } p-10 text-center`}
           data-testid="drop-zone"
-          onDragEnter={onDragEnter}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onDrop={onDrop}
+          //    onDragEnter={onDragEnter}
+          // onDragOver={onDragOver}
+          // onDragLeave={onDragLeave}
+          // onDrop={onDrop}
         >
           <div className="space-y-1">
             <p className="text-xl font-semibold text-slate-800">
