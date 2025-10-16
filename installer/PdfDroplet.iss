@@ -8,12 +8,12 @@
 #define MyAppPublisher "SIL International"
 #define MyAppURL "https://github.com/sillsdev/pdfdroplet"
 #define MyAppExeName "PdfDroplet.exe"
-#define MyAppId "{{B5A0BE25-532D-4CF9-9BB6-B0D513B1186A}"
+#define MyAppId "B5A0BE25-532D-4CF9-9BB6-B0D513B1186A"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={#MyAppId}
+AppId={{B5A0BE25-532D-4CF9-9BB6-B0D513B1186A}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
@@ -29,6 +29,7 @@ PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=..\output\installer
 OutputBaseFilename=PdfDropletInstaller-{#MyAppVersion}
 SetupIconFile=..\dotnet\Resources\AppIcon.ico
+UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
