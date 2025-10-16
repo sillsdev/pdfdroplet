@@ -111,9 +111,171 @@ begin
     Result := RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}', 'pv', Version);
 end;
 
+function GetOldMsiInstallation(out DisplayName: String; out UninstallString: String): Boolean;
+var
+  UninstallKey: String;
+  SubKeyNames: TArrayOfString;
+  I: Integer;
+  Name: String;
+  Publisher: String;
+begin
+  Result := False;
+  DisplayName := '';
+  UninstallString := '';
+  
+  // The old MSI installer registers under a product GUID in the uninstall registry
+  // We'll search for any PdfDroplet installation from SIL International
+  UninstallKey := 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall';
+  
+  // Check if we can find PdfDroplet entries
+  if RegGetSubkeyNames(HKEY_LOCAL_MACHINE, UninstallKey, SubKeyNames) then
+  begin
+    for I := 0 to GetArrayLength(SubKeyNames) - 1 do
+    begin
+      // Check if this is a PdfDroplet product
+      if RegQueryStringValue(HKEY_LOCAL_MACHINE, UninstallKey + '\' + SubKeyNames[I], 'DisplayName', Name) then
+      begin
+        if (Pos('PdfDroplet', Name) > 0) or (Pos('PDF Droplet', Name) > 0) then
+        begin
+          // Verify it's from SIL International
+          if RegQueryStringValue(HKEY_LOCAL_MACHINE, UninstallKey + '\' + SubKeyNames[I], 'Publisher', Publisher) then
+          begin
+            if Pos('SIL', Publisher) > 0 then
+            begin
+              // Check if this is an MSI installation (not our Inno Setup one)
+              // Inno Setup entries end with "_is1"
+              if Pos('_is1', SubKeyNames[I]) = 0 then
+              begin
+                if RegQueryStringValue(HKEY_LOCAL_MACHINE, UninstallKey + '\' + SubKeyNames[I], 'UninstallString', UninstallString) then
+                begin
+                  DisplayName := Name;
+                  Result := True;
+                  Exit;
+                end;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  
+  // Also check HKCU for per-user installations
+  if not Result then
+  begin
+    if RegGetSubkeyNames(HKEY_CURRENT_USER, UninstallKey, SubKeyNames) then
+    begin
+      for I := 0 to GetArrayLength(SubKeyNames) - 1 do
+      begin
+        if RegQueryStringValue(HKEY_CURRENT_USER, UninstallKey + '\' + SubKeyNames[I], 'DisplayName', Name) then
+        begin
+          if (Pos('PdfDroplet', Name) > 0) or (Pos('PDF Droplet', Name) > 0) then
+          begin
+            if RegQueryStringValue(HKEY_CURRENT_USER, UninstallKey + '\' + SubKeyNames[I], 'Publisher', Publisher) then
+            begin
+              if Pos('SIL', Publisher) > 0 then
+              begin
+                if Pos('_is1', SubKeyNames[I]) = 0 then
+                begin
+                  if RegQueryStringValue(HKEY_CURRENT_USER, UninstallKey + '\' + SubKeyNames[I], 'UninstallString', UninstallString) then
+                  begin
+                    DisplayName := Name;
+                    Result := True;
+                    Exit;
+                  end;
+                end;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
 function InitializeSetup(): Boolean;
+var
+  OldDisplayName: String;
+  OldUninstallString: String;
+  ResultCode: Integer;
+  UninstallCmd: String;
+  UninstallParams: String;
+  MsiProductCode: String;
 begin
   Result := True;
+  
+  // Check for old MSI installation (from WIX installer)
+  if GetOldMsiInstallation(OldDisplayName, OldUninstallString) then
+  begin
+    if MsgBox('An older version of PdfDroplet was detected: ' + OldDisplayName + #13#10 + #13#10 +
+              'This version was installed with a different installer technology (MSI) and must be uninstalled before installing the new version.' + #13#10 + #13#10 +
+              'Would you like to uninstall it now?' + #13#10 + #13#10 +
+              'Note: If you choose "No", the installation will be cancelled.', 
+              mbConfirmation, MB_YESNO) = IDYES then
+    begin
+      // Parse the uninstall string to run the uninstaller
+      // MSI uninstall strings are typically: MsiExec.exe /I{GUID} or MsiExec.exe /X{GUID}
+      if Pos('MsiExec.exe', OldUninstallString) > 0 then
+      begin
+        // Extract the product code (GUID)
+        if Pos('/I{', OldUninstallString) > 0 then
+        begin
+          MsiProductCode := Copy(OldUninstallString, Pos('/I{', OldUninstallString) + 2, 38);
+          UninstallCmd := 'MsiExec.exe';
+          UninstallParams := '/X' + MsiProductCode + ' /qb'; // /qb = basic UI
+        end
+        else if Pos('/X{', OldUninstallString) > 0 then
+        begin
+          MsiProductCode := Copy(OldUninstallString, Pos('/X{', OldUninstallString) + 2, 38);
+          UninstallCmd := 'MsiExec.exe';
+          UninstallParams := '/X' + MsiProductCode + ' /qb';
+        end
+        else
+        begin
+          // Fallback: try to use the UpgradeCode we know
+          UninstallCmd := 'MsiExec.exe';
+          UninstallParams := '/X{B5A0BE25-532D-4CF9-9BB6-B0D513B1186A} /qb';
+        end;
+        
+        if not Exec(UninstallCmd, UninstallParams, '', SW_SHOW, ewWaitUntilTerminated, ResultCode) then
+        begin
+          MsgBox('Failed to launch the uninstaller. Please uninstall the old version manually from Windows Settings before installing the new version.', mbError, MB_OK);
+          Result := False;
+          Exit;
+        end;
+        
+        // Check if uninstall was successful
+        if ResultCode <> 0 then
+        begin
+          if MsgBox('The uninstaller returned an error code: ' + IntToStr(ResultCode) + #13#10 + #13#10 +
+                    'Would you like to continue with the installation anyway?' + #13#10 + #13#10 +
+                    'Warning: This may result in both versions being installed.', 
+                    mbConfirmation, MB_YESNO) = IDNO then
+          begin
+            Result := False;
+            Exit;
+          end;
+        end;
+      end
+      else
+      begin
+        // Not an MSI uninstaller - try to run it directly
+        if not Exec(OldUninstallString, '', '', SW_SHOW, ewWaitUntilTerminated, ResultCode) then
+        begin
+          MsgBox('Failed to launch the uninstaller. Please uninstall the old version manually from Windows Settings before installing the new version.', mbError, MB_OK);
+          Result := False;
+          Exit;
+        end;
+      end;
+    end
+    else
+    begin
+      // User chose not to uninstall - cancel installation
+      Result := False;
+      Exit;
+    end;
+  end;
+  
   // Check if WebView2 Runtime is installed
   if not IsWebView2RuntimeInstalled then
   begin
