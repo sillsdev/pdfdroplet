@@ -1,9 +1,11 @@
-import type { WorkspaceState } from "../lib/bridge";
+import type { WorkspaceState, GenerationStatus } from "../lib/bridge";
 
 export type FooterControlsProps = {
   workspaceState: WorkspaceState | null;
   controlsDisabled: boolean;
   isBootstrapping: boolean;
+  generationStatus: GenerationStatus | null;
+  lastSavedPdfPath: string | null;
   onToggleRtl: (enabled: boolean) => void;
   onToggleMirror: (enabled: boolean) => void;
   onToggleCropMarks: (enabled: boolean) => void;
@@ -18,6 +20,8 @@ export function FooterControls({
   workspaceState,
   controlsDisabled,
   isBootstrapping,
+  generationStatus,
+  lastSavedPdfPath,
   onToggleRtl,
   onToggleMirror,
   onToggleCropMarks,
@@ -27,10 +31,27 @@ export function FooterControls({
   onShowAbout,
   onShowHelp,
 }: FooterControlsProps) {
-  // Disable Save Booklet button when "Original" layout is selected or no PDF is generated yet
+  // Disable Save Booklet button when:
+  // - No workspace state or bootstrapping
+  // - "Original" layout is selected (no booklet to save)
+  // - No PDF has been generated yet
+  // - Currently generating a booklet
+  // - The current generated PDF has already been saved
   const isOriginalLayout = workspaceState?.selectedLayoutId === "original";
   const hasGeneratedPdf = Boolean(workspaceState?.generatedPdfPath);
-  const saveDisabled = controlsDisabled || isBootstrapping || isOriginalLayout || !hasGeneratedPdf;
+  const isGenerating = generationStatus?.state === "working";
+  const currentPdfPath = workspaceState?.generatedPdfPath;
+  const alreadySaved = Boolean(
+    currentPdfPath && lastSavedPdfPath && currentPdfPath === lastSavedPdfPath,
+  );
+
+  const saveDisabled =
+    controlsDisabled ||
+    isBootstrapping ||
+    isOriginalLayout ||
+    !hasGeneratedPdf ||
+    isGenerating ||
+    alreadySaved;
 
   return (
     <footer className="flex flex-col gap-3 px-4 pb-0 md:flex-row md:justify-between">
@@ -112,9 +133,13 @@ export function FooterControls({
           type="button"
           onClick={onSaveBooklet}
           className="inline-flex items-center gap-1.5 rounded px-3 py-1 text-sm font-medium transition-colors enabled:text-white disabled:bg-transparent disabled:text-slate-400"
-          style={{ backgroundColor: saveDisabled ? 'transparent' : '#2342DA' }}
-          onMouseEnter={(e) => !saveDisabled && (e.currentTarget.style.backgroundColor = '#1c35ae')}
-          onMouseLeave={(e) => !saveDisabled && (e.currentTarget.style.backgroundColor = '#2342DA')}
+          style={{ backgroundColor: saveDisabled ? "transparent" : "#2342DA" }}
+          onMouseEnter={(e) =>
+            !saveDisabled && (e.currentTarget.style.backgroundColor = "#1c35ae")
+          }
+          onMouseLeave={(e) =>
+            !saveDisabled && (e.currentTarget.style.backgroundColor = "#2342DA")
+          }
           disabled={saveDisabled}
           data-testid="save-button"
           title="Save booklet"
@@ -122,7 +147,7 @@ export function FooterControls({
           <img
             src="/images/save.svg"
             alt=""
-            className={`h-4 w-4 ${saveDisabled ? 'opacity-40' : 'brightness-0 invert'}`}
+            className={`h-4 w-4 ${saveDisabled ? "opacity-40" : "brightness-0 invert"}`}
           />
           Save...
         </button>

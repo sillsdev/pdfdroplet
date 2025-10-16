@@ -35,7 +35,7 @@
 			// 
 			// _browser
 			// 
-			this._browser.AllowExternalDrop = false;
+			this._browser.AllowExternalDrop = true;
 			this._browser.CreationProperties = null;
 			this._browser.DefaultBackgroundColor = System.Drawing.Color.White;
 			this._browser.Dock = System.Windows.Forms.DockStyle.Fill;

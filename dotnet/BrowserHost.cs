@@ -150,12 +150,12 @@ namespace PdfDroplet
             _webViewMessagingInitialized = true;
 
             _browser.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
-            
+
             // Disable WebView2's built-in external drop handling
             // The BrowserHost control will handle all drag-drop events instead
             try
             {
-                _browser.AllowExternalDrop = false;
+                _browser.AllowExternalDrop = true;
                 Console.WriteLine("[drop] WebView2.AllowExternalDrop set to false - BrowserHost will handle drops");
             }
             catch (Exception error)

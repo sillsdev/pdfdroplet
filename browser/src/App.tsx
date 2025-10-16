@@ -47,6 +47,7 @@ function App() {
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [runtimeInfo, setRuntimeInfo] = useState<RuntimeInfo | null>(null);
+  const [lastSavedPdfPath, setLastSavedPdfPath] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -98,6 +99,8 @@ function App() {
       setWorkspaceState((current) =>
         current ? { ...current, generatedPdfPath: path } : current,
       );
+      // Reset saved state when a new PDF is generated
+      setLastSavedPdfPath(null);
     });
 
     return () => {
@@ -240,6 +243,8 @@ function App() {
       const result = await bridge.saveBooklet();
       if (result.success) {
         console.info("Booklet saved successfully to:", result.savedPath);
+        // Track the saved PDF path so we can disable the save button until a new booklet is generated
+        setLastSavedPdfPath(workspaceState?.generatedPdfPath ?? null);
       }
     } catch (error) {
       console.error("Failed to save booklet", error);
@@ -249,7 +254,7 @@ function App() {
         setErrorMessage("Unable to save booklet.");
       }
     }
-  }, [runtimeInfo]);
+  }, [runtimeInfo, workspaceState?.generatedPdfPath]);
 
   const handleShowAbout = useCallback(() => {
     setIsAboutDialogOpen(true);
@@ -375,6 +380,8 @@ function App() {
           workspaceState={workspaceState}
           controlsDisabled={controlsDisabled}
           isBootstrapping={isBootstrapping}
+          generationStatus={generationStatus}
+          lastSavedPdfPath={lastSavedPdfPath}
           onToggleRtl={handleToggleRtl}
           onToggleMirror={handleToggleMirror}
           onToggleCropMarks={handleToggleCropMarks}
