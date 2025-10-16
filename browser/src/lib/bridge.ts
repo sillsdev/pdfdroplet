@@ -7,6 +7,7 @@ import type {
   RpcErrorPayload,
   RuntimeInfo,
   RuntimeMode,
+  SaveResult,
   WorkspaceCommands,
   WorkspaceEvents,
   WorkspaceState,
@@ -29,6 +30,7 @@ export interface WorkspaceBridge {
   setMirror(enabled: boolean): Promise<WorkspaceState>;
   setRightToLeft(enabled: boolean): Promise<WorkspaceState>;
   setCropMarks(enabled: boolean): Promise<WorkspaceState>;
+  saveBooklet(): Promise<SaveResult>;
   on<Event extends WorkspaceEvents>(
     event: Event,
     listener: Listener<Event>,
@@ -140,6 +142,10 @@ class WebViewRuntimeBridge implements WorkspaceBridge {
 
   setCropMarks(enabled: boolean): Promise<WorkspaceState> {
     return this.invoke<WorkspaceState>("setCropMarks", { enabled });
+  }
+
+  saveBooklet(): Promise<SaveResult> {
+    return this.invoke<SaveResult>("saveBooklet");
   }
 
   on<Event extends WorkspaceEvents>(
@@ -374,6 +380,15 @@ class DevStubBridge implements WorkspaceBridge {
     this.emit("stateChanged", this.state);
     this.publishStatus("success", "Preview updated.");
     return this.state;
+  }
+
+  async saveBooklet(): Promise<SaveResult> {
+    console.info("[dev-bridge] saveBooklet invoked (no backend available)");
+    throw new BridgeError(
+      "NO_BACKEND",
+      "🔧 Developer Mode: Saving booklet requires the .NET backend. Run 'dotnet run' from the dotnet/ directory to test with the full application.",
+      "The stub bridge cannot save files. Use the full .NET application to test this feature.",
+    );
   }
 
   on<Event extends WorkspaceEvents>(

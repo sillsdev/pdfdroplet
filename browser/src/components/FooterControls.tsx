@@ -7,6 +7,7 @@ export type FooterControlsProps = {
   onToggleRtl: (enabled: boolean) => void;
   onToggleMirror: (enabled: boolean) => void;
   onToggleCropMarks: (enabled: boolean) => void;
+  onSaveBooklet: () => void;
   onReloadPrevious: () => void;
   onPickPdf: () => void;
   onShowAbout: () => void;
@@ -20,6 +21,7 @@ export function FooterControls({
   onToggleRtl,
   onToggleMirror,
   onToggleCropMarks,
+  onSaveBooklet,
   // onReloadPrevious,
   onPickPdf,
   onShowAbout,
@@ -77,6 +79,15 @@ export function FooterControls({
       </div>
 
       <div className="flex items-center gap-2 text-sm">
+        <button
+          type="button"
+          onClick={onSaveBooklet}
+          className="rounded bg-droplet-accent px-4 py-1.5 font-semibold text-white transition-colors hover:bg-droplet-accent/90 disabled:bg-slate-300 disabled:text-slate-500"
+          disabled={controlsDisabled || isBootstrapping}
+          data-testid="save-button"
+        >
+          Save Booklet...
+        </button>
         <button
           type="button"
           onClick={onPickPdf}

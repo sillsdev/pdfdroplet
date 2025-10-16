@@ -227,6 +227,30 @@ function App() {
     [runCommand],
   );
 
+  const handleSaveBooklet = useCallback(async () => {
+    if (runtimeInfo?.mode === "stub") {
+      setErrorMessage(
+        "🔧 Developer Mode: The .NET backend is not running. Saving booklet requires the full application. " +
+          "To test with the full backend, run from Visual Studio or 'dotnet run' from the dotnet/ directory.",
+      );
+      return;
+    }
+    
+    try {
+      const result = await bridge.saveBooklet();
+      if (result.success) {
+        console.info("Booklet saved successfully to:", result.savedPath);
+      }
+    } catch (error) {
+      console.error("Failed to save booklet", error);
+      if (error instanceof Error) {
+        setErrorMessage(`Failed to save: ${error.message}`);
+      } else {
+        setErrorMessage("Unable to save booklet.");
+      }
+    }
+  }, [runtimeInfo]);
+
   const handleShowAbout = useCallback(() => {
     setIsAboutDialogOpen(true);
   }, []);
@@ -354,6 +378,7 @@ function App() {
           onToggleRtl={handleToggleRtl}
           onToggleMirror={handleToggleMirror}
           onToggleCropMarks={handleToggleCropMarks}
+          onSaveBooklet={handleSaveBooklet}
           onReloadPrevious={handleReloadPrevious}
           onPickPdf={handlePickPdf}
           onShowAbout={handleShowAbout}

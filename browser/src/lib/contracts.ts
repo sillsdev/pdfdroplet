@@ -47,6 +47,11 @@ export type RuntimeInfo = {
   version: string;
 };
 
+export type SaveResult = {
+  success: boolean;
+  savedPath: string;
+};
+
 export type WorkspaceCommands =
   | "requestState"
   | "requestLayouts"
@@ -59,7 +64,8 @@ export type WorkspaceCommands =
   | "setPaper"
   | "setMirror"
   | "setRightToLeft"
-  | "setCropMarks";
+  | "setCropMarks"
+  | "saveBooklet";
 
 export type WorkspaceEvents =
   | "stateChanged"
