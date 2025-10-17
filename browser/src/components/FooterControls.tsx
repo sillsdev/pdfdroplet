@@ -5,7 +5,7 @@ export type FooterControlsProps = {
   controlsDisabled: boolean;
   isBootstrapping: boolean;
   generationStatus: GenerationStatus | null;
-  lastSavedPdfPath: string | null;
+  haveSomethingNewToSave: boolean;
   onToggleRtl: (enabled: boolean) => void;
   onToggleMirror: (enabled: boolean) => void;
   onToggleCropMarks: (enabled: boolean) => void;
@@ -20,8 +20,7 @@ export function FooterControls({
   workspaceState,
   controlsDisabled,
   isBootstrapping,
-  generationStatus,
-  lastSavedPdfPath,
+  haveSomethingNewToSave,
   onToggleRtl,
   onToggleMirror,
   onToggleCropMarks,
@@ -31,28 +30,6 @@ export function FooterControls({
   onShowAbout,
   onShowHelp,
 }: FooterControlsProps) {
-  // Disable Save Booklet button when:
-  // - No workspace state or bootstrapping
-  // - "Original" layout is selected (no booklet to save)
-  // - No PDF has been generated yet
-  // - Currently generating a booklet
-  // - The current generated PDF has already been saved
-  const isOriginalLayout = workspaceState?.selectedLayoutId === "original";
-  const hasGeneratedPdf = Boolean(workspaceState?.generatedPdfPath);
-  const isGenerating = generationStatus?.state === "working";
-  const currentPdfPath = workspaceState?.generatedPdfPath;
-  const alreadySaved = Boolean(
-    currentPdfPath && lastSavedPdfPath && currentPdfPath === lastSavedPdfPath,
-  );
-
-  const saveDisabled =
-    controlsDisabled ||
-    isBootstrapping ||
-    isOriginalLayout ||
-    !hasGeneratedPdf ||
-    isGenerating ||
-    alreadySaved;
-
   return (
     <footer className="flex flex-col gap-3 px-4 pb-0 md:flex-row md:justify-between">
       <div className="flex flex-wrap items-center gap-4 text-sm text-slate-700">
@@ -133,23 +110,27 @@ export function FooterControls({
           type="button"
           onClick={onSaveBooklet}
           className="inline-flex items-center gap-1.5 rounded px-3 py-1 text-sm font-medium transition-colors enabled:text-white disabled:bg-transparent disabled:text-slate-400"
-          style={{ backgroundColor: saveDisabled ? "transparent" : "#2342DA" }}
+          style={{
+            backgroundColor: haveSomethingNewToSave ? "#2342DA" : "transparent",
+          }}
           onMouseEnter={(e) =>
-            !saveDisabled && (e.currentTarget.style.backgroundColor = "#1c35ae")
+            haveSomethingNewToSave &&
+            (e.currentTarget.style.backgroundColor = "#1c35ae")
           }
           onMouseLeave={(e) =>
-            !saveDisabled && (e.currentTarget.style.backgroundColor = "#2342DA")
+            haveSomethingNewToSave &&
+            (e.currentTarget.style.backgroundColor = "#2342DA")
           }
-          disabled={saveDisabled}
+          disabled={!haveSomethingNewToSave}
           data-testid="save-button"
           title="Save booklet"
         >
           <img
             src="/images/save.svg"
             alt=""
-            className={`h-4 w-4 ${saveDisabled ? "opacity-40" : "brightness-0 invert"}`}
+            className={`h-4 w-4 ${haveSomethingNewToSave ? "brightness-0 invert" : "opacity-40"}`}
           />
-          Save...
+          Save As...
         </button>
       </div>
     </footer>

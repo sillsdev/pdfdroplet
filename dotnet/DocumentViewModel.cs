@@ -17,7 +17,7 @@ namespace PdfDroplet
     /// </summary>
     class DocumentViewModel
     {
-        
+
         private string _incomingPath;
         private XPdfForm _inputPdf;
         private string _pathToCurrentlyDisplayedPdf;
@@ -37,7 +37,7 @@ namespace PdfDroplet
         {
             // Map the printer's paper size name to a PdfSharp PageSize
             var paperName = printerPaperSize.PaperName;
-            
+
             foreach (var template in s_paperTemplates)
             {
                 if (paperName.IndexOf(template.Target.Name, StringComparison.OrdinalIgnoreCase) >= 0)
@@ -85,7 +85,8 @@ namespace PdfDroplet
         public void ShowCropMarks(bool showCropMarks)
         {
             Settings.Default.ShowCropMarks = showCropMarks;
-            Settings.Default.Save();
+            // Don't persist crop marks setting - it's transient per document
+            // Settings.Default.Save();
 
             SetLayoutMethod(SelectedMethod);//cause to re-do it with this setting
         }
@@ -93,11 +94,10 @@ namespace PdfDroplet
         public void SetMirror(bool doMirror)
         {
             Settings.Default.Mirror = doMirror;
-            //Settings.Default.Save();
-            SetLayoutMethod(SelectedMethod);
+            // Don't persist mirror setting - it's transient per document
+            // Settings.Default.Save();
 
-            //not sure I want to save it with it on, just yet
-            //Settings.Default.Mirror = false;
+            SetLayoutMethod(SelectedMethod);
         }
 
         public IEnumerable<LayoutMethod> GetLayoutChoices()
@@ -130,6 +130,12 @@ namespace PdfDroplet
             _incomingPath = path;
             _inputPdf = OpenDocumentForPdfSharp(_incomingPath);
             Console.WriteLine("[viewmodel] Input PDF loaded successfully");
+
+            // Reset transient settings when loading a new PDF
+            Settings.Default.Mirror = false;
+            Settings.Default.ShowCropMarks = false;
+            // Note: We don't call Settings.Default.Save() here to avoid persisting these resets
+
             SetLayoutMethod(new NullLayoutMethod());
         }
 

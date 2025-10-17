@@ -14,7 +14,7 @@ namespace PdfDroplet
             InitializeComponent();
             Font = SystemFonts.DialogFont;
 
-             SetWindowText();
+            SetWindowText();
             timer1.Enabled = showAbout;
             //_instructionsBrowser.Navigate(FileLocator.GetFileDistributedWithApplication("instructions.htm"));
             //_browserForPdf.Navigated +=new WebBrowserNavigatedEventHandler((x,y)=>_stillNavigating = false);
@@ -22,7 +22,7 @@ namespace PdfDroplet
 
         }
 
-      
+
 
         private void SetWindowText()
         {
@@ -32,6 +32,9 @@ namespace PdfDroplet
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            // Reset transient settings before saving so they don't persist
+            Settings.Default.Mirror = false;
+            Settings.Default.ShowCropMarks = false;
             Settings.Default.Save();
             base.OnClosing(e);
         }

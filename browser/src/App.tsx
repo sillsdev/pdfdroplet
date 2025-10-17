@@ -47,7 +47,7 @@ function App() {
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
   const [runtimeInfo, setRuntimeInfo] = useState<RuntimeInfo | null>(null);
-  const [lastSavedPdfPath, setLastSavedPdfPath] = useState<string | null>(null);
+  const [haveSomethingNewToSave, setHaveSomethingNewToSave] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -96,11 +96,11 @@ function App() {
       setGenerationStatus(status);
     });
     const unsubscribePdfReady = bridge.on("generatedPdfReady", ({ path }) => {
-      setWorkspaceState((current) =>
-        current ? { ...current, generatedPdfPath: path } : current,
-      );
-      // Reset saved state when a new PDF is generated
-      setLastSavedPdfPath(null);
+      setWorkspaceState((current) => {
+        if (!current) return current;
+        return { ...current, generatedPdfPath: path };
+      });
+      // Don't set haveSomethingNewToSave here - let user actions set it
     });
 
     return () => {
@@ -178,6 +178,7 @@ function App() {
         formats: context.formats,
       });
       setErrorMessage(null);
+      setHaveSomethingNewToSave(false);
       void runCommand(() => bridge.dropPdf(normalized));
     },
     [runCommand],
@@ -191,6 +192,7 @@ function App() {
       );
       return;
     }
+    setHaveSomethingNewToSave(false);
     return runCommand(() => bridge.pickPdf());
   }, [runCommand, runtimeInfo]);
 
@@ -202,31 +204,47 @@ function App() {
       );
       return;
     }
+    setHaveSomethingNewToSave(false);
     return runCommand(() => bridge.reloadPrevious());
   }, [runCommand, runtimeInfo]);
 
   const handleSelectLayout = useCallback(
-    (layoutId: string) => runCommand(() => bridge.setLayout(layoutId)),
+    (layoutId: string) => {
+      setHaveSomethingNewToSave(true);
+      return runCommand(() => bridge.setLayout(layoutId));
+    },
     [runCommand],
   );
 
   const handleSelectPaper = useCallback(
-    (paperId: string) => runCommand(() => bridge.setPaper(paperId)),
+    (paperId: string) => {
+      setHaveSomethingNewToSave(true);
+      return runCommand(() => bridge.setPaper(paperId));
+    },
     [runCommand],
   );
 
   const handleToggleMirror = useCallback(
-    (enabled: boolean) => runCommand(() => bridge.setMirror(enabled)),
+    (enabled: boolean) => {
+      setHaveSomethingNewToSave(true);
+      return runCommand(() => bridge.setMirror(enabled));
+    },
     [runCommand],
   );
 
   const handleToggleRtl = useCallback(
-    (enabled: boolean) => runCommand(() => bridge.setRightToLeft(enabled)),
+    (enabled: boolean) => {
+      setHaveSomethingNewToSave(true);
+      return runCommand(() => bridge.setRightToLeft(enabled));
+    },
     [runCommand],
   );
 
   const handleToggleCropMarks = useCallback(
-    (enabled: boolean) => runCommand(() => bridge.setCropMarks(enabled)),
+    (enabled: boolean) => {
+      setHaveSomethingNewToSave(true);
+      return runCommand(() => bridge.setCropMarks(enabled));
+    },
     [runCommand],
   );
 
@@ -243,8 +261,8 @@ function App() {
       const result = await bridge.saveBooklet();
       if (result.success) {
         console.info("Booklet saved successfully to:", result.savedPath);
-        // Track the saved PDF path so we can disable the save button until a new booklet is generated
-        setLastSavedPdfPath(workspaceState?.generatedPdfPath ?? null);
+        // Mark that we no longer have unsaved changes
+        setHaveSomethingNewToSave(false);
       }
     } catch (error) {
       console.error("Failed to save booklet", error);
@@ -254,7 +272,7 @@ function App() {
         setErrorMessage("Unable to save booklet.");
       }
     }
-  }, [runtimeInfo, workspaceState?.generatedPdfPath]);
+  }, [runtimeInfo]);
 
   const handleShowAbout = useCallback(() => {
     setIsAboutDialogOpen(true);
@@ -381,7 +399,7 @@ function App() {
           controlsDisabled={controlsDisabled}
           isBootstrapping={isBootstrapping}
           generationStatus={generationStatus}
-          lastSavedPdfPath={lastSavedPdfPath}
+          haveSomethingNewToSave={haveSomethingNewToSave}
           onToggleRtl={handleToggleRtl}
           onToggleMirror={handleToggleMirror}
           onToggleCropMarks={handleToggleCropMarks}

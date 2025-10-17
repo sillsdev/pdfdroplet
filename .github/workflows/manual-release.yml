@@ -3,6 +3,11 @@ name: Manual Release Build
 on:
   workflow_dispatch:
     inputs:
+      draft:
+        description: "Mark the release as a draft."
+        required: false
+        type: boolean
+        default: false
       prerelease:
         description: "Mark the release as a pre-release."
         required: false
@@ -200,6 +205,6 @@ jobs:
           tag_name: ${{ steps.release.outputs.tag_name }}
           name: ${{ steps.release.outputs.release_name }}
           body: ${{ steps.release.outputs.body }}
-          draft: true
+          draft: ${{ inputs.draft }}
           prerelease: ${{ inputs.prerelease }}
           files: ${{ steps.installer.outputs.installer_path }}

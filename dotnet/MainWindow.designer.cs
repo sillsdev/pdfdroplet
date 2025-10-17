@@ -39,14 +39,14 @@ namespace PdfDroplet
             this.workspaceControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.workspaceControl1.Location = new System.Drawing.Point(0, 0);
             this.workspaceControl1.Name = "workspaceControl1";
-            this.workspaceControl1.Size = new System.Drawing.Size(818, 575);
+            this.workspaceControl1.Size = new System.Drawing.Size(918, 575);
             this.workspaceControl1.TabIndex = 0;
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(818, 575);
+            this.ClientSize = new System.Drawing.Size(918, 575);
             this.Controls.Add(this.workspaceControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 400);

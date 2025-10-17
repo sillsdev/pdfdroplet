@@ -46,6 +46,9 @@ namespace PdfDroplet
                 Application.Run(new MainWindow(args.Contains<string>("-about")));
             }
 
+            // Reset transient settings before saving so they don't persist
+            Settings.Default.Mirror = false;
+            Settings.Default.ShowCropMarks = false;
             Settings.Default.Save();
         }
 
