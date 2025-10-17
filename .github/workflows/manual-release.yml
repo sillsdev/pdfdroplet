@@ -7,12 +7,17 @@ on:
         description: "Mark the release as a draft."
         required: false
         type: boolean
-        default: false
+        default: true
       prerelease:
         description: "Mark the release as a pre-release."
         required: false
         type: boolean
-        default: false
+        default: true
+      release_notes:
+        description: "Short release note (edit release for longer notes)"
+        required: false
+        type: string
+        default: ""
 
 jobs:
   build-and-release:
@@ -194,7 +199,8 @@ jobs:
           }
           $tag = "v$version"
           $name = "PdfDroplet $version"
-          $notes = "Automated release generated from the Manual Release Build workflow, including the Windows installer built with Inno Setup."
+          $notes = '${{ inputs.release_notes }}'
+
           "tag_name=$tag" >> $env:GITHUB_OUTPUT
           "release_name=$name" >> $env:GITHUB_OUTPUT
           "body=$notes" >> $env:GITHUB_OUTPUT
